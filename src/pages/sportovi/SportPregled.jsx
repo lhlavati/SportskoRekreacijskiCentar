@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import SportService from "../../services/sportovi/SportService"
 import { Table } from "react-bootstrap"
-import { FaCheckCircle, FaMinusCircle } from "react-icons/fa"
+import { FaCheckCircle, FaCloudSun, FaMinusCircle, FaRegBuilding } from "react-icons/fa"
 
 export default function SportPregled(){
 
@@ -18,11 +18,11 @@ export default function SportPregled(){
     }
 
     function checkKontaktni(kontaktni) {
-        if(kontaktni){
-            return <FaCheckCircle size={25} color="green"/>
-        } else {
-            return <FaMinusCircle size={25} color="red"/>
-        }
+        return kontaktni ? <FaCheckCircle size={25} color="green"/> : <FaMinusCircle size={25} color="red"/>
+    }
+
+    function checkUnutra(unutra) {
+        return unutra ? <FaRegBuilding size={25}/> : <FaCloudSun size={25}/>
     }
 
     return(
@@ -47,7 +47,9 @@ export default function SportPregled(){
                                 {checkKontaktni(sport.kontaktni)}
                             </td>
                             <td>{sport.maxIgraca}</td>
-                            <td>{sport.unutra}</td>
+                            <td>
+                                {checkUnutra(sport.unutra)}
+                                </td>
                             <td></td>
                         </tr>
                     ))}
