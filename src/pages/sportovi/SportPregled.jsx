@@ -21,7 +21,7 @@ export default function SportPregled(){
         return kontaktni ? <FaCheckCircle size={25} color="green"/> : <FaMinusCircle size={25} color="red"/>
     }
 
-    function checkUnutra(unutra) {
+    function checkUZatvorenom(unutra) {
         return unutra ? <FaRegBuilding size={25}/> : <FaCloudSun size={25}/>
     }
 
@@ -31,10 +31,11 @@ export default function SportPregled(){
                 <thead>
                     <tr>
                         <th>Naziv</th>
-                        <th>Vrsta Terena</th>
+                        <th>Kategorija</th>
                         <th>Kontaktni</th>
                         <th>Max igrača</th>
-                        <th>Unutra</th>
+                        <th>U zatvorenom</th>
+                        <th>Trajanje (min)</th>
                         <th>Akcija</th>
                     </tr>
                 </thead>
@@ -42,15 +43,15 @@ export default function SportPregled(){
                     {sportovi && sportovi.map((sport) => (
                         <tr>
                             <td>{sport.naziv}</td>
-                            <td>{sport.vrstaTerena}</td>
+                            <td>{sport.kategorija}</td>
                             <td>
                                 {checkKontaktni(sport.kontaktni)}
                             </td>
                             <td>{sport.maxIgraca}</td>
                             <td>
-                                {checkUnutra(sport.unutra)}
+                                {checkUZatvorenom(sport.uZatvorenom)}
                                 </td>
-                            <td></td>
+                            <td>{sport.trajanjeMin}</td>
                         </tr>
                     ))}
                 </tbody>

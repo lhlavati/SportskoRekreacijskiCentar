@@ -1,162 +1,74 @@
 export const sportovi = [
-    { 
-        sifra: 1, 
-        naziv: 'Nogomet', 
-        vrstaTerena: 'trava', 
-        kontaktni: true, 
-        maxIgraca: 22, 
-        unutra: false 
+    {
+        id: 1,
+        naziv: 'Nogomet',
+        kategorija: 'Ekipni',
+        kontaktni: true,
+        maxIgraca: 22,
+        uZatvorenom: false,
+        trajanjeMin: 90
     },
-    { 
-        sifra: 2, 
-        naziv: 'Tenis', 
-        vrstaTerena: 'zemlja', 
-        kontaktni: false, 
-        maxIgraca: 4, 
-        unutra: false
+    {
+        id: 2,
+        naziv: 'Košarka',
+        kategorija: 'Ekipni',
+        kontaktni: true,
+        maxIgraca: 10,
+        uZatvorenom: true,
+        trajanjeMin: 40
     },
-    { 
-        sifra: 3, 
-        naziv: 'Padel', 
-        vrstaTerena: 'trava', 
-        kontaktni: false, 
-        maxIgraca: 4, 
-        unutra: true 
+    {
+        id: 3,
+        naziv: 'Tenis',
+        kategorija: 'Individualni',
+        kontaktni: false,
+        maxIgraca: 4,
+        uZatvorenom: false,
+        trajanjeMin: 120
     },
-    { 
-        sifra: 4, 
-        naziv: 'Mali Nogomet', 
-        vrstaTerena: 'parket', 
-        kontaktni: true, 
-        maxIgraca: 12, 
-        unutra: true 
+    {
+        id: 4,
+        naziv: 'Odbojka',
+        kategorija: 'Ekipni',
+        kontaktni: false,
+        maxIgraca: 12,
+        uZatvorenom: true,
+        trajanjeMin: 90
     },
-    { 
-        sifra: 5, 
-        naziv: 'Košarka', 
-        vrstaTerena: 'parket', 
-        kontaktni: true, 
-        maxIgraca: 10, 
-        unutra: true 
+    {
+        id: 5,
+        naziv: 'Rukomet',
+        kategorija: 'Ekipni',
+        kontaktni: true,
+        maxIgraca: 14,
+        uZatvorenom: true,
+        trajanjeMin: 60
     },
-    { 
-        sifra: 6, 
-        naziv: 'Odbojka', 
-        vrstaTerena: 'parket', 
-        kontaktni: false, 
-        maxIgraca: 12, 
-        unutra: true 
+    {
+        id: 6,
+        naziv: 'Stolni tenis',
+        kategorija: 'Individualni',
+        kontaktni: false,
+        maxIgraca: 4,
+        uZatvorenom: true,
+        trajanjeMin: 30
     },
-    { 
-        sifra: 7, 
-        naziv: 'Rukomet', 
-        vrstaTerena: 'parket', 
-        kontaktni: true, 
-        maxIgraca: 14, 
-        unutra: true 
+    {
+        id: 7,
+        naziv: 'Padel',
+        kategorija: 'Ekipni',
+        kontaktni: false,
+        maxIgraca: 4,
+        uZatvorenom: false,
+        trajanjeMin: 90
     },
-    { 
-        sifra: 8, 
-        naziv: 'Vaterpolo', 
-        vrstaTerena: 'voda', 
-        kontaktni: true, 
-        maxIgraca: 14, 
-        unutra: true 
-    },
-    { 
-        sifra: 9, 
-        naziv: 'Plivanje', 
-        vrstaTerena: 'voda', 
-        kontaktni: false, 
-        maxIgraca: 8, 
-        unutra: true 
-    },
-    { 
-        sifra: 10, 
-        naziv: 'Odbojka na pijesku', 
-        vrstaTerena: 'pijesak', 
-        kontaktni: false, 
-        maxIgraca: 4, 
-        unutra: false 
-    },
-    { 
-        sifra: 11, 
-        naziv: 'Stolni tenis', 
-        vrstaTerena: 'stol', 
-        kontaktni: false, 
-        maxIgraca: 4, 
-        unutra: true 
-    },
-    { 
-        sifra: 12, 
-        naziv: 'Badminton', 
-        vrstaTerena: 'parket', 
-        kontaktni: false, 
-        maxIgraca: 4, 
-        unutra: true 
-    },
-    { 
-        sifra: 13, 
-        naziv: 'Boks', 
-        vrstaTerena: 'ring', 
-        kontaktni: true, 
-        maxIgraca: 2, 
-        unutra: true 
-    },
-    { 
-        sifra: 14, 
-        naziv: 'Judo', 
-        vrstaTerena: 'tatami', 
-        kontaktni: true, 
-        maxIgraca: 2, 
-        unutra: true 
-    },
-    { 
-        sifra: 15, 
-        naziv: 'Američki nogomet', 
-        vrstaTerena: 'trava', 
-        kontaktni: true, 
-        maxIgraca: 22, 
-        unutra: false 
-    },
-    { 
-        sifra: 16, 
-        naziv: 'Bejzbol', 
-        vrstaTerena: 'pijesak/trava', 
-        kontaktni: false, 
-        maxIgraca: 18, 
-        unutra: false 
-    },
-    { 
-        sifra: 17, 
-        naziv: 'Hokej na ledu', 
-        vrstaTerena: 'led', 
-        kontaktni: true, 
-        maxIgraca: 12, 
-        unutra: true 
-    },
-    { 
-        sifra: 18, 
-        naziv: 'Golf', 
-        vrstaTerena: 'trava', 
-        kontaktni: false, 
-        maxIgraca: 4, 
-        unutra: false 
-    },
-    { 
-        sifra: 19, 
-        naziv: 'Skvoš', 
-        vrstaTerena: 'parket', 
-        kontaktni: false, 
-        maxIgraca: 2, 
-        unutra: true 
-    },
-    { 
-        sifra: 20, 
-        naziv: 'Kuglanje', 
-        vrstaTerena: 'staza', 
-        kontaktni: false, 
-        maxIgraca: 8, 
-        unutra: true 
+    {
+        id: 8,
+        naziv: 'Pikado',
+        kategorija: 'Individualni',
+        kontaktni: false,
+        maxIgraca: 2,
+        uZatvorenom: true,
+        trajanjeMin: 20
     }
 ];
