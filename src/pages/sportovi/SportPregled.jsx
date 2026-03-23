@@ -52,6 +52,7 @@ export default function SportPregled(){
                                 {checkUZatvorenom(sport.uZatvorenom)}
                                 </td>
                             <td>{sport.trajanjeMin}</td>
+                            <td></td>
                         </tr>
                     ))}
                 </tbody>
