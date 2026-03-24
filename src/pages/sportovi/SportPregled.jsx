@@ -2,6 +2,8 @@ import { useEffect, useState } from "react"
 import SportService from "../../services/sportovi/SportService"
 import { Table } from "react-bootstrap"
 import { FaCheckCircle, FaCloudSun, FaMinusCircle, FaRegBuilding } from "react-icons/fa"
+import { Link } from "react-router-dom"
+import { RouteNames } from "../../constants"
 
 export default function SportPregled(){
 
@@ -27,6 +29,9 @@ export default function SportPregled(){
 
     return(
         <>
+            <Link to={RouteNames.SPORTOVI_NOVI} className="btn btn-success w-100 mb-3 mt-3">
+            Dodavanje novog sporta
+            </Link>
             <Table>
                 <thead>
                     <tr>
@@ -41,7 +46,7 @@ export default function SportPregled(){
                 </thead>
                 <tbody>
                     {sportovi && sportovi.map((sport) => (
-                        <tr>
+                        <tr key={sport.id}>
                             <td>{sport.naziv}</td>
                             <td>{sport.kategorija}</td>
                             <td>
