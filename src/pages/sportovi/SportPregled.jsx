@@ -32,9 +32,9 @@ export default function SportPregled(){
             <Link to={RouteNames.SPORTOVI_NOVI} className="btn btn-success w-100 mb-3 mt-3">
             Dodavanje novog sporta
             </Link>
-            <Table>
+            <Table striped bordered hover>
                 <thead>
-                    <tr>
+                    <tr className="text-center">
                         <th>Naziv</th>
                         <th>Kategorija</th>
                         <th>Kontaktni</th>
@@ -46,7 +46,7 @@ export default function SportPregled(){
                 </thead>
                 <tbody>
                     {sportovi && sportovi.map((sport) => (
-                        <tr key={sport.id}>
+                        <tr className="text-center" key={sport.id}>
                             <td>{sport.naziv}</td>
                             <td>{sport.kategorija}</td>
                             <td>
