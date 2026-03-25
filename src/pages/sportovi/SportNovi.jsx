@@ -35,7 +35,7 @@ export default function SportNovi() {
         </Form.Group>
         <Form.Group controlId="kategorija">
           <Form.Label>Kategorija</Form.Label>
-          <Form.Select aria-label="Kategorija">
+          <Form.Select name="kategorija" aria-label="Kategorija">
             <option disabled></option>
             <option value="Ekipni">Ekipni</option>
             <option value="Individualni">Individualni</option>
