@@ -18,7 +18,7 @@ export default function SportNovi() {
     dodaj({
       naziv: podaci.get("naziv"),
       kategorija: podaci.get("kategorija"),
-      kontakti: podaci.get("kontakti"),
+      kontaktni: podaci.get("kontaktni"),
       maxIgraca: parseInt(podaci.get("maxIgraca")),
       uZatvorenom: podaci.get("uZatvorenom"),
       trajanjeMin: parseInt(podaci.get("trajanjeMin")),

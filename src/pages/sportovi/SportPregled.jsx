@@ -23,8 +23,8 @@ export default function SportPregled(){
         return kontaktni ? <FaCheckCircle size={25} color="green"/> : <FaMinusCircle size={25} color="red"/>
     }
 
-    function checkUZatvorenom(unutra) {
-        return unutra ? <FaRegBuilding size={25}/> : <FaCloudSun size={25}/>
+    function checkUZatvorenom(kontaktni) {
+        return kontaktni ? <FaRegBuilding size={25}/> : <FaCloudSun size={25}/>
     }
 
     return(
@@ -55,7 +55,7 @@ export default function SportPregled(){
                             <td>{sport.maxIgraca}</td>
                             <td>
                                 {checkUZatvorenom(sport.uZatvorenom)}
-                                </td>
+                            </td>
                             <td>{sport.trajanjeMin}</td>
                             <td></td>
                         </tr>
