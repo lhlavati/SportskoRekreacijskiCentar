@@ -20,7 +20,7 @@ function App() {
         <Route path={RouteNames.SPORTOVI_NOVI} element={<SportNovi />} />
       </Routes>
       <hr />
-      &copy; Edunova
+      &copy; SRC
     </Container>
   )
 }
