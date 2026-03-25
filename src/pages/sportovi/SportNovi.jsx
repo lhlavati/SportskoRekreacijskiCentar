@@ -35,7 +35,11 @@ export default function SportNovi() {
         </Form.Group>
         <Form.Group controlId="kategorija">
           <Form.Label>Kategorija</Form.Label>
-          <Form.Control type="text" name="kategorija" required />
+          <Form.Select aria-label="Kategorija">
+            <option disabled></option>
+            <option value="Ekipni">Ekipni</option>
+            <option value="Individualni">Individualni</option>
+          </Form.Select>
         </Form.Group>
         <Form.Group controlId="maxIgraca">
           <Form.Label>Max Igrača</Form.Label>
