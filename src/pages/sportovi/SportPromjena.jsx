@@ -11,6 +11,7 @@ export default function SportPromjena() {
   const [sport, setSport] = useState({})
   const [kontaktni, setKontaktni] = useState(false)
   const [uZatvorenom, setuZatvorenom] = useState(false)
+  const [kategorija, setKategorija] = useState(sport.kategorija)
 
   async function ucitajSport() {
         await SportService.getById(params.id).then((odgovor)=>{
@@ -22,6 +23,7 @@ export default function SportPromjena() {
 
             setKontaktni(s.kontaktni)
             setuZatvorenom(s.uZatvorenom)
+            setKategorija(s.kategorija)
         })
     }
 
@@ -54,11 +56,14 @@ export default function SportPromjena() {
       <Form onSubmit={odradiSubmit}>
         <Form.Group controlId="naziv">
           <Form.Label>Naziv</Form.Label>
-          <Form.Control type="text" name="naziv" required />
+          <Form.Control type="text" name="naziv" required 
+          defaultValue={sport.naziv}/>
         </Form.Group>
         <Form.Group controlId="kategorija">
           <Form.Label>Kategorija</Form.Label>
-          <Form.Select name="kategorija" aria-label="Kategorija">
+          <Form.Select name="kategorija" aria-label="Kategorija"
+          value={kategorija} 
+          onChange={(e) => setKategorija(e.target.value)}>
             <option disabled></option>
             <option value="Ekipni">Ekipni</option>
             <option value="Individualni">Individualni</option>
@@ -66,11 +71,13 @@ export default function SportPromjena() {
         </Form.Group>
         <Form.Group controlId="maxIgraca">
           <Form.Label>Max Igrača</Form.Label>
-          <Form.Control type="number" name="maxIgraca" step={1} />
+          <Form.Control type="number" name="maxIgraca" step={1} 
+          defaultValue={sport.maxIgraca}/>
         </Form.Group>
         <Form.Group controlId="trajanjeMin">
           <Form.Label>Trajanje (min)</Form.Label>
-          <Form.Control type="number" name="trajanjeMin" step={1} />
+          <Form.Control type="number" name="trajanjeMin" step={1} 
+          defaultValue={sport.trajanjeMin}/>
         </Form.Group>
         <Form.Group controlId="uZatvorenom">
           <Form.Check label="U zatvorenom" name="uZatvorenom" 
