@@ -7,6 +7,7 @@ import { RouteNames } from './constants'
 import Home from './pages/Home'
 import SportPregled from './pages/sportovi/SportPregled'
 import SportNovi from './pages/sportovi/SportNovi'
+import SportPromjena from './pages/sportovi/SportPromjena'
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
         <Route path={RouteNames.HOME} element={<Home />} />
         <Route path={RouteNames.SPORTOVI} element={<SportPregled />} />
         <Route path={RouteNames.SPORTOVI_NOVI} element={<SportNovi />} />
+        <Route path={RouteNames.SPORTOVI_PROMJENA} element={<SportPromjena />} />
       </Routes>
       <hr />
       &copy; SRC

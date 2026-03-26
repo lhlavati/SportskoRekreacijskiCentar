@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react"
 import SportService from "../../services/sportovi/SportService"
-import { Table } from "react-bootstrap"
+import { Button, Table } from "react-bootstrap"
 import { FaCheckCircle, FaCloudSun, FaMinusCircle, FaRegBuilding } from "react-icons/fa"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { RouteNames } from "../../constants"
 
 export default function SportPregled(){
 
+    const navigate = useNavigate()
     const [sportovi, setSportovi] = useState([])
 
     useEffect(() => {
@@ -57,7 +58,11 @@ export default function SportPregled(){
                                 {checkUZatvorenom(sport.uZatvorenom)}
                             </td>
                             <td>{sport.trajanjeMin}</td>
-                            <td></td>
+                            <td>
+                                <Button onClick={()=>{navigate(`/sportovi/${sport.id}`)}}>
+                                    Promjena
+                                </Button>
+                            </td>
                         </tr>
                     ))}
                 </tbody>
