@@ -17,10 +17,8 @@ export default function SportPromjena() {
         await SportService.getById(params.id).then((odgovor)=>{
             
             const s = odgovor.data
-            // po potrebi prilagođavam podatke
             
             setSport(s)
-
             setKontaktni(s.kontaktni)
             setuZatvorenom(s.uZatvorenom)
             setKategorija(s.kategorija)
