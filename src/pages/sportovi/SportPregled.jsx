@@ -20,6 +20,14 @@ export default function SportPregled(){
         })
     }
 
+    async function obrisi(id) {
+        if(!confirm('Sigurno obrisati?')){
+            return
+        }
+        await SportService.obrisi(id)
+        ucitajSportove()
+    }
+
     function checkKontaktni(kontaktni) {
         return kontaktni ? <FaCheckCircle size={25} color="green"/> : <FaMinusCircle size={25} color="red"/>
     }
@@ -61,6 +69,10 @@ export default function SportPregled(){
                             <td>
                                 <Button onClick={()=>{navigate(`/sportovi/${sport.id}`)}}>
                                     Promjena
+                                </Button>
+                                &nbsp;&nbsp;
+                                 <Button variant="danger" onClick={()=>{obrisi(sport.id)}}>
+                                    Obriši
                                 </Button>
                             </td>
                         </tr>

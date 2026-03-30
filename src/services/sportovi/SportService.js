@@ -24,6 +24,11 @@ function nadiIndex(id){
     return sportovi.findIndex(s => s.id === parseInt(id))
 }
 
+async function obrisi(id){
+    const index = nadiIndex(id)
+    sportovi.splice(index,1)
+}
+
 export default {
-    get, dodaj, promjeni, getById
+    get, dodaj, promjeni, getById, obrisi
 }
