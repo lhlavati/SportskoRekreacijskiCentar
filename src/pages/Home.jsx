@@ -1,12 +1,14 @@
+import { Image } from "react-bootstrap";
 import { IME_APLIKACIJE } from "../constants";
+import logo from '../assets/logo.png'
 
 export default function Home(){
     return(
     <>
-    <h1>Dobrodošli na {IME_APLIKACIJE}</h1>
-    <div>
-        Ovdje dođe slika
-    </div>
+        <h1 class="text-center">Dobrodošli na {IME_APLIKACIJE}</h1>
+        <div class="text-center">
+            <Image src={logo} fluid />
+        </div>
     </>
     )
 }

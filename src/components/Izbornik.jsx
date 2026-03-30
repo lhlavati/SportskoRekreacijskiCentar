@@ -9,7 +9,7 @@ export default function Izbornik() {
 
 
     return (
-        <Navbar expand="lg" className="bg-body-tertiary">
+        <Navbar expand="lg">
             <Container>
                 <Navbar.Brand>{IME_APLIKACIJE}</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
