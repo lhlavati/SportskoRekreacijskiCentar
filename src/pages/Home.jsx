@@ -5,8 +5,8 @@ import logo from '../assets/logo.png'
 export default function Home(){
     return(
     <>
-        <h1 class="text-center">Dobrodošli na {IME_APLIKACIJE}</h1>
-        <div class="text-center">
+        <h1 className="text-center">Dobrodošli na {IME_APLIKACIJE}</h1>
+        <div className="text-center">
             <Image src={logo} fluid />
         </div>
     </>

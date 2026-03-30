@@ -1,5 +1,5 @@
 body, html {
-    background: #22ff00;
-    background: linear-gradient(149deg, rgba(34, 255, 0, 1) 0%, rgba(255, 255, 255, 1) 50%, rgba(120, 120, 120, 1) 100%);
+    background: #0e6600;
+    background: linear-gradient(149deg, rgba(14, 102, 0, 1) 0%, rgba(74, 255, 80, 1) 50%, rgba(14, 102, 0, 1) 100%);
     height: 100vh;
 }
