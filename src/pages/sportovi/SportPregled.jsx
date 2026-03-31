@@ -16,6 +16,10 @@ export default function SportPregled(){
 
     async function ucitajSportove(){
         await SportService.get().then((odgovor) => {
+            if(!odgovor.success){
+                alert('Nije implementiran servis')
+                return
+            }
             setSportovi(odgovor.data)
         })
     }

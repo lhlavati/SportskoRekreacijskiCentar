@@ -13,7 +13,7 @@ function App() {
 
 
   return (
-    <Container>
+    <Container style={ {backgroundColor: window.location.hostname === 'localhost' ? '#ffefea' : 'none'}}>
       <Izbornik />
       <Routes>
         <Route path={RouteNames.HOME} element={<Home />} />

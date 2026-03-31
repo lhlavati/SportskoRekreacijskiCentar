@@ -16,6 +16,11 @@ export default function SportPromjena() {
   async function ucitajSport() {
         await SportService.getById(params.id).then((odgovor)=>{
             
+            if(!odgovor.success){
+              alert('Nije implementiran servis')
+              return
+            }
+
             const s = odgovor.data
             
             setSport(s)

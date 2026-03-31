@@ -6,3 +6,6 @@ export const RouteNames = {
     SPORTOVI_NOVI: '/sportovi/novi',
     SPORTOVI_PROMJENA: '/sportovi/:id'
 }
+
+// memorija, localStorage, firebase
+export const DATA_SOURCE = 'localStorage';

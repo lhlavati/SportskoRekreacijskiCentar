@@ -1,34 +1,36 @@
-import { sportovi } from "./SportPodaci";
+import SportServiceLocalStorage from "./SportServiceLocalStorage";
+import SportServiceMemorija from "./SportServiceMemorija";
+import { DATA_SOURCE } from "../../constants";
 
-async function get() {
-    return {data: [...sportovi]}
+let Servis = null;
+
+
+switch (DATA_SOURCE) {
+    case 'memorija':
+        Servis = SportServiceMemorija;
+        break;
+    case 'localStorage':
+        Servis = SportServiceLocalStorage;
+        break;
+    default:
+        Servis = null;
 }
 
-async function getById(id) {
-   return {data: sportovi.find(s => s.id === parseInt(id))} 
-}
 
-async function dodaj(sport) {
+const PrazanServis = {
+    get: async () => ({ success: false, data: []}),
+    getById: async (id) => ({ success: false, data: {} }),
+    dodaj: async (sport) => { console.error("Servis nije učitan"); },
+    promjeni: async (id, sport) => { console.error("Servis nije učitan"); },
+    obrisi: async (id) => { console.error("Servis nije učitan"); }
+};
 
-    sport.id = sportovi.length > 0 ? sport.id = sportovi[sportovi.length - 1].id + 1 : sport.id = 1;
-    sportovi.push(sport)
-
-}
-
-async function promjeni(id,sport) {
-    const index = nadiIndex(id)
-    sportovi[index] = {...sportovi[index], ...sport}
-}
-
-function nadiIndex(id){
-    return sportovi.findIndex(s => s.id === parseInt(id))
-}
-
-async function obrisi(id){
-    const index = nadiIndex(id)
-    sportovi.splice(index,1)
-}
+const AktivniServis = Servis || PrazanServis;
 
 export default {
-    get, dodaj, promjeni, getById, obrisi
-}
+    get: () => AktivniServis.get(),
+    getById: (id) => AktivniServis.getById(id),
+    dodaj: (sport) => AktivniServis.dodaj(sport),
+    promjeni: (id, sport) => AktivniServis.promjeni(id, sport),
+    obrisi: (id) => AktivniServis.obrisi(id)
+};
