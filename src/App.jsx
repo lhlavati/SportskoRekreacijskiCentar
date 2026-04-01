@@ -8,6 +8,9 @@ import Home from './pages/Home'
 import SportPregled from './pages/sportovi/SportPregled'
 import SportNovi from './pages/sportovi/SportNovi'
 import SportPromjena from './pages/sportovi/SportPromjena'
+import ClanNovi from './pages/clanovi/ClanNovi'
+import ClanPromjena from './pages/clanovi/ClanPromjena'
+import ClanPregled from './pages/clanovi/ClanPregled'
 
 function App() {
 
@@ -20,6 +23,9 @@ function App() {
         <Route path={RouteNames.SPORTOVI} element={<SportPregled />} />
         <Route path={RouteNames.SPORTOVI_NOVI} element={<SportNovi />} />
         <Route path={RouteNames.SPORTOVI_PROMJENA} element={<SportPromjena />} />
+        <Route path={RouteNames.CLANOVI} element={<ClanPregled />} />
+        <Route path={RouteNames.CLANOVI_NOVI} element={<ClanNovi />} />
+        <Route path={RouteNames.CLANOVI_PROMJENA} element={<ClanPromjena />} />
       </Routes>
       <hr />
       &copy; {IME_APLIKACIJE}
