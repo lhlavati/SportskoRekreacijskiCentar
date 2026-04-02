@@ -18,10 +18,10 @@ export default function ClanPromjena() {
             
             // console.log(!odgovor.success);
             
-            // if(!odgovor.success){
-            //   alert('Nije implementiran servis')
-            //   return
-            // }
+            if(!odgovor.success){
+               alert('Nije implementiran servis')
+              return
+            }
 
             const s = odgovor.data
             

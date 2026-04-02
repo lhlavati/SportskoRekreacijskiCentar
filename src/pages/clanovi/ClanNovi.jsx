@@ -3,13 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { RouteNames } from "../../constants";
 import ClanService from "../../services/clanovi/ClanService";
 
-import PhoneInputWithCountrySelect, { isPossiblePhoneNumber } from "react-phone-number-input";
+import PhoneInputWithCountrySelect, { isPossiblePhoneNumber,getCountryCallingCode } from "react-phone-number-input";
 import { useState } from "react";
 import 'react-phone-number-input/style.css'
 
 export default function ClanNovi() {
   const navigate = useNavigate();
   const [kontaktBroj, setKontaktBroj] = useState('')
+  const [zemlja,setZemlja]=useState('HR')
 
   async function dodaj(clan) {
     await ClanService.dodaj(clan).then(() => {
@@ -20,11 +21,20 @@ export default function ClanNovi() {
   function odradiSubmit(e) {
     e.preventDefault();
     const podaci = new FormData(e.target);
+    console.log(zemlja)
+
+    let tb=podaci.get("kontaktBroj").replaceAll(' ','')
+    if(tb.length>0 && tb[0]==='0'){
+      tb=tb.substring(1)
+    }
+
+    tb = '+' + getCountryCallingCode(zemlja) + tb
+
     dodaj({
       ime: podaci.get("ime"),
       prezime: podaci.get("prezime"),
       email: podaci.get("email"),
-      kontaktBroj: podaci.get("kontaktBroj")
+      kontaktBroj: tb
     });
   }
 
@@ -57,7 +67,8 @@ export default function ClanNovi() {
             value={kontaktBroj}
             onChange={setKontaktBroj}
             defaultCountry="HR"
-            rules={{ required: true, validate: isPossiblePhoneNumber(kontaktBroj) }}
+            onCountryChange={setZemlja}
+            rules={{ required: true, validate: isPossiblePhoneNumber }}
             />
         </Form.Group>
 
