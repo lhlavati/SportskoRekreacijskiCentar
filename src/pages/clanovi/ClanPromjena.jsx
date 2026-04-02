@@ -12,6 +12,7 @@ export default function ClanPromjena() {
   const params = useParams()
   const [clan, setClan] = useState({})
   const [kontaktBroj, setKontaktBroj] = useState('')
+  const [zemlja,setZemlja]=useState('HR')
 
   async function ucitajClan() {
         await ClanService.getById(params.id).then((odgovor)=>{
@@ -44,11 +45,19 @@ export default function ClanPromjena() {
   function odradiSubmit(e) {
     e.preventDefault();
     const podaci = new FormData(e.target);
+
+    let tb=podaci.get("kontaktBroj").replaceAll(' ','')
+    if(tb.length>0 && tb[0]==='0'){
+      tb=tb.substring(1)
+    }
+
+    tb = '+' + getCountryCallingCode(zemlja) + tb
+
     promjeni({
       ime: podaci.get("ime"),
       prezime: podaci.get("prezime"),
       email: podaci.get("email"),
-      kontaktBroj:podaci.get("kontaktBroj")
+      kontaktBroj: tb
     });
   }
 
@@ -79,8 +88,6 @@ export default function ClanPromjena() {
             value={clan.kontaktBroj}
             onChange={setKontaktBroj}
             required
-            defaultCountry="HR"
-            displayInitialValueAsLocalNumber
             rules={{ required: true}}
             />
         </Form.Group>

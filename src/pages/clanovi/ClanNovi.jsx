@@ -57,11 +57,6 @@ export default function ClanNovi() {
         <Form.Group controlId="kontaktBroj">
           <Form.Label>Kontakt broj</Form.Label>
           <br />
-          {/* <PhoneInput
-          country="HR"
-          value={kontaktBroj}
-          onChange={setKontaktBroj}
-          /> */}
           <PhoneInputWithCountrySelect
             name="kontaktBroj"
             value={kontaktBroj}
