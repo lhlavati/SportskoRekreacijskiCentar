@@ -8,7 +8,11 @@ export const RouteNames = {
 
     CLANOVI: '/clanovi',
     CLANOVI_NOVI: '/clanovi/novi',
-    CLANOVI_PROMJENA: '/clanovi/:id'
+    CLANOVI_PROMJENA: '/clanovi/:id',
+
+    KATEGORIJE: '/kategorije',
+    KATEGORIJE_NOVI: '/kategorije/novi',
+    KATEGORJIE_PROMJENA: '/grupe/:id'
 }
 
 // memorija, localStorage, firebase

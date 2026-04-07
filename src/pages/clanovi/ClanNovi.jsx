@@ -5,7 +5,7 @@ import ClanService from "../../services/clanovi/ClanService";
 
 import PhoneInputWithCountrySelect, { isPossiblePhoneNumber,getCountryCallingCode } from "react-phone-number-input";
 import { useState } from "react";
-import 'react-phone-number-input/style.css'
+import 'react-phone-number-input/style.css';
 
 export default function ClanNovi() {
   const navigate = useNavigate();

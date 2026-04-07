@@ -4,7 +4,8 @@ import { RouteNames } from "../../constants";
 import ClanService from "../../services/clanovi/ClanService";
 import { useEffect, useState } from "react";
 
-import PhoneInputWithCountrySelect, { isPossiblePhoneNumber } from "react-phone-number-input";
+import PhoneInputWithCountrySelect, { isPossiblePhoneNumber, getCountryCallingCode } from "react-phone-number-input";
+import 'react-phone-number-input/style.css'
 
 export default function ClanPromjena() {
 
@@ -16,8 +17,6 @@ export default function ClanPromjena() {
 
   async function ucitajClan() {
         await ClanService.getById(params.id).then((odgovor)=>{
-            
-            // console.log(!odgovor.success);
             
             if(!odgovor.success){
                alert('Nije implementiran servis')
