@@ -28,8 +28,8 @@ function App() {
         <Route path={RouteNames.CLANOVI} element={<ClanPregled />} />
         <Route path={RouteNames.CLANOVI_NOVI} element={<ClanNovi />} />
         <Route path={RouteNames.CLANOVI_PROMJENA} element={<ClanPromjena />} />
-        <Route path={RouteNames.KATEGORIJE} element={<KategorijaNovi />} />
-        <Route path={RouteNames.KATEGORIJE_NOVI} element={<KategorijaPregled />} />
+        <Route path={RouteNames.KATEGORIJE} element={<KategorijaPregled />} />
+        <Route path={RouteNames.KATEGORIJE_NOVI} element={<KategorijaNovi />} />
         <Route path={RouteNames.KATEGORJIE_PROMJENA} element={<KategorijaPromjena />} />
 
       </Routes>

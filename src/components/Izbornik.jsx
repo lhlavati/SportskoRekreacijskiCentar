@@ -25,7 +25,7 @@ export default function Izbornik() {
                         onClick={()=>navigate(RouteNames.CLANOVI)}
                         >Članovi</Nav.Link>
                         <Nav.Link
-                        onClick={()=>navigate(RouteNames.CLANOVI)}
+                        onClick={()=>navigate(RouteNames.KATEGORIJE)}
                         >Kategorije</Nav.Link>
                     </Nav>
                 </Navbar.Collapse>

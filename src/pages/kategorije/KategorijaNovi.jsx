@@ -1,15 +1,31 @@
-import { Button, Col, Form, Row } from "react-bootstrap";
+import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { RouteNames } from "../../constants";
 import KategorijaService from "../../services/kategorije/KategorijaService";
+import { useEffect, useState } from "react";
 import SportService from "../../services/sportovi/SportService";
 
 export default function KategorijaNovi() {
   const navigate = useNavigate();
+  const [sportovi, setSportovi] = useState([])
+
+  useEffect(() => {
+    ucitajSportove()
+  })
+
+  async function ucitajSportove() {
+    await SportService.get().then((odgovor) => {
+      if (!odgovor.success) {
+        alert('Nije implementiran servis')
+        return
+      }
+      setSportovi(odgovor.data)
+    })
+  }
 
   async function dodaj(kategorija) {
-    await SportService.dodaj(kategorija).then(() => {
-      navigate(RouteNames.SPORTOVI);
+    await KategorijaService.dodaj(kategorija).then(() => {
+      navigate(RouteNames.KATEGORIJE);
     });
   }
 
@@ -17,61 +33,64 @@ export default function KategorijaNovi() {
     e.preventDefault();
     const podaci = new FormData(e.target);
     dodaj({
-      naziv: podaci.get("naziv"),
-      kategorija: podaci.get("kategorija"),
-      kontaktni: podaci.get("kontaktni"),
-      maxIgraca: parseInt(podaci.get("maxIgraca")),
-      uZatvorenom: podaci.get("uZatvorenom"),
-      trajanjeMin: parseInt(podaci.get("trajanjeMin")),
+      vrsta: podaci.get("vrsta"),
+      sport: podaci.get("sport")
     });
   }
 
   return (
     <>
-      <h3>Unos nove kategorije</h3>
+      <h3>Unos nove grupe</h3>
       <Form onSubmit={odradiSubmit}>
-        <Form.Group controlId="naziv">
-          <Form.Label>Naziv</Form.Label>
-          <Form.Control type="text" name="naziv" required />
-        </Form.Group>
-        <Form.Group controlId="kategorija">
-          <Form.Label>Kategorija</Form.Label>
-          <Form.Select name="kategorija" aria-label="Kategorija">
-            <option disabled></option>
-            <option value="Ekipni">Ekipni</option>
-            <option value="Individualni">Individualni</option>
-          </Form.Select>
-        </Form.Group>
-        <Form.Group controlId="maxIgraca">
-          <Form.Label>Max Igrača</Form.Label>
-          <Form.Control type="number" name="maxIgraca" step={1} />
-        </Form.Group>
-        <Form.Group controlId="trajanjeMin">
-          <Form.Label>Trajanje (min)</Form.Label>
-          <Form.Control type="number" name="trajanjeMin" step={1} />
-        </Form.Group>
-        <Form.Group controlId="uZatvorenom">
-          <Form.Check label="U zatvorenom" name="uZatvorenom" />
-        </Form.Group>
-        <Form.Group controlId="kontaktni">
-          <Form.Check label="Kontaktni" name="kontaktni" />
-        </Form.Group>
+        <Container className="mt-4">
+          <Card className="shadow-sm">
+            <Card.Body>
+              <Card.Title className="mb-4">Podaci o kategoriji</Card.Title>
 
-        <hr style={{ marginTop: "20px", border: "0" }} />
+              <Row>
+                <Col xs={12}>
+                  <Form.Group controlId="vrsta" className="mb-3">
+                    <Form.Label className="fw-bold">Vrsta kategorije</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="vrsta"
+                      placeholder="Unesite vrstu kategorije"
+                      required
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
 
-        <Row>
-          <Col>
-            <Link to={RouteNames.SPORTOVI} className="btn btn-danger">
-              Odustani
-            </Link>
-          </Col>
-          <Col>
-            <Button type="sumbit" variant="success">
-              Dodaj novu kategoriju
-            </Button>
-          </Col>
-        </Row>
+              <Row>
+                <Col xs={12}>
+                  <Form.Group controlId="sport" className="mb-3">
+                    <Form.Label className="fw-bold">Sport</Form.Label>
+                    <Form.Select name="sport" required>
+                      <option value="">Odaberite sport</option>
+                      {sportovi && sportovi.map((sport) => (
+                        <option key={sport.id} value={sport.id}>
+                          {sport.naziv}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              <hr />
+
+              <div className="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                <Link to={RouteNames.GRUPE} className="btn btn-danger px-4">
+                  Odustani
+                </Link>
+                <Button type="submit" variant="success">
+                  Dodaj novu kategoriju
+                </Button>
+              </div>
+            </Card.Body>
+          </Card>
+        </Container>
       </Form>
     </>
-  );
+  )
 }

@@ -12,7 +12,7 @@ export const RouteNames = {
 
     KATEGORIJE: '/kategorije',
     KATEGORIJE_NOVI: '/kategorije/novi',
-    KATEGORJIE_PROMJENA: '/grupe/:id'
+    KATEGORJIE_PROMJENA: '/kategorije/:id'
 }
 
 // memorija, localStorage, firebase
