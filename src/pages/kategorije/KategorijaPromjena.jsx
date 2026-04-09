@@ -1,7 +1,6 @@
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { RouteNames } from "../../constants";
-import SportService from "../../services/sportovi/SportService";
 import { useEffect, useState } from "react";
 import KategorijaService from "../../services/kategorije/KategorijaService";
 
@@ -10,30 +9,18 @@ export default function KategorijaPromjena() {
     const navigate = useNavigate()
     const params = useParams()
     const [kategorija, setKategorija] = useState([])
-    const [sportovi, setSportovi] = useState([])
 
     useEffect(() => {
-        ucitajSportove()
         ucitajKategorije()
     }, [])
 
     async function ucitajKategorije() {
-        await KategorijaService.get().then((odgovor) => {
+        await KategorijaService.getById(params.id).then((odgovor) => {
             if (!odgovor.success) {
                 alert('Nije implementiran servis')
                 return
             }
             setKategorija(odgovor.data)
-        })
-    }
-
-    async function ucitajSportove() {
-        await SportService.get().then((odgovor) => {
-            if (!odgovor.success) {
-                alert('Nije implementiran servis')
-                return
-            }
-            setSportovi(odgovor.data)
         })
     }
 
@@ -47,8 +34,7 @@ export default function KategorijaPromjena() {
         e.preventDefault();
         const podaci = new FormData(e.target);
         promjeni({
-            vrsta: podaci.get("vrsta"),
-            sport: podaci.get("sport")
+            naziv: podaci.get("naziv")
         });
     }
 
@@ -63,43 +49,25 @@ export default function KategorijaPromjena() {
 
                             <Row>
                                 <Col xs={12}>
-                                    <Form.Group controlId="vrsta" className="mb-3">
-                                        <Form.Label className="fw-bold">Vrsta</Form.Label>
+                                    <Form.Group controlId="naziv" className="mb-3">
+                                        <Form.Label className="fw-bold">Naziv</Form.Label>
                                         <Form.Control
                                             type="text"
-                                            name="vrsta"
-                                            placeholder="Unesite vrstu kategorije"
+                                            name="naziv"
+                                            placeholder="Unesite naziv kategorije"
                                             required
-                                            defaultValue={kategorija.vrsta}
+                                            defaultValue={kategorija.naziv}
                                         />
                                     </Form.Group>
                                 </Col>
                             </Row>
 
-                            <Row>
-                                <Col xs={12}>
-                                    <Form.Group controlId="sport" className="mb-3">
-                                        <Form.Label className="fw-bold">Sport</Form.Label>
-                                        <Form.Select name="sport" required value={kategorija.sport || ''} onChange={(e) => setKategorija({ ...kategorija, sport: parseInt(e.target.value) })}>
-                                            <option value="">Odaberite sport</option>
-                                            {sportovi && sportovi.map((sport) => (
-                                                <option key={sport.sifra} value={sport.sifra}>
-                                                    {sport.naziv}
-                                                </option>
-                                            ))}
-                                        </Form.Select>
-                                    </Form.Group>
-                                </Col>
-                            </Row>
-
-                            <hr />
-
                             <div className="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                                <Link to={RouteNames.GRUPE} className="btn btn-danger px-4">
+                                <Link to={RouteNames.KATEGORIJE} className="btn btn-danger px-4">
                                     Odustani
                                 </Link>
                                 <Button type="submit" variant="success">
-                                    Promjeni grupu
+                                    Promjeni kategoriju
                                 </Button>
                             </div>
                         </Card.Body>

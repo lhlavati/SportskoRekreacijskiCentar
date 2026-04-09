@@ -2,9 +2,26 @@ import { Button, Col, Form, Row } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { RouteNames } from "../../constants";
 import SportService from "../../services/sportovi/SportService";
+import { useEffect, useState } from "react";
+import KategorijaService from "../../services/kategorije/KategorijaService";
 
 export default function SportNovi() {
   const navigate = useNavigate();
+  const [kategorija, setKategorija] = useState([])
+  
+  useEffect(() => {
+    ucitajKategorije()
+  })
+
+  async function ucitajKategorije() {
+    await KategorijaService.get().then((odgovor) => {
+      if (!odgovor.success) {
+        alert('Nije implementiran servis')
+        return
+      }
+      setKategorija(odgovor.data)
+    })
+  }
 
   async function dodaj(sport) {
     await SportService.dodaj(sport).then(() => {
@@ -15,9 +32,11 @@ export default function SportNovi() {
   function odradiSubmit(e) {
     e.preventDefault();
     const podaci = new FormData(e.target);
+    console.log(podaci.get("kategorija"));
+    
     dodaj({
       naziv: podaci.get("naziv"),
-      kategorija: podaci.get("kategorija"),
+      kategorija: podaci.get("kategorija"),      
       kontaktni: podaci.get("kontaktni"),
       maxIgraca: parseInt(podaci.get("maxIgraca")),
       uZatvorenom: podaci.get("uZatvorenom"),
@@ -33,13 +52,16 @@ export default function SportNovi() {
           <Form.Label>Naziv</Form.Label>
           <Form.Control type="text" name="naziv" required />
         </Form.Group>
-        <Form.Group controlId="kategorija">
-          <Form.Label>Kategorija</Form.Label>
-          <Form.Select name="kategorija" aria-label="Kategorija">
-            <option disabled></option>
-            <option value="Ekipni">Ekipni</option>
-            <option value="Individualni">Individualni</option>
-          </Form.Select>
+        <Form.Group controlId="kategorija" className="mb-3">
+            <Form.Label>Kategorija</Form.Label>
+            <Form.Select name="kategorija" required>
+                <option value="">Odaberite kategoriju</option>
+                {kategorija && kategorija.map((kategorija) => (
+                    <option key={kategorija.id} value={kategorija.id}>
+                        {kategorija.naziv}
+                    </option>
+                ))}
+            </Form.Select>
         </Form.Group>
         <Form.Group controlId="maxIgraca">
           <Form.Label>Max Igrača</Form.Label>

@@ -2,17 +2,30 @@ import { useEffect, useState } from "react"
 import SportService from "../../services/sportovi/SportService"
 import { Button, Table } from "react-bootstrap"
 import { FaCheckCircle, FaCloudSun, FaMinusCircle, FaRegBuilding } from "react-icons/fa"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 import { RouteNames } from "../../constants"
+import KategorijaService from "../../services/kategorije/KategorijaService"
 
 export default function SportPregled(){
 
     const navigate = useNavigate()
     const [sportovi, setSportovi] = useState([])
-
+    const [kategorije, setKategorije] = useState([])
+    
     useEffect(() => {
+        ucitajKategorije(),
         ucitajSportove()
     }, [])
+
+    async function ucitajKategorije(){
+        await KategorijaService.get().then((odgovor) => {
+            if(!odgovor.success){
+                alert('Nije implementiran servis')
+                return
+            }
+            setKategorije(odgovor.data)
+        })
+    }
 
     async function ucitajSportove(){
         await SportService.get().then((odgovor) => {
@@ -40,6 +53,13 @@ export default function SportPregled(){
         return kontaktni ? <FaRegBuilding size={25}/> : <FaCloudSun size={25}/>
     }
 
+    function dohvatiNazivKategorije(idKategorije) {
+        const kategorija = sportovi.find(k => k.id === idKategorije)  
+        console.log(sportovi);
+              
+        return kategorija ? kategorija.naziv : 'Nepoznata kategorija'
+    }
+
     return(
         <>
             <Link to={RouteNames.SPORTOVI_NOVI} className="btn btn-success w-100 mb-3 mt-3">
@@ -61,7 +81,7 @@ export default function SportPregled(){
                     {sportovi && sportovi.map((sport) => (
                         <tr className="text-center" key={sport.id}>
                             <td>{sport.naziv}</td>
-                            <td>{sport.kategorija}</td>
+                            <td>{dohvatiNazivKategorije(sport.kategorija)}</td>
                             <td>
                                 {checkKontaktni(sport.kontaktni)}
                             </td>

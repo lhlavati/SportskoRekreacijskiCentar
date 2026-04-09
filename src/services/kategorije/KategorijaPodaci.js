@@ -1,13 +1,11 @@
 export const kategorije = [
     {
         id: 1,
-        vrsta: "Individualni",
-        sport: 3
+        naziv: "Individualni"
     },
     {
         id: 2,
-        vrsta: "Ekipni",
-        sport: 1
+        naziv: "Ekipni"
     },
 
 ]

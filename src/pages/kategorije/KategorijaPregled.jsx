@@ -4,17 +4,14 @@ import { Button, Table } from "react-bootstrap"
 import { FaCheckCircle, FaCloudSun, FaMinusCircle, FaRegBuilding } from "react-icons/fa"
 import { Link, useNavigate } from "react-router-dom"
 import { RouteNames } from "../../constants"
-import SportService from "../../services/sportovi/SportService"
 
 export default function KategorijaPregled(){
 
     const navigate = useNavigate()
-    const [kategorije, setKategorije] = useState([])
-    const [sportovi, setSportovi] = useState([])
+    const [kategorija, setKategorija] = useState([])
 
     useEffect(() => {
         ucitajKategorije()
-        ucitajSportove()
     }, [])
 
     async function ucitajKategorije(){
@@ -23,17 +20,7 @@ export default function KategorijaPregled(){
                 alert('Nije implementiran servis')
                 return
             }
-            setKategorije(odgovor.data)
-        })
-    }
-
-    async function ucitajSportove(){
-        await SportService.get().then((odgovor) => {
-            if(!odgovor.success){
-                alert('Nije implementiran servis')
-                return
-            }
-            setSportovi(odgovor.data)
+            setKategorija(odgovor.data)
         })
     }
 
@@ -41,13 +28,8 @@ export default function KategorijaPregled(){
         if (!confirm('Sigurno obrisati?')) return;
         await KategorijaService.obrisi(id);
         await KategorijaService.get().then((odgovor)=>{
-            setKategorije(odgovor.data)
+            setKategorija(odgovor.data)
         })
-    }
-
-    function dohvatiVrstuKategorije(idSporta) {
-        const sport = sportovi.find(s => s.id === idSporta)
-        return sport ? sport.vrsta : 'Nepoznat sport'
     }
 
     return(
@@ -58,16 +40,14 @@ export default function KategorijaPregled(){
             <Table striped bordered hover>
                 <thead>
                     <tr className="text-center">
-                        <th>Vrsta</th>
-                        <th>Sport</th>
+                        <th>Naziv</th>
                         <th>Akcija</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {kategorije && kategorije.map((kategorija) => (
+                    {kategorija && kategorija.map((kategorija) => (
                         <tr className="text-center" key={kategorija.id}>
-                            <td className="lead">{kategorija.vrsta}</td>
-                            <td>{dohvatiVrstuKategorije(kategorija.sport)}</td>
+                            <td className="lead">{kategorija.naziv}</td>
                             <td>
                                 <Button onClick={()=>{navigate(`/kategorije/${kategorija.id}`)}}>
                                     Promjena
