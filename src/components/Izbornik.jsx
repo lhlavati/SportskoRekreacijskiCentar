@@ -13,9 +13,9 @@ export default function Izbornik() {
         <Navbar expand="lg" className="bg-body-tertiary">
             <Container>
                 <Navbar.Brand>
-                    <div>
-                        <Image src={logo} fluid />
-                    </div>
+                    <Nav.Link
+                    onClick={()=>navigate(RouteNames.HOME)}
+                    ><Image src={logo} fluid /></Nav.Link>
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">

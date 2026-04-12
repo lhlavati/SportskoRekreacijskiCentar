@@ -60,7 +60,7 @@ export default function SportNovi() {
     }
 
     if (isNaN(podaci.get('trajanjeMin')) || podaci.get('trajanjeMin') < 1 || podaci.get('trajanjeMin') > 30) {
-        alert("Trajanje mora biti broj između 1 i 500")
+        alert("Trajanje mora biti broj između 1 i 30")
         return
     }
 
