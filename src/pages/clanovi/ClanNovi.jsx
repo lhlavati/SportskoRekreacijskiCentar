@@ -3,14 +3,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { RouteNames } from "../../constants";
 import ClanService from "../../services/clanovi/ClanService";
 
-import PhoneInputWithCountrySelect, { isPossiblePhoneNumber,getCountryCallingCode } from "react-phone-number-input";
-import { useState } from "react";
+import PhoneInputWithCountrySelect from "react-phone-number-input";
 import 'react-phone-number-input/style.css';
+import { useState } from "react";
+import { isValidPhoneNumber, AsYouType } from "libphonenumber-js";
 
 export default function ClanNovi() {
   const navigate = useNavigate();
-  const [kontaktBroj, setKontaktBroj] = useState('')
-  const [zemlja,setZemlja]=useState('HR')
+  const [kontaktBroj, setKontaktBroj] = useState('');
+  const [zemlja, setZemlja] = useState('HR');
 
   async function dodaj(clan) {
     await ClanService.dodaj(clan).then(() => {
@@ -22,48 +23,44 @@ export default function ClanNovi() {
     e.preventDefault();
     const podaci = new FormData(e.target);
 
-    let tb=podaci.get("kontaktBroj").replaceAll(' ','')
-    if(tb.length>0 && tb[0]==='0'){
-      tb=tb.substring(1)
+    const ime = podaci.get('ime')?.trim();
+    const prezime = podaci.get('prezime')?.trim();
+    const email = podaci.get('email')?.trim();
+
+    if (!ime || ime.length < 3) {
+        alert("Ime je obavezno i mora imati najmanje 3 znaka!");
+        return;
     }
 
-    tb = '+' + getCountryCallingCode(zemlja) + tb
-
-    if (!podaci.get("kontaktBroj") || podaci.get("kontaktBroj").trim().length === 0) {
-        alert(`Broj je obavezan i mora biti u formatu '911234567' bez 0 ili +385!`)
-        return
+    if (!prezime || prezime.length < 3) {
+        alert("Prezime je obavezno i mora imati najmanje 3 znaka!");
+        return;
     }
 
-    if (!podaci.get('ime') || podaci.get('ime').trim().length === 0) {
-        alert("Ime je obavezno i ne smije sadržavati samo razmake!")
-        return
+    if (!email) {
+        alert("Email je obavezan!");
+        return;
     }
 
-    if (podaci.get('ime').trim().length < 3) {
-        alert("Ime mora imati najmanje 3 znaka!")
-        return
+    if (!kontaktBroj) {
+        alert("Kontakt broj je obavezan!");
+        return;
     }
 
-    if (!podaci.get('prezime') || podaci.get('prezime').trim().length === 0) {
-        alert("Prezime je obavezno i ne smije sadržavati samo razmake!")
-        return
+    if (!isValidPhoneNumber(kontaktBroj)) {
+        alert("Uneseni broj telefona nije ispravan ili ne pripada odabranoj državi!");
+        return;
     }
 
-    if (podaci.get('prezime').trim().length < 3) {
-        alert("Prezime mora imati najmanje 3 znaka!")
-        return
-    }
-
-    if (!podaci.get('email') || podaci.get('email').trim().length === 0) {
-        alert("Email je obavezan i ne smije sadržavati samo razmake!")
-        return
-    }
+    const asYouType = new AsYouType(zemlja);
+    asYouType.input(kontaktBroj);
+    const formatiraniBroj = asYouType.getNumber().formatInternational(); 
 
     dodaj({
-      ime: podaci.get("ime"),
-      prezime: podaci.get("prezime"),
-      email: podaci.get("email"),
-      kontaktBroj: podaci.get("kontaktBroj")
+      ime: ime,
+      prezime: prezime,
+      email: email,
+      kontaktBroj: formatiraniBroj
     });
   }
 
@@ -75,14 +72,17 @@ export default function ClanNovi() {
           <Form.Label>Ime</Form.Label>
           <Form.Control type="text" name="ime" required />
         </Form.Group>
+        
         <Form.Group controlId="prezime">
           <Form.Label>Prezime</Form.Label>
           <Form.Control type="text" name="prezime" required />
         </Form.Group>
+        
         <Form.Group controlId="email">
           <Form.Label>E-mail</Form.Label>
-          <Form.Control type="email" name="email"/>
+          <Form.Control type="email" name="email" required />
         </Form.Group>
+        
         <Form.Group controlId="kontaktBroj">
           <Form.Label>Kontakt broj</Form.Label>
           <br />
@@ -94,9 +94,7 @@ export default function ClanNovi() {
             international
             countryCallingCodeEditable={false}
             onCountryChange={setZemlja}
-            placeholder="Primjer: 911234567"
-            rules={{ required: true, validate: isPossiblePhoneNumber }}
-            />
+          />
         </Form.Group>
 
         <hr style={{ marginTop: "20px", border: "0" }} />
@@ -108,8 +106,9 @@ export default function ClanNovi() {
             </Link>
           </Col>
           <Col>
-            <Button type="sumbit" variant="success">
-              Dodaj novi člana
+            {/* Ispravljen typo: bilo je type="sumbit" */}
+            <Button type="submit" variant="success">
+              Dodaj novog člana
             </Button>
           </Col>
         </Row>
