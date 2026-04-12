@@ -31,6 +31,17 @@ export default function KategorijaNovi() {
   function odradiSubmit(e) {
     e.preventDefault();
     const podaci = new FormData(e.target);
+
+    if (!podaci.get('naziv') || podaci.get('naziv').trim().length === 0) {
+      alert("Naziv je obavezan i ne smije sadržavati samo razmake!")
+      return
+    }
+
+    if (podaci.get('naziv').trim().length < 3) {
+        alert("Naziv kategorije mora imati najmanje 3 znaka!")
+        return
+    }
+
     dodaj({
       naziv: podaci.get("naziv")
     });

@@ -1,6 +1,7 @@
-import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
+import { Container, Image, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import { IME_APLIKACIJE, RouteNames } from "../constants";
 import { useNavigate } from "react-router-dom";
+import logo from '../assets/logo.png'
 
 
 export default function Izbornik() {
@@ -11,7 +12,9 @@ export default function Izbornik() {
     return (
         <Navbar expand="lg" className="bg-body-tertiary">
             <Container>
-                <Navbar.Brand>{IME_APLIKACIJE}</Navbar.Brand>
+                <Navbar.Brand>
+                    {IME_APLIKACIJE}
+                </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">

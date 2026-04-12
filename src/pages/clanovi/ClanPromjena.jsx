@@ -52,6 +52,36 @@ export default function ClanPromjena() {
 
     tb = '+' + getCountryCallingCode(zemlja) + tb
 
+    if (!podaci.get("kontaktBroj") || podaci.get("kontaktBroj").trim().length === 0) {
+        alert(`Broj je obavezan i mora biti u formatu '911234567' bez 0 ili +385!`)
+        return
+    }
+
+    if (!podaci.get('ime') || podaci.get('ime').trim().length === 0) {
+        alert("Ime je obavezno i ne smije sadržavati samo razmake!")
+        return
+    }
+
+    if (podaci.get('ime').trim().length < 3) {
+        alert("Ime mora imati najmanje 3 znaka!")
+        return
+    }
+
+    if (!podaci.get('prezime') || podaci.get('prezime').trim().length === 0) {
+        alert("Prezime je obavezno i ne smije sadržavati samo razmake!")
+        return
+    }
+
+    if (podaci.get('prezime').trim().length < 3) {
+        alert("Prezime mora imati najmanje 3 znaka!")
+        return
+    }
+
+    if (!podaci.get('email') || podaci.get('email').trim().length === 0) {
+        alert("Email je obavezan i ne smije sadržavati samo razmake!")
+        return
+    }
+
     promjeni({
       ime: podaci.get("ime"),
       prezime: podaci.get("prezime"),
@@ -84,6 +114,7 @@ export default function ClanPromjena() {
           <br />
           <PhoneInputWithCountrySelect
             name="kontaktBroj"
+            useNationalFormatForDefaultCountryValue={false}
             value={clan.kontaktBroj}
             onChange={setKontaktBroj}
             required

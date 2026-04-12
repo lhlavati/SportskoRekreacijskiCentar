@@ -32,11 +32,41 @@ export default function SportNovi() {
   function odradiSubmit(e) {
     e.preventDefault();
     const podaci = new FormData(e.target);
-    console.log(podaci.get("kategorija"));
-    
+
+    if (!podaci.get('naziv') || podaci.get('naziv').trim().length === 0) {
+        alert("Naziv je obavezan i ne smije sadržavati samo razmake!")
+        return
+    }
+
+    if (podaci.get('naziv').trim().length < 3) {
+        alert("Naziv sporta mora imati najmanje 3 znaka!")
+        return
+    }
+
+    if (!podaci.get('kategorija') || podaci.get('kategorija') === "") {
+        alert("Morate odabrati kategoriju!");
+        return;
+    }
+
+    const odabranaKategorija = parseInt(podaci.get('kategorija'));
+    if (isNaN(odabranaKategorija) || odabranaKategorija <= 0) {
+        alert("Odabrana kategorija nije valjanja!");
+        return;
+    }
+
+    if (isNaN(podaci.get('maxIgraca')) || podaci.get('maxIgraca') < 1 || podaci.get('maxIgraca') > 30) {
+        alert("Broj igrača ne može biti manji od 1 i veći od 30!")
+        return
+    }
+
+    if (isNaN(podaci.get('trajanjeMin')) || podaci.get('trajanjeMin') < 1 || podaci.get('trajanjeMin') > 30) {
+        alert("Trajanje mora biti broj između 1 i 500")
+        return
+    }
+
     dodaj({
       naziv: podaci.get("naziv"),
-      kategorija: podaci.get("kategorija"),      
+      kategorija: odabranaKategorija,      
       kontaktni: podaci.get("kontaktni"),
       maxIgraca: parseInt(podaci.get("maxIgraca")),
       uZatvorenom: podaci.get("uZatvorenom"),

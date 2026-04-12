@@ -2,7 +2,7 @@ export const sportovi = [
     {
         id: 1,
         naziv: 'Nogomet',
-        kategorija: 'Ekipni',
+        kategorija: 2,
         kontaktni: true,
         maxIgraca: 22,
         uZatvorenom: false,
@@ -11,7 +11,7 @@ export const sportovi = [
     {
         id: 2,
         naziv: 'Košarka',
-        kategorija: 'Ekipni',
+        kategorija: 2,
         kontaktni: true,
         maxIgraca: 10,
         uZatvorenom: true,
@@ -20,7 +20,7 @@ export const sportovi = [
     {
         id: 3,
         naziv: 'Tenis',
-        kategorija: 'Individualni',
+        kategorija: 2,
         kontaktni: false,
         maxIgraca: 4,
         uZatvorenom: false,
@@ -29,7 +29,7 @@ export const sportovi = [
     {
         id: 4,
         naziv: 'Odbojka',
-        kategorija: 'Ekipni',
+        kategorija: 2,
         kontaktni: false,
         maxIgraca: 12,
         uZatvorenom: true,
@@ -38,7 +38,7 @@ export const sportovi = [
     {
         id: 5,
         naziv: 'Rukomet',
-        kategorija: 'Ekipni',
+        kategorija: 2,
         kontaktni: true,
         maxIgraca: 14,
         uZatvorenom: true,
@@ -47,7 +47,7 @@ export const sportovi = [
     {
         id: 6,
         naziv: 'Stolni tenis',
-        kategorija: 'Individualni',
+        kategorija: 1,
         kontaktni: false,
         maxIgraca: 4,
         uZatvorenom: true,
@@ -56,7 +56,7 @@ export const sportovi = [
     {
         id: 7,
         naziv: 'Padel',
-        kategorija: 'Ekipni',
+        kategorija: 2,
         kontaktni: false,
         maxIgraca: 4,
         uZatvorenom: false,
@@ -65,7 +65,7 @@ export const sportovi = [
     {
         id: 8,
         naziv: 'Pikado',
-        kategorija: 'Individualni',
+        kategorija: 1,
         kontaktni: false,
         maxIgraca: 2,
         uZatvorenom: true,

@@ -12,20 +12,20 @@ export default function SportPromjena() {
   const [sport, setSport] = useState({})
   const [kontaktni, setKontaktni] = useState(false)
   const [uZatvorenom, setuZatvorenom] = useState(false)
-  const [kategorija, setKategorija] = useState([])
+  const [kategorije, setKategorije] = useState([])
 
   useEffect(() => {
     ucitajKategorije(),
     ucitajSport()
-  })
+  }, [])
 
   async function ucitajKategorije() {
-    await KategorijaService.getById(params.id).then((odgovor) => {
+    await KategorijaService.get().then((odgovor) => {
       if (!odgovor.success) {
         alert('Nije implementiran servis')
         return
       }
-      setKategorija(odgovor.data)
+      setKategorije(odgovor.data)
     })
   }
 
@@ -54,9 +54,41 @@ export default function SportPromjena() {
   function odradiSubmit(e) {
     e.preventDefault();
     const podaci = new FormData(e.target);
+
+    if (!podaci.get('naziv') || podaci.get('naziv').trim().length === 0) {
+        alert("Naziv je obavezan i ne smije sadržavati samo razmake!")
+        return
+    }
+
+    if (podaci.get('naziv').trim().length < 3) {
+        alert("Naziv sporta mora imati najmanje 3 znaka!")
+        return
+    }
+
+    if (!podaci.get('kategorija') || podaci.get('kategorija') === "") {
+        alert("Morate odabrati kategoriju!");
+        return;
+    }
+
+    const odabranaKategorija = parseInt(podaci.get('kategorija'));
+    if (isNaN(odabranaKategorija) || odabranaKategorija <= 0) {
+        alert("Odabrana kategorija nije valjanja!");
+        return;
+    }
+
+    if (isNaN(podaci.get('maxIgraca')) || podaci.get('maxIgraca') < 1 || podaci.get('maxIgraca') > 30) {
+        alert("Broj igrača ne može biti manji od 1 i veći od 30!")
+        return
+    }
+
+    if (isNaN(podaci.get('trajanjeMin')) || podaci.get('trajanjeMin') < 1 || podaci.get('trajanjeMin') > 30) {
+        alert("Trajanje mora biti broj između 1 i 500")
+        return
+    }
+    
     promjeni({
       naziv: podaci.get("naziv"),
-      kategorija: podaci.get("kategorija"),
+      kategorija: parseInt(podaci.get("kategorija")),
       kontaktni: podaci.get("kontaktni"),
       maxIgraca: parseInt(podaci.get("maxIgraca")),
       uZatvorenom: podaci.get("uZatvorenom"),
@@ -73,11 +105,11 @@ export default function SportPromjena() {
           <Form.Control type="text" name="naziv" required
             defaultValue={sport.naziv} />
         </Form.Group>
-        <Form.Group controlId="kategorija" className="mb-3">
+        <Form.Group controlId="kategorija">
             <Form.Label>Kategorija</Form.Label>
-            <Form.Select name="kategorija" required>
+            <Form.Select name="kategorija" required value={sport.kategorija || ''} onChange={(e) => setSport({...sport, kategorija: parseInt(e.target.value)})}>
                 <option value="">Odaberite kategoriju</option>
-                {kategorija && kategorija.map((kategorija) => (
+                {kategorije && kategorije.map((kategorija) => (
                     <option key={kategorija.id} value={kategorija.id}>
                         {kategorija.naziv}
                     </option>
