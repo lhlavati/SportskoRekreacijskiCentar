@@ -14,6 +14,7 @@ import ClanPregled from './pages/clanovi/ClanPregled'
 import KategorijaNovi from './pages/kategorije/KategorijaNovi'
 import KategorijaPregled from './pages/kategorije/KategorijaPregled'
 import KategorijaPromjena from './pages/kategorije/KategorijaPromjena'
+import GeneriranjePodataka from './pages/GeneriranjePodataka'
 
 function App() {
 
@@ -31,6 +32,8 @@ function App() {
         <Route path={RouteNames.KATEGORIJE} element={<KategorijaPregled />} />
         <Route path={RouteNames.KATEGORIJE_NOVI} element={<KategorijaNovi />} />
         <Route path={RouteNames.KATEGORJIE_PROMJENA} element={<KategorijaPromjena />} />
+
+        <Route path={RouteNames.GENERIRAJ_PODATKE} element={<GeneriranjePodataka />} />
 
       </Routes>
       <hr />
