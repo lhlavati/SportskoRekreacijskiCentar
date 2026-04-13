@@ -10,7 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@faker-js/faker": "^10.4.0",
     "@lottiefiles/dotlottie-react": "^0.18.10",
     "bootstrap": "^5.3.8",
     "libphonenumber-js": "^1.12.41",
@@ -24,6 +23,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
+    "@faker-js/faker": "^10.4.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.0",
