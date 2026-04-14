@@ -1,21 +1,14 @@
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { RouteNames } from "../../constants";
-import ClanService from "../../services/clanovi/ClanService";
 
-import PhoneInputWithCountrySelect from "react-phone-number-input";
-import 'react-phone-number-input/style.css';
-import { useState } from "react";
-import { isValidPhoneNumber, AsYouType } from "libphonenumber-js";
+export default function TerminNovi() {
 
-export default function ClanNovi() {
   const navigate = useNavigate();
-  const [kontaktBroj, setKontaktBroj] = useState('');
-  const [zemlja, setZemlja] = useState('HR');
 
-  async function dodaj(clan) {
-    await ClanService.dodaj(clan).then(() => {
-      navigate(RouteNames.CLANOVI);
+  async function dodaj(termin) {
+    await TerminService.dodaj(termin).then(() => {
+      navigate(RouteNames.TERMINI);
     });
   }
 

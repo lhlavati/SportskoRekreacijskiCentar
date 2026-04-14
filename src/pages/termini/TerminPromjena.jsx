@@ -1,20 +1,39 @@
 import { Button, Col, Form, Row } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { RouteNames } from "../../constants";
 import ClanService from "../../services/clanovi/ClanService";
+import { useEffect, useState } from "react";
 
 import PhoneInputWithCountrySelect from "react-phone-number-input";
-import 'react-phone-number-input/style.css';
-import { useState } from "react";
+import 'react-phone-number-input/style.css'
 import { isValidPhoneNumber, AsYouType } from "libphonenumber-js";
 
-export default function ClanNovi() {
+export default function TerminPromjena() {
   const navigate = useNavigate();
+  const params = useParams();
+  const [clan, setClan] = useState({});
   const [kontaktBroj, setKontaktBroj] = useState('');
   const [zemlja, setZemlja] = useState('HR');
 
-  async function dodaj(clan) {
-    await ClanService.dodaj(clan).then(() => {
+  async function ucitajClan() {
+    await ClanService.getById(params.id).then((odgovor) => {
+      if (!odgovor.success) {
+        alert('Nije implementiran servis');
+        return;
+      }
+
+      const s = odgovor.data;
+      setClan(s);
+      setKontaktBroj(s.kontaktBroj);
+    });
+  }
+
+  useEffect(() => {
+    ucitajClan();
+  }, []);
+
+  async function promjeni(clan) {
+    await ClanService.promjeni(params.id, clan).then(() => {
       navigate(RouteNames.CLANOVI);
     });
   }
@@ -28,35 +47,35 @@ export default function ClanNovi() {
     const email = podaci.get('email')?.trim();
 
     if (!ime || ime.length < 3) {
-        alert("Ime je obavezno i mora imati najmanje 3 znaka!");
-        return;
+      alert("Ime je obavezno i mora imati najmanje 3 znaka!");
+      return;
     }
 
     if (!prezime || prezime.length < 3) {
-        alert("Prezime je obavezno i mora imati najmanje 3 znaka!");
-        return;
+      alert("Prezime je obavezno i mora imati najmanje 3 znaka!");
+      return;
     }
 
     if (!email) {
-        alert("Email je obavezan!");
-        return;
+      alert("Email je obavezan!");
+      return;
     }
 
     if (!kontaktBroj) {
-        alert("Kontakt broj je obavezan!");
-        return;
+      alert("Kontakt broj je obavezan!");
+      return;
     }
 
     if (!isValidPhoneNumber(kontaktBroj)) {
-        alert("Uneseni broj telefona nije ispravan ili ne pripada odabranoj državi!");
-        return;
+      alert("Uneseni broj telefona nije ispravan ili ne pripada odabranoj državi!");
+      return;
     }
 
     const asYouType = new AsYouType(zemlja);
     asYouType.input(kontaktBroj);
-    const formatiraniBroj = asYouType.getNumber().formatInternational(); 
+    const formatiraniBroj = asYouType.getNumber().formatInternational();
 
-    dodaj({
+    promjeni({
       ime: ime,
       prezime: prezime,
       email: email,
@@ -66,33 +85,32 @@ export default function ClanNovi() {
 
   return (
     <>
-      <h3>Unos novog člana</h3>
+      <h3>Promjena člana</h3>
       <Form onSubmit={odradiSubmit}>
         <Form.Group controlId="ime">
           <Form.Label>Ime</Form.Label>
-          <Form.Control type="text" name="ime" required />
+          <Form.Control type="text" name="ime" required defaultValue={clan.ime} />
         </Form.Group>
         
         <Form.Group controlId="prezime">
           <Form.Label>Prezime</Form.Label>
-          <Form.Control type="text" name="prezime" required />
+          <Form.Control type="text" name="prezime" required defaultValue={clan.prezime} />
         </Form.Group>
         
         <Form.Group controlId="email">
           <Form.Label>E-mail</Form.Label>
-          <Form.Control type="email" name="email" required />
+          <Form.Control type="email" name="email" required defaultValue={clan.email} />
         </Form.Group>
         
         <Form.Group controlId="kontaktBroj">
-          <Form.Label>Kontakt broj</Form.Label>
+          <Form.Label>Kontakt Broj</Form.Label>
           <br />
           <PhoneInputWithCountrySelect
             name="kontaktBroj"
-            value={kontaktBroj}
+            value={kontaktBroj} 
             onChange={setKontaktBroj}
             defaultCountry="HR"
             international
-            countryCallingCodeEditable={false}
             onCountryChange={setZemlja}
           />
         </Form.Group>
@@ -107,7 +125,7 @@ export default function ClanNovi() {
           </Col>
           <Col>
             <Button type="submit" variant="success">
-              Dodaj novog člana
+              Promijeni člana
             </Button>
           </Col>
         </Row>

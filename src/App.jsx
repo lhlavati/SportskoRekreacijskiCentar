@@ -15,6 +15,9 @@ import KategorijaNovi from './pages/kategorije/KategorijaNovi'
 import KategorijaPregled from './pages/kategorije/KategorijaPregled'
 import KategorijaPromjena from './pages/kategorije/KategorijaPromjena'
 import GeneriranjePodataka from './pages/GeneriranjePodataka'
+import TerminPregled from './pages/termini/TerminPregled'
+import TerminNovi from './pages/termini/TerminNovi'
+import TerminPromjena from './pages/termini/TerminPromjena'
 
 function App() {
 
@@ -31,7 +34,10 @@ function App() {
         <Route path={RouteNames.CLANOVI_PROMJENA} element={<ClanPromjena />} />
         <Route path={RouteNames.KATEGORIJE} element={<KategorijaPregled />} />
         <Route path={RouteNames.KATEGORIJE_NOVI} element={<KategorijaNovi />} />
-        <Route path={RouteNames.KATEGORJIE_PROMJENA} element={<KategorijaPromjena />} />
+        <Route path={RouteNames.KATEGORIJE_PROMJENA} element={<KategorijaPromjena />} />
+        <Route path={RouteNames.TERMINI} element={<TerminPregled />} />
+        <Route path={RouteNames.TERMINI_NOVI} element={<TerminNovi />} />
+        <Route path={RouteNames.TERMINI_PROMJENA} element={<TerminPromjena />} />
 
         <Route path={RouteNames.GENERIRAJ_PODATKE} element={<GeneriranjePodataka />} />
 

@@ -32,11 +32,13 @@ export default function Izbornik() {
                         <Nav.Link
                         onClick={()=>navigate(RouteNames.KATEGORIJE)}
                         >Kategorije</Nav.Link>
+                        <Nav.Link
+                        onClick={()=>navigate(RouteNames.TERMINI)}
+                        >Termini</Nav.Link>
                     </Nav>
                     <Nav>
                         <Nav.Link
                         onClick={()=>navigate(RouteNames.GENERIRAJ_PODATKE)}
-                        className="text-muted"
                         >Generiraj podatke</Nav.Link>
                     </Nav>
                 </Navbar.Collapse>

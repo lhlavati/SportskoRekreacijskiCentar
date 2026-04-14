@@ -12,7 +12,11 @@ export const RouteNames = {
 
     KATEGORIJE: '/kategorije',
     KATEGORIJE_NOVI: '/kategorije/novi',
-    KATEGORJIE_PROMJENA: '/kategorije/:id',
+    KATEGORIJE_PROMJENA: '/kategorije/:id',
+
+    TERMINI: '/termini',
+    TERMINI_NOVI: '/termini/novi',
+    TERMINI_PROMJENA: '/termini/:id',
 
     GENERIRAJ_PODATKE: '/generiraj-podatke'
 }
