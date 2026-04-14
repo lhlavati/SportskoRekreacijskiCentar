@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
 import KategorijaService from "../../services/kategorije/KategorijaService"
 import { Button, Table } from "react-bootstrap"
-import { FaCheckCircle, FaCloudSun, FaMinusCircle, FaRegBuilding } from "react-icons/fa"
 import { Link, useNavigate } from "react-router-dom"
 import { RouteNames } from "../../constants"
 
@@ -24,7 +23,7 @@ export default function KategorijaPregled(){
         })
     }
 
-    async function brisanje(id) {
+    async function obrisi(id) {
         if (!confirm('Sigurno obrisati?')) return;
         await KategorijaService.obrisi(id);
         await KategorijaService.get().then((odgovor)=>{
@@ -53,7 +52,7 @@ export default function KategorijaPregled(){
                                     Promjena
                                 </Button>
                                 &nbsp;&nbsp;
-                                 <Button variant="danger" onClick={()=>{brisanje(kategorija.id)}}>
+                                 <Button variant="danger" onClick={()=>{obrisi(kategorija.id)}}>
                                     Obriši
                                 </Button>
                             </td>
