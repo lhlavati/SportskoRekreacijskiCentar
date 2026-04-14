@@ -3,12 +3,13 @@ import { Card, Col, Row, Spinner } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { GiSoccerBall } from "react-icons/gi";
-import { BsTags, BsPeople } from "react-icons/bs";
+import { BsTags, BsPeople, BsCalendar } from "react-icons/bs";
 
 import { RouteNames } from "../constants";
 import SportService from "../services/sportovi/SportService";
 import KategorijaService from "../services/kategorije/KategorijaService";
 import ClanService from "../services/clanovi/ClanService";
+import TerminService from "../services/termini/TerminService";
 
 const kartice = [
   {
@@ -32,10 +33,17 @@ const kartice = [
     ruta: RouteNames.CLANOVI,
     boja: "linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)",
   },
+  {
+    kljuc: "termini",
+    naslov: "Termini",
+    ikona: BsCalendar,
+    ruta: RouteNames.TERMINI,
+    boja: "linear-gradient(135deg, #3cff00 0%, #b0f808 100%)",
+  },
 ];
 
 export default function Home() {
-  const [statistika, setStatistika] = useState({ sportovi: 0, kategorije: 0, clanovi: 0 });
+  const [statistika, setStatistika] = useState({ sportovi: 0, kategorije: 0, clanovi: 0, termini: 0 });
   const [ucitavanje, setUcitavanje] = useState(true);
 
   useEffect(() => {
@@ -44,15 +52,17 @@ export default function Home() {
 
   async function ucitajStatistiku() {
     setUcitavanje(true);
-    const [sportovi, kategorije, clanovi] = await Promise.all([
+    const [sportovi, kategorije, clanovi, termini] = await Promise.all([
       SportService.get(),
       KategorijaService.get(),
       ClanService.get(),
+      TerminService.get(),
     ]);
     setStatistika({
       sportovi: sportovi?.data?.length ?? 0,
       kategorije: kategorije?.data?.length ?? 0,
       clanovi: clanovi?.data?.length ?? 0,
+      termini: termini?.data?.length ?? 0,
     });
     setUcitavanje(false);
   }

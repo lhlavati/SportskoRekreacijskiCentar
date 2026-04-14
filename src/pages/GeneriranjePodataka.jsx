@@ -11,7 +11,7 @@ import {
   Spinner,
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { BsTags, BsPeople, BsDatabaseFillAdd, BsInfoCircle } from "react-icons/bs";
+import { BsTags, BsPeople, BsDatabaseFillAdd, BsInfoCircle, BsCalendar3 } from "react-icons/bs";
 import { GiSoccerBall } from "react-icons/gi";
 import { fakerHR as faker } from "@faker-js/faker";
 
@@ -19,6 +19,7 @@ import { RouteNames } from "../constants";
 import SportService from "../services/sportovi/SportService";
 import KategorijaService from "../services/kategorije/KategorijaService";
 import ClanService from "../services/clanovi/ClanService";
+import TerminService from "../services/termini/TerminService";
 
 const SPORTSKE_KATEGORIJE = [
   "Momčadski sportovi",
@@ -48,7 +49,13 @@ const RASPONI = {
   kategorije: { min: 1, max: 50 },
   sportovi: { min: 1, max: 200 },
   clanovi: { min: 1, max: 500 },
+  termini: { min: 1, max: 200 },
 };
+
+function formatirajISO(d) {
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:00`;
+}
 
 function hrKontaktBroj() {
   const mreza = faker.helpers.arrayElement(["91", "92", "95", "97", "98", "99"]);
@@ -61,6 +68,7 @@ export default function GeneriranjePodataka() {
   const [brojKategorija, setBrojKategorija] = useState(5);
   const [brojSportova, setBrojSportova] = useState(15);
   const [brojClanova, setBrojClanova] = useState(30);
+  const [brojTermina, setBrojTermina] = useState(10);
   const [obrisiPostojece, setObrisiPostojece] = useState(false);
   const [generira, setGeneria] = useState(false);
   const [rezultat, setRezultat] = useState(null);
@@ -78,14 +86,16 @@ export default function GeneriranjePodataka() {
   }
 
   async function obrisiSve() {
-    const [sportovi, clanovi, kategorije] = await Promise.all([
+    const [sportovi, clanovi, kategorije, termini] = await Promise.all([
       SportService.get(),
       ClanService.get(),
       KategorijaService.get(),
+      TerminService.get(),
     ]);
     await Promise.all((sportovi?.data ?? []).map((s) => SportService.obrisi(s.id)));
     await Promise.all((clanovi?.data ?? []).map((c) => ClanService.obrisi(c.id)));
     await Promise.all((kategorije?.data ?? []).map((k) => KategorijaService.obrisi(k.id)));
+    await Promise.all((termini?.data ?? []).map((t) => TerminService.obrisi(t.id)));
   }
 
   async function odradiSubmit(e) {
@@ -97,6 +107,7 @@ export default function GeneriranjePodataka() {
       validirajBroj(brojKategorija, "Broj kategorija", RASPONI.kategorije),
       validirajBroj(brojSportova, "Broj sportova", RASPONI.sportovi),
       validirajBroj(brojClanova, "Broj članova", RASPONI.clanovi),
+      validirajBroj(brojTermina, "Broj termina", RASPONI.termini),
     ].filter(Boolean);
 
     if (greske.length) {
@@ -167,10 +178,45 @@ export default function GeneriranjePodataka() {
         upisanoClanova++;
       }
 
+      // Dohvati sve ID-ove članova (postojeći + novogenerirani)
+      const sveClanoviResponse = await ClanService.get();
+      const sveClanoviIds = (sveClanoviResponse?.data ?? []).map((c) => c.id);
+
+      if (Number(brojTermina) > 0 && sveClanoviIds.length === 0) {
+        throw new Error("Za generiranje termina mora postojati barem jedan član.");
+      }
+
+      let upisanoTermina = 0;
+      for (let i = 0; i < Number(brojTermina); i++) {
+        const pocetakMs =
+          Date.now() +
+          faker.number.int({ min: 0, max: 365 * 24 * 60 * 60 * 1000 });
+        const pocetak = new Date(pocetakMs);
+        pocetak.setMinutes(faker.helpers.arrayElement([0, 30]), 0, 0);
+
+        const trajanjeMs = faker.number.int({ min: 30, max: 120 }) * 60 * 1000;
+        const kraj = new Date(pocetak.getTime() + trajanjeMs);
+
+        const maxSudionika = Math.min(8, sveClanoviIds.length);
+        const brSudionika = faker.number.int({ min: 1, max: maxSudionika });
+        const sudionici = faker.helpers.arrayElements(sveClanoviIds, brSudionika);
+        const rezervirao = faker.helpers.arrayElement(sveClanoviIds);
+
+        await TerminService.dodaj({
+          datumPocetka: formatirajISO(pocetak),
+          datumKraja: formatirajISO(kraj),
+          cijena: faker.number.int({ min: 5, max: 100 }),
+          rezervirao,
+          sudionici,
+        });
+        upisanoTermina++;
+      }
+
       setRezultat({
         kategorije: novaKategorijeIds.length,
         sportovi: upisanoSportova,
         clanovi: upisanoClanova,
+        termini: upisanoTermina,
       });
     } catch (err) {
       setGreska(err?.message ?? "Došlo je do greške prilikom generiranja.");
@@ -223,7 +269,7 @@ export default function GeneriranjePodataka() {
 
           <Form onSubmit={odradiSubmit} noValidate>
             <Row className="g-3">
-              <Col xs={12} md={4}>
+              <Col xs={12} md={3}>
                 <Form.Group controlId="brojKategorija">
                   <Form.Label className="fw-semibold d-flex align-items-center gap-2">
                     <BsTags /> Broj kategorija
@@ -245,7 +291,7 @@ export default function GeneriranjePodataka() {
                 </Form.Group>
               </Col>
 
-              <Col xs={12} md={4}>
+              <Col xs={12} md={3}>
                 <Form.Group controlId="brojSportova">
                   <Form.Label className="fw-semibold d-flex align-items-center gap-2">
                     <GiSoccerBall /> Broj sportova
@@ -265,7 +311,7 @@ export default function GeneriranjePodataka() {
                 </Form.Group>
               </Col>
 
-              <Col xs={12} md={4}>
+              <Col xs={12} md={3}>
                 <Form.Group controlId="brojClanova">
                   <Form.Label className="fw-semibold d-flex align-items-center gap-2">
                     <BsPeople /> Broj članova
@@ -281,6 +327,26 @@ export default function GeneriranjePodataka() {
                   />
                   <Form.Text className="text-muted">
                     {RASPONI.clanovi.min}–{RASPONI.clanovi.max}
+                  </Form.Text>
+                </Form.Group>
+              </Col>
+
+              <Col xs={12} md={3}>
+                <Form.Group controlId="brojTermina">
+                  <Form.Label className="fw-semibold d-flex align-items-center gap-2">
+                    <BsCalendar3 /> Broj termina
+                  </Form.Label>
+                  <Form.Control
+                    type="number"
+                    min={RASPONI.termini.min}
+                    max={RASPONI.termini.max}
+                    step={1}
+                    value={brojTermina}
+                    onChange={(e) => setBrojTermina(e.target.value)}
+                    required
+                  />
+                  <Form.Text className="text-muted">
+                    {RASPONI.termini.min}–{RASPONI.termini.max}
                   </Form.Text>
                 </Form.Group>
               </Col>
@@ -307,7 +373,8 @@ export default function GeneriranjePodataka() {
                 <div className="small">
                   Upisano: <strong>{rezultat.kategorije}</strong> kategorija,{" "}
                   <strong>{rezultat.sportovi}</strong> sportova,{" "}
-                  <strong>{rezultat.clanovi}</strong> članova.{" "}
+                  <strong>{rezultat.clanovi}</strong> članova,{" "}
+                  <strong>{rezultat.termini}</strong> termina.{" "}
                   <Link to={RouteNames.HOME}>Vrati se na početnu</Link>.
                 </div>
               </Alert>
