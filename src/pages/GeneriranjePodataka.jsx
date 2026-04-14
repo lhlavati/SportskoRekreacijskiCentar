@@ -140,7 +140,7 @@ export default function GeneriranjePodataka() {
 
       let upisanoSportova = 0;
       for (let i = 0; i < Number(brojSportova); i++) {
-        const naziv = `${faker.helpers.arrayElement(NAZIVI_SPORTOVA)} ${faker.number.int({ min: 1, max: 999 })}`;
+        const naziv = `${faker.helpers.arrayElement(NAZIVI_SPORTOVA)}`;
         await SportService.dodaj({
           naziv,
           kategorija: faker.helpers.arrayElement(sveKategorijeIds),
