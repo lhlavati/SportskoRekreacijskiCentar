@@ -2,14 +2,29 @@ import { Button, Col, Form, Row } from "react-bootstrap"
 import { Link, useNavigate } from "react-router-dom"
 import { RouteNames } from "../../constants"
 import TerminService from "../../services/termini/TerminService"
+import { useEffect, useState } from "react"
+import SportService from "../../services/sportovi/SportService"
 
 export default function TerminNovi() {
 
+    const [sportovi, setSportovi] = useState([])
+
     const navigate = useNavigate()
+
+    useEffect(() => {
+        ucitajSportove()
+    }, [])
 
     async function dodaj(termin) {
         await TerminService.dodaj(termin).then(() => {
             navigate(RouteNames.TERMINI)
+        })
+    }
+
+    async function ucitajSportove() {
+        await SportService.get().then((odgovor) => {
+            if (!odgovor.success) { alert('Nije implementiran servis'); return }
+            setSportovi(odgovor.data)
         })
     }
 
@@ -22,6 +37,7 @@ export default function TerminNovi() {
         const cijena       = podaci.get('cijena')
         const rezervirao   = podaci.get('rezervirao')
         const sudionici    = podaci.get('sudionici')?.trim()
+        const sport        = podaci.get('sport')
 
         if (!datumPocetka) {
             alert("Datum početka je obavezan!")
@@ -47,6 +63,10 @@ export default function TerminNovi() {
             alert("Sudionici su obavezni (unesite barem jedan ID)!")
             return
         }
+        if (!sport) {
+            alert("Niste odabrali važeći sport!")
+            return
+        }
 
         const sudionici_niz = sudionici
             .split(',')
@@ -64,6 +84,7 @@ export default function TerminNovi() {
             cijena:       parseFloat(cijena),
             rezervirao:   parseInt(rezervirao),
             sudionici:    sudionici_niz,
+            sport:        parseInt(sport)
         })
     }
 
@@ -96,7 +117,7 @@ export default function TerminNovi() {
                             <Form.Control type="number" name="rezervirao" min="1" step="1" required />
                         </Form.Group>
                     </Col>
-                    <Col xs={12}>
+                    <Col xs={12} md={6}>
                         <Form.Group controlId="sudionici">
                             <Form.Label className="fw-semibold">Sudionici (ID-ovi odvojeni zarezom)</Form.Label>
                             <Form.Control
@@ -108,6 +129,19 @@ export default function TerminNovi() {
                             <Form.Text className="text-muted">
                                 Unesite ID-ove članova odvojene zarezom, npr. "1, 2, 5, 8"
                             </Form.Text>
+                        </Form.Group>
+                    </Col>
+                    <Col xs={12} md={6}>
+                        <Form.Group controlId="sport" className="mb-3">
+                            <Form.Label>Sport</Form.Label>
+                            <Form.Select name="sport" required>
+                                <option value="">Odaberite sport</option>
+                                {sportovi && sportovi.map((sport) => (
+                                    <option key={sport.id} value={sport.id}>
+                                        {sport.naziv}
+                                    </option>
+                                ))}
+                            </Form.Select>
                         </Form.Group>
                     </Col>
                 </Row>

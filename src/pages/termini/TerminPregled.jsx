@@ -73,6 +73,13 @@ export default function TerminPregled() {
         ucitajTermine()
     }
 
+    function dohvatiNazivKategorije(idSporta) {
+        const t = termini.find((t) => t.id === parseInt(idSporta))
+        console.log(t);
+        
+        return t ? t.naziv : 'Nepoznat sport'
+    }
+
     return (
         <>
             <div className="d-flex justify-content-between align-items-center mt-4 mb-4">
@@ -131,6 +138,11 @@ export default function TerminPregled() {
                                                 <span className="text-muted small">Nema sudionika</span>
                                             )}
                                         </div>
+                                    </div>
+
+                                    <div className="d-flex align-items-center gap-2 mb-3 text-muted small">
+                                        <FaUser />
+                                        <span>Sport: <strong>#{dohvatiNazivKategorije(termin.sport)}</strong></span>
                                     </div>
 
                                     <div className="d-flex gap-2">
