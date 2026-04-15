@@ -12,7 +12,7 @@ const stilKartice = (jeHover) => ({
     border: '1px solid rgba(255,255,255,0.35)',
     borderRadius: '16px',
     boxShadow: jeHover
-        ? '0 16px 48px rgba(102,126,234,0.25)'
+        ? '0 16px 48px rgba(22,163,74,0.22)'
         : '0 8px 32px rgba(0,0,0,0.10)',
     transform: jeHover ? 'translateY(-4px)' : 'translateY(0)',
     transition: 'transform 0.22s ease, box-shadow 0.22s ease',
@@ -21,19 +21,19 @@ const stilKartice = (jeHover) => ({
 })
 
 const stilZaglavlja = {
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    background: 'linear-gradient(135deg, #166534 0%, #15803d 100%)',
     borderRadius: '16px 16px 0 0',
     padding: '16px 20px',
     color: '#fff',
 }
 
 const stilDodajGumb = {
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    background: 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)',
     border: 'none',
     borderRadius: '50px',
     padding: '10px 28px',
     fontWeight: 600,
-    boxShadow: '0 4px 15px rgba(102,126,234,0.4)',
+    boxShadow: '0 4px 15px rgba(22,163,74,0.40)',
     color: '#fff',
     cursor: 'pointer',
 }
@@ -112,7 +112,7 @@ export default function TerminPregled() {
 
                                 <div style={{ padding: '20px' }}>
                                     <div className="d-flex align-items-center gap-2 mb-2">
-                                        <FaEuroSign color="#667eea" />
+                                        <FaEuroSign color="#16a34a" />
                                         <span className="fw-bold fs-5">{termin.cijena} €</span>
                                     </div>
 
@@ -122,7 +122,7 @@ export default function TerminPregled() {
                                     </div>
 
                                     <div className="d-flex align-items-start gap-2 mb-3 flex-wrap">
-                                        <FaUsers color="#764ba2" className="mt-1 flex-shrink-0" />
+                                        <FaUsers color="#15803d" className="mt-1 flex-shrink-0" />
                                         <div className="d-flex flex-wrap gap-1">
                                             {termin.sudionici && termin.sudionici.map((id) => (
                                                 <Badge key={id} bg="primary" pill>#{id}</Badge>

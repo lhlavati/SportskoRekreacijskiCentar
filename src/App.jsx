@@ -22,7 +22,7 @@ import TerminPromjena from './pages/termini/TerminPromjena'
 function App() {
 
   return (
-    <Container style={ {backgroundColor: window.location.hostname === 'localhost' ? '#ffefea' : 'none'}}>
+    <Container className="src-app">
       <Izbornik />
       <Routes>
         <Route path={RouteNames.HOME} element={<Home />} />
@@ -43,7 +43,7 @@ function App() {
 
       </Routes>
       <hr />
-      &copy; {IME_APLIKACIJE}
+      <p className="src-footer">&copy; {IME_APLIKACIJE}</p>
     </Container>
   )
 }

@@ -17,28 +17,28 @@ const kartice = [
     naslov: "Sportovi",
     ikona: GiSoccerBall,
     ruta: RouteNames.SPORTOVI,
-    boja: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
+    boja: "linear-gradient(135deg, #052e16 0%, #166534 100%)",
   },
   {
     kljuc: "kategorije",
     naslov: "Kategorije",
     ikona: BsTags,
     ruta: RouteNames.KATEGORIJE,
-    boja: "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)",
+    boja: "linear-gradient(135deg, #166534 0%, #15803d 100%)",
   },
   {
     kljuc: "clanovi",
     naslov: "Članovi",
     ikona: BsPeople,
     ruta: RouteNames.CLANOVI,
-    boja: "linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)",
+    boja: "linear-gradient(135deg, #15803d 0%, #16a34a 100%)",
   },
   {
     kljuc: "termini",
     naslov: "Termini",
     ikona: BsCalendar,
     ruta: RouteNames.TERMINI,
-    boja: "linear-gradient(135deg, #3cff00 0%, #b0f808 100%)",
+    boja: "linear-gradient(135deg, #16a34a 0%, #22c55e 100%)",
   },
 ];
 

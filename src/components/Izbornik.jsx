@@ -10,7 +10,7 @@ export default function Izbornik() {
 
 
     return (
-        <Navbar expand="lg" className="bg-body-tertiary">
+        <Navbar expand="lg" className="src-navbar">
             <Container>
                 <Navbar.Brand>
                     <Nav.Link
@@ -38,6 +38,7 @@ export default function Izbornik() {
                     </Nav>
                     <Nav>
                         <Nav.Link
+                        className="nav-generiraj"
                         onClick={()=>navigate(RouteNames.GENERIRAJ_PODATKE)}
                         >Generiraj podatke</Nav.Link>
                     </Nav>

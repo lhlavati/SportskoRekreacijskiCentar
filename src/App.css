@@ -1,0 +1,339 @@
+/* ===================================================================
+   SRC — Sportsko Rekreacijski Centar  |  Design System 2026
+   =================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* ── Custom properties ─────────────────────────────────────── */
+:root {
+  --g-50:  #f0fdf4;
+  --g-100: #dcfce7;
+  --g-200: #bbf7d0;
+  --g-300: #86efac;
+  --g-400: #4ade80;
+  --g-500: #22c55e;
+  --g-600: #16a34a;
+  --g-700: #15803d;
+  --g-800: #166534;
+  --g-900: #14532d;
+  --g-950: #052e16;
+
+  --r-xs:  4px;
+  --r-sm:  8px;
+  --r-md:  12px;
+  --r-lg:  16px;
+  --r-xl:  24px;
+  --r-2xl: 32px;
+
+  --sh-sm:    0 1px 4px rgba(0,0,0,0.10);
+  --sh-md:    0 4px 16px rgba(0,0,0,0.13);
+  --sh-lg:    0 12px 48px rgba(0,0,0,0.22);
+  --sh-green: 0 4px 20px rgba(22,163,74,0.32);
+
+  --ease:     cubic-bezier(0.4, 0, 0.2, 1);
+  --dur:      0.22s;
+}
+
+/* ── Reset & base ──────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  background:
+    linear-gradient(135deg,
+      #052e16 0%,
+      #0f3d20 20%,
+      #14532d 40%,
+      #166534 60%,
+      #15803d 80%,
+      #16a34a 100%
+    );
+  background-attachment: fixed;
+  min-height: 100vh;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Main app container ────────────────────────────────────── */
+.src-app {
+  background: rgba(255, 255, 255, 0.97) !important;
+  border-radius: var(--r-2xl) !important;
+  padding: 0 28px 32px !important;
+  box-shadow:
+    var(--sh-lg),
+    0 0 0 1px rgba(255,255,255,0.15),
+    inset 0 1px 0 rgba(255,255,255,0.6);
+  margin-top: 28px !important;
+  margin-bottom: 28px !important;
+  overflow: hidden;
+}
+
+/* ── Navbar ────────────────────────────────────────────────── */
+.src-navbar {
+  background: #fff !important;
+  padding: 8px 0 !important;
+  border-bottom: 2px solid var(--g-100) !important;
+  margin-left: -28px;
+  margin-right: -28px;
+  padding-left: 28px !important;
+  padding-right: 28px !important;
+  margin-bottom: 8px;
+}
+
+.src-navbar .navbar-brand img {
+  height: 36px;
+  width: auto;
+}
+
+.src-navbar .nav-link {
+  color: var(--g-800) !important;
+  font-weight: 600;
+  font-size: 0.88rem;
+  padding: 7px 14px !important;
+  border-radius: var(--r-sm) !important;
+  letter-spacing: 0.01em;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+.src-navbar .nav-link:hover,
+.src-navbar .nav-link:focus {
+  color: var(--g-700) !important;
+  background: var(--g-50) !important;
+}
+
+.src-navbar .nav-link.active {
+  color: var(--g-700) !important;
+  background: var(--g-100) !important;
+}
+
+.src-navbar .navbar-toggler {
+  border-color: var(--g-200) !important;
+  padding: 6px 10px !important;
+}
+
+.src-navbar .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%2315803d' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+}
+
+/* Separator before "Generiraj podatke" */
+.src-navbar .nav-generiraj {
+  border-left: 1.5px solid var(--g-200);
+  padding-left: 14px !important;
+  margin-left: 8px;
+  color: var(--g-600) !important;
+}
+
+.src-navbar .nav-generiraj:hover {
+  background: var(--g-50) !important;
+  color: var(--g-700) !important;
+}
+
+/* ── Typography ────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--g-900);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+/* ── Buttons ───────────────────────────────────────────────── */
+.btn {
+  border-radius: var(--r-sm) !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em !important;
+  transition:
+    transform var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease),
+    filter var(--dur) var(--ease) !important;
+}
+
+/* Primary / Success → green */
+.btn-primary,
+.btn-success {
+  background: linear-gradient(135deg, var(--g-600) 0%, var(--g-700) 100%) !important;
+  border-color: var(--g-800) !important;
+  color: #fff !important;
+  box-shadow: var(--sh-green) !important;
+}
+
+.btn-primary:hover,
+.btn-success:hover {
+  filter: brightness(1.10) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 28px rgba(22,163,74,0.45) !important;
+}
+
+.btn-primary:active,
+.btn-success:active {
+  transform: translateY(0) !important;
+  filter: brightness(0.96) !important;
+}
+
+/* Outline primary → green */
+.btn-outline-primary {
+  color: var(--g-700) !important;
+  border-color: var(--g-600) !important;
+  background: transparent !important;
+}
+
+.btn-outline-primary:hover {
+  background: linear-gradient(135deg, var(--g-600) 0%, var(--g-700) 100%) !important;
+  border-color: var(--g-700) !important;
+  color: #fff !important;
+  transform: translateY(-1px) !important;
+  box-shadow: var(--sh-green) !important;
+}
+
+/* Outline danger */
+.btn-outline-danger:hover {
+  transform: translateY(-1px) !important;
+}
+
+/* ── Tables ─────────────────────────────────────────────────── */
+.table-wrapper {
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: var(--sh-md);
+}
+
+.table {
+  margin-bottom: 0 !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+
+.table > thead > tr > th {
+  background: linear-gradient(90deg, var(--g-800) 0%, var(--g-700) 100%) !important;
+  color: #fff !important;
+  font-size: 0.78rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  padding: 14px 16px !important;
+  border: none !important;
+  white-space: nowrap;
+}
+
+.table > thead > tr > th:first-child { border-radius: var(--r-lg) 0 0 0 !important; }
+.table > thead > tr > th:last-child  { border-radius: 0 var(--r-lg) 0 0 !important; }
+
+.table > tbody > tr > td {
+  vertical-align: middle !important;
+  padding: 12px 16px !important;
+  border-color: rgba(0,0,0,0.05) !important;
+  font-size: 0.92rem;
+}
+
+.table > tbody > tr:last-child > td:first-child { border-radius: 0 0 0 var(--r-lg); }
+.table > tbody > tr:last-child > td:last-child  { border-radius: 0 0 var(--r-lg) 0; }
+
+.table-striped > tbody > tr:nth-of-type(odd) > td {
+  background: rgba(240,253,244,0.65) !important;
+}
+
+.table > tbody > tr:hover > td {
+  background: var(--g-50) !important;
+  transition: background var(--dur) var(--ease);
+}
+
+/* Wrap table to apply border-radius + shadow */
+.table { border-radius: var(--r-lg) !important; overflow: hidden; box-shadow: var(--sh-md); }
+
+/* ── Forms ──────────────────────────────────────────────────── */
+.form-label {
+  font-weight: 600 !important;
+  font-size: 0.80rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  color: var(--g-900) !important;
+  margin-bottom: 5px !important;
+}
+
+.form-control,
+.form-select,
+.PhoneInputInput {
+  border-radius: var(--r-sm) !important;
+  border: 1.5px solid rgba(0,0,0,0.10) !important;
+  padding: 10px 14px !important;
+  font-size: 0.93rem !important;
+  background: #fff !important;
+  transition:
+    border-color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease) !important;
+}
+
+.form-control:focus,
+.form-select:focus,
+.PhoneInputInput:focus {
+  border-color: var(--g-500) !important;
+  box-shadow: 0 0 0 3px rgba(34,197,94,0.18) !important;
+  outline: none !important;
+}
+
+/* ── Cards ──────────────────────────────────────────────────── */
+.card {
+  border-radius: var(--r-lg) !important;
+  border: 1px solid rgba(0,0,0,0.07) !important;
+  box-shadow: var(--sh-sm) !important;
+  overflow: hidden !important;
+}
+
+/* Stat cards on Home page */
+.stat-kartica {
+  border-radius: var(--r-lg) !important;
+  transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease) !important;
+}
+
+/* ── Badges ─────────────────────────────────────────────────── */
+.badge {
+  border-radius: 50px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.03em !important;
+}
+
+.badge.bg-primary { background: var(--g-600) !important; }
+.badge.bg-success { background: var(--g-700) !important; }
+
+/* ── Spinner ────────────────────────────────────────────────── */
+.spinner-border { color: var(--g-600) !important; }
+
+/* ── HR / Dividers ──────────────────────────────────────────── */
+hr { border-color: var(--g-100) !important; }
+
+/* ── Footer ─────────────────────────────────────────────────── */
+.src-footer {
+  text-align: center;
+  color: var(--g-700);
+  font-size: 0.83rem;
+  font-weight: 500;
+  padding-top: 4px;
+}
+
+/* ── Links ──────────────────────────────────────────────────── */
+a { color: var(--g-600); }
+a:hover { color: var(--g-700); }
+
+/* ── Scrollbar ──────────────────────────────────────────────── */
+::-webkit-scrollbar              { width: 7px; height: 7px; }
+::-webkit-scrollbar-track        { background: var(--g-50); }
+::-webkit-scrollbar-thumb        { background: var(--g-300); border-radius: 100px; }
+::-webkit-scrollbar-thumb:hover  { background: var(--g-500); }
+
+/* ── Page header pattern ────────────────────────────────────── */
+.page-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 28px 0 20px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--g-100);
+}
+
+.page-heading h2,
+.page-heading h3 { margin-bottom: 0; }
+
+/* ── Alerts ─────────────────────────────────────────────────── */
+.alert-success {
+  background: var(--g-50) !important;
+  border-color: var(--g-200) !important;
+  color: var(--g-800) !important;
+}
