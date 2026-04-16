@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react"
-import { Badge, Button, Col, Row } from "react-bootstrap"
+import { Badge, Button, Col, OverlayTrigger, Row, Tooltip } from "react-bootstrap"
 import { Link, useNavigate } from "react-router-dom"
-import { FaCalendarAlt, FaClock, FaEuroSign, FaUser, FaUsers, FaPlus, FaEdit, FaTrash } from "react-icons/fa"
+import { FaCalendarAlt, FaClock, FaEuroSign, FaUser, FaUsers, FaPlus, FaEdit, FaTrash, FaDumbbell } from "react-icons/fa"
 import { RouteNames } from "../../constants"
 import TerminService from "../../services/termini/TerminService"
+import SportService from "../../services/sportovi/SportService"
+import ClanService from "../../services/clanovi/ClanService"
 
 const stilKartice = (jeHover) => ({
     background: 'rgba(255,255,255,0.75)',
@@ -49,10 +51,14 @@ export default function TerminPregled() {
 
     const navigate = useNavigate()
     const [termini, setTermini] = useState([])
+    const [sportovi, setSportovi] = useState([])
+    const [clanovi, setClanovi] = useState([])
     const [hoverIds, setHoverIds] = useState([])
 
     useEffect(() => {
         ucitajTermine()
+        ucitajSportove()
+        ucitajClanove()
     }, [])
 
     async function ucitajTermine() {
@@ -65,6 +71,28 @@ export default function TerminPregled() {
         })
     }
 
+    async function ucitajSportove() {
+        await SportService.get().then((odgovor) => {
+            if (odgovor.success) setSportovi(odgovor.data)
+        })
+    }
+
+    async function ucitajClanove() {
+        await ClanService.get().then((odgovor) => {
+            if (odgovor.success) setClanovi(odgovor.data)
+        })
+    }
+
+    function dohvatiImeClana(id) {
+        const clan = clanovi.find(c => c.id === parseInt(id))
+        return clan ? `${clan.ime} ${clan.prezime}` : `#${id}`
+    }
+
+    function dohvatiInicijale(id) {
+        const clan = clanovi.find(c => c.id === parseInt(id))
+        return clan ? `${clan.ime[0]}${clan.prezime[0]}` : `#${id}`
+    }
+
     async function obrisi(id) {
         if (!confirm('Sigurno obrisati?')) {
             return
@@ -73,11 +101,9 @@ export default function TerminPregled() {
         ucitajTermine()
     }
 
-    function dohvatiNazivKategorije(idSporta) {
-        const t = termini.find((t) => t.id === parseInt(idSporta))
-        console.log(t);
-        
-        return t ? t.naziv : 'Nepoznat sport'
+    function dohvatiNazivSporta(idSporta) {
+        const sport = sportovi.find((s) => s.id === parseInt(idSporta))
+        return sport ? sport.naziv : 'Nepoznat sport'
     }
 
     return (
@@ -120,19 +146,25 @@ export default function TerminPregled() {
                                 <div style={{ padding: '20px' }}>
                                     <div className="d-flex align-items-center gap-2 mb-2">
                                         <FaEuroSign color="#16a34a" />
-                                        <span className="fw-bold fs-5">{termin.cijena} €</span>
+                                        <span className="fw-bold fs-5">{termin.cijena}</span>
                                     </div>
 
                                     <div className="d-flex align-items-center gap-2 mb-3 text-muted small">
                                         <FaUser />
-                                        <span>Rezervirao: <strong>#{termin.rezervirao}</strong></span>
+                                        <span>Rezervirao: <strong>{dohvatiImeClana(termin.rezervirao)}</strong></span>
                                     </div>
 
                                     <div className="d-flex align-items-start gap-2 mb-3 flex-wrap">
                                         <FaUsers color="#15803d" className="mt-1 flex-shrink-0" />
                                         <div className="d-flex flex-wrap gap-1">
                                             {termin.sudionici && termin.sudionici.map((id) => (
-                                                <Badge key={id} bg="primary" pill>#{id}</Badge>
+                                                <OverlayTrigger
+                                                    key={id}
+                                                    placement="top"
+                                                    overlay={<Tooltip>{dohvatiImeClana(id)}</Tooltip>}
+                                                >
+                                                    <Badge bg="primary" pill style={{ cursor: 'default' }}>{dohvatiInicijale(id)}</Badge>
+                                                </OverlayTrigger>
                                             ))}
                                             {(!termin.sudionici || termin.sudionici.length === 0) && (
                                                 <span className="text-muted small">Nema sudionika</span>
@@ -140,9 +172,11 @@ export default function TerminPregled() {
                                         </div>
                                     </div>
 
-                                    <div className="d-flex align-items-center gap-2 mb-3 text-muted small">
-                                        <FaUser />
-                                        <span>Sport: <strong>#{dohvatiNazivKategorije(termin.sport)}</strong></span>
+                                    <div className="mb-3">
+                                        <span className="d-inline-flex align-items-center gap-2 bg-success bg-opacity-25 text-success rounded-pill px-3 py-1 fw-bold small border border-success border-opacity-25">
+                                            <FaDumbbell size={12} />
+                                            {dohvatiNazivSporta(termin.sport)}
+                                        </span>
                                     </div>
 
                                     <div className="d-flex gap-2">

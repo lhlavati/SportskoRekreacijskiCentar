@@ -178,12 +178,19 @@ export default function GeneriranjePodataka() {
         upisanoClanova++;
       }
 
-      // Dohvati sve ID-ove članova (postojeći + novogenerirani)
-      const sveClanoviResponse = await ClanService.get();
+      // Dohvati sve ID-ove sportova i članova (postojeći + novogenerirani)
+      const [sveSportoviResponse, sveClanoviResponse] = await Promise.all([
+        SportService.get(),
+        ClanService.get(),
+      ]);
+      const sveSportoviIds = (sveSportoviResponse?.data ?? []).map((s) => s.id);
       const sveClanoviIds = (sveClanoviResponse?.data ?? []).map((c) => c.id);
 
       if (Number(brojTermina) > 0 && sveClanoviIds.length === 0) {
         throw new Error("Za generiranje termina mora postojati barem jedan član.");
+      }
+      if (Number(brojTermina) > 0 && sveSportoviIds.length === 0) {
+        throw new Error("Za generiranje termina mora postojati barem jedan sport.");
       }
 
       let upisanoTermina = 0;
@@ -201,6 +208,7 @@ export default function GeneriranjePodataka() {
         const brSudionika = faker.number.int({ min: 1, max: maxSudionika });
         const sudionici = faker.helpers.arrayElements(sveClanoviIds, brSudionika);
         const rezervirao = faker.helpers.arrayElement(sveClanoviIds);
+        const sport = faker.helpers.arrayElement(sveSportoviIds);
 
         await TerminService.dodaj({
           datumPocetka: formatirajISO(pocetak),
@@ -208,6 +216,7 @@ export default function GeneriranjePodataka() {
           cijena: faker.number.int({ min: 5, max: 100 }),
           rezervirao,
           sudionici,
+          sport,
         });
         upisanoTermina++;
       }
