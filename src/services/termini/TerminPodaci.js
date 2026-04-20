@@ -1,12 +1,13 @@
 export const termini = [
     {
         id: 1,
-        datumPocetka: '2026-06-22T18:00:00',
-        datumKraja: '2026-06-22T19:30:00',
+        datum: '2026-06-22',
+        odabraniSati:[8,9,21],
         cijena: 10,
         rezervirao: 1,
         sudionici: [1, 2, 3, 4, 5],
-        sport: 1
+        sport: 1,
+        ukupnaCijena: 30
     },
     {
         id: 2,

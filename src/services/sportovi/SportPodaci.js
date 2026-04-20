@@ -6,7 +6,8 @@ export const sportovi = [
         kontaktni: true,
         maxIgraca: 22,
         uZatvorenom: false,
-        trajanjeMin: 90
+        trajanjeMin: 90,
+        cijenaTermina: 10
     },
     {
         id: 2,
