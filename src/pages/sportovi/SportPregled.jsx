@@ -68,6 +68,7 @@ export default function SportPregled() {
                             <th>Max igrača</th>
                             <th>U zatvorenom</th>
                             <th>Trajanje (min)</th>
+                            <th>Cijena (€)</th>
                             <th>Akcija</th>
                         </tr>
                     </thead>
@@ -80,6 +81,7 @@ export default function SportPregled() {
                                 <td>{sport.maxIgraca}</td>
                                 <td>{checkUZatvorenom(sport.uZatvorenom)}</td>
                                 <td>{sport.trajanjeMin}</td>
+                                <td>{sport.cijenaTermina}</td>
                                 <td>
                                     <Button size="sm" onClick={() => navigate(`/sportovi/${sport.id}`)}>Promjena</Button>
                                     &nbsp;&nbsp;
@@ -124,6 +126,10 @@ export default function SportPregled() {
                                     <div className="pregled-kartica-row">
                                         <span className="pregled-kartica-label">Trajanje</span>
                                         <span>{sport.trajanjeMin} min</span>
+                                    </div>
+                                    <div className="pregled-kartica-row">
+                                        <span className="pregled-kartica-label">Cijena termina</span>
+                                        <span>{sport.cijenaTermina} €</span>
                                     </div>
                                 </div>
                                 <div className="pregled-kartica-actions">

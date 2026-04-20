@@ -43,16 +43,11 @@ const stilDodajGumb = {
 const DANI = ['nedjelja', 'ponedjeljak', 'utorak', 'srijeda', 'četvrtak', 'petak', 'subota']
 const MJESECI = ['siječnja', 'veljače', 'ožujka', 'travnja', 'svibnja', 'lipnja', 'srpnja', 'kolovoza', 'rujna', 'listopada', 'studenoga', 'prosinca']
 
-function formatirajDatumLijep(iso) {
-    if (!iso) return '—'
-    const d = new Date(iso)
+function formatirajDatumLijep(datum) {
+    if (!datum) return '—'
+    const [god, mjes, dan] = datum.split('-').map(Number)
+    const d = new Date(god, mjes - 1, dan)
     return `${DANI[d.getDay()]}, ${d.getDate()}. ${MJESECI[d.getMonth()]} ${d.getFullYear()}.`
-}
-
-function formatirajSat(iso) {
-    if (!iso) return '—'
-    const d = new Date(iso)
-    return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
 }
 
 function satGramatika(n) {
@@ -162,11 +157,11 @@ export default function TerminPregled() {
                                     <div className="d-flex align-items-center gap-2">
                                         <FaCalendarAlt />
                                         <span className="fw-semibold small">
-                                            {formatirajDatumLijep(termin.datumPocetka)}
+                                            {formatirajDatumLijep(termin.datum)}
                                         </span>
                                     </div>
-                                    {termin.odabraniSati && termin.odabraniSati.length > 0
-                                        ? grupirajSate(termin.odabraniSati).map((grupa, i) => {
+                                    {termin.odabraniSati && termin.odabraniSati.length > 0 &&
+                                        grupirajSate(termin.odabraniSati).map((grupa, i) => {
                                             const pad = n => String(n).padStart(2, '0')
                                             const n = grupa.length
                                             return (
@@ -178,26 +173,13 @@ export default function TerminPregled() {
                                                 </div>
                                             )
                                         })
-                                        : (
-                                            <div className="d-flex align-items-center gap-2 mt-1" style={{ opacity: 0.85 }}>
-                                                <FaClock size={12} />
-                                                <span style={{ fontSize: '0.85rem' }}>
-                                                    {(() => {
-                                                        const ukupnoSati = termin.datumPocetka && termin.datumKraja
-                                                            ? (new Date(termin.datumKraja) - new Date(termin.datumPocetka)) / 3600000
-                                                            : 0
-                                                        return `${formatirajSat(termin.datumPocetka)} – ${formatirajSat(termin.datumKraja)}${ukupnoSati > 0 ? ` · ${ukupnoSati} ${satGramatika(ukupnoSati)}` : ''}`
-                                                    })()}
-                                                </span>
-                                            </div>
-                                        )
                                     }
                                 </div>
 
                                 <div style={{ padding: '20px' }}>
                                     <div className="d-flex align-items-center gap-2 mb-2">
                                         <FaEuroSign color="#16a34a" />
-                                        <span className="fw-bold fs-5">{termin.cijena}</span>
+                                        <span className="fw-bold fs-5">{termin.ukupnaCijena}</span>
                                     </div>
 
                                     <div className="d-flex align-items-center gap-2 mb-3 text-muted small">

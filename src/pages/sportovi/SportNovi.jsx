@@ -64,6 +64,11 @@ export default function SportNovi() {
         return
     }
 
+    if (isNaN(podaci.get('cijenaTermina')) || Number(podaci.get('cijenaTermina')) < 0) {
+        alert("Cijena termina mora biti broj veći ili jednak 0!")
+        return
+    }
+
     dodaj({
       naziv: podaci.get("naziv"),
       kategorija: odabranaKategorija,      
@@ -71,6 +76,7 @@ export default function SportNovi() {
       maxIgraca: parseInt(podaci.get("maxIgraca")),
       uZatvorenom: podaci.get("uZatvorenom"),
       trajanjeMin: parseInt(podaci.get("trajanjeMin")),
+      cijenaTermina: parseFloat(podaci.get("cijenaTermina")),
     });
   }
 
@@ -100,6 +106,10 @@ export default function SportNovi() {
         <Form.Group controlId="trajanjeMin">
           <Form.Label>Trajanje (min)</Form.Label>
           <Form.Control type="number" name="trajanjeMin" step={1} />
+        </Form.Group>
+        <Form.Group controlId="cijenaTermina">
+          <Form.Label>Cijena termina (€)</Form.Label>
+          <Form.Control type="number" name="cijenaTermina" min="0" step="0.01" />
         </Form.Group>
         <Form.Group controlId="uZatvorenom">
           <Form.Check label="U zatvorenom" name="uZatvorenom" />

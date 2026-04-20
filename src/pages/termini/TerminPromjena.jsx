@@ -5,7 +5,7 @@ import { RouteNames } from "../../constants"
 import TerminService from "../../services/termini/TerminService"
 import ClanService from "../../services/clanovi/ClanService"
 import SportService from "../../services/sportovi/SportService"
-import { FaTimes } from "react-icons/fa"
+import { FaTimes, FaEuroSign } from "react-icons/fa"
 
 const SATI = Array.from({ length: 14 }, (_, i) => i + 8)
 
@@ -82,19 +82,10 @@ export default function TerminPromjena() {
     }, [odabraniDatum, odabraniSport])
 
     useEffect(() => {
-        if (!termin.datumPocetka || !termin.datumKraja) return
-        const pocetak = new Date(termin.datumPocetka)
-        const pad = n => String(n).padStart(2, '0')
-        setOdabraniDatum(`${pocetak.getFullYear()}-${pad(pocetak.getMonth() + 1)}-${pad(pocetak.getDate())}`)
-        if (termin.odabraniSati && termin.odabraniSati.length > 0) {
-            setOdabraniSati(termin.odabraniSati)
-        } else {
-            const kraj = new Date(termin.datumKraja)
-            const pocetakSat = pocetak.getHours()
-            const krajSat = kraj.getHours()
-            setOdabraniSati(Array.from({ length: krajSat - pocetakSat }, (_, i) => pocetakSat + i))
-        }
-    }, [termin.datumPocetka, termin.datumKraja])
+        if (!termin.datum) return
+        setOdabraniDatum(termin.datum)
+        if (termin.odabraniSati?.length > 0) setOdabraniSati(termin.odabraniSati)
+    }, [termin.datum])
 
     async function ucitajZauzeteSate() {
         setUcitavamTermine(true)
@@ -103,16 +94,8 @@ export default function TerminPromjena() {
         if (!odgovor.success) return
         const sati = []
         odgovor.data
-            .filter(t => t.datumPocetka?.slice(0, 10) === odabraniDatum && t.sport === parseInt(odabraniSport) && t.id !== parseInt(params.id))
-            .forEach(t => {
-                if (t.odabraniSati?.length > 0) {
-                    sati.push(...t.odabraniSati)
-                } else if (t.datumPocetka && t.datumKraja) {
-                    const poc = new Date(t.datumPocetka).getHours()
-                    const kraj = new Date(t.datumKraja).getHours()
-                    for (let h = poc; h < kraj; h++) sati.push(h)
-                }
-            })
+            .filter(t => t.datum === odabraniDatum && t.sport === parseInt(odabraniSport) && t.id !== parseInt(params.id))
+            .forEach(t => { sati.push(...(t.odabraniSati ?? [])) })
         setZauzetiSati([...new Set(sati)])
     }
 
@@ -165,7 +148,6 @@ export default function TerminPromjena() {
     function odradiSubmit(e) {
         e.preventDefault()
         const podaci = new FormData(e.target)
-        const cijena = podaci.get('cijena')
         const sport = podaci.get('sport')
 
         if (!odabraniDatum) {
@@ -178,11 +160,6 @@ export default function TerminPromjena() {
         }
         if (odabraniSati.length === 0) {
             alert("Morate odabrati barem jedan sat!")
-            return
-        }
-        const sortirani = [...odabraniSati].sort((a, b) => a - b)
-        if (cijena === '' || isNaN(Number(cijena)) || Number(cijena) < 0) {
-            alert("Cijena mora biti broj veći ili jednak 0!")
             return
         }
         if (!odabraniClan) {
@@ -198,15 +175,14 @@ export default function TerminPromjena() {
             return
         }
 
-        const pad = n => String(n).padStart(2, '0')
-        const datumPocetka = `${odabraniDatum}T${pad(sortirani[0])}:00`
-        const datumKraja = `${odabraniDatum}T${pad(sortirani[sortirani.length - 1] + 1)}:00`
+        const sortirani = [...odabraniSati].sort((a, b) => a - b)
+        const odabraniSportObj = sportovi.find(s => s.id === parseInt(sport))
+        const ukupnaCijena = sortirani.length * (odabraniSportObj?.cijenaTermina ?? 0)
 
         promjeni({
-            datumPocetka,
-            datumKraja,
+            datum: odabraniDatum,
             odabraniSati: sortirani,
-            cijena: parseFloat(cijena),
+            ukupnaCijena,
             rezervirao: odabraniClan.id,
             sudionici: odabraniSudionici.map(c => c.id),
             sport: parseInt(sport),
@@ -300,21 +276,20 @@ export default function TerminPromjena() {
                             )}
                         </Form.Group>
                     </Col>
-                    <Col xs={12} md={6}>
-                        <Form.Group controlId="cijena">
-                            <Form.Label className="fw-semibold">Cijena (€)</Form.Label>
-                            <Form.Control
-                                type="number"
-                                name="cijena"
-                                min="0"
-                                step="0.01"
-                                required
-                                defaultValue={termin.cijena}
-                                key={termin.cijena}
-                            />
-                        </Form.Group>
-                    </Col>
-                    <Col xs={12} md={6}>
+                    {odabraniSati.length > 0 && odabraniSport && (
+                        <Col xs={12}>
+                            <div className="d-flex align-items-center gap-2 p-3 rounded-3 bg-success bg-opacity-10 border border-success border-opacity-25">
+                                <FaEuroSign color="#16a34a" />
+                                <span className="fw-semibold text-success">
+                                    Ukupna cijena: {odabraniSati.length * (sportovi.find(s => s.id === parseInt(odabraniSport))?.cijenaTermina ?? 0)} €
+                                </span>
+                                <span className="text-muted small ms-1">
+                                    ({odabraniSati.length} × {sportovi.find(s => s.id === parseInt(odabraniSport))?.cijenaTermina ?? 0} €/h)
+                                </span>
+                            </div>
+                        </Col>
+                    )}
+                    <Col xs={12}>
                         <Form.Group controlId="rezervirao">
                             <Form.Label className="fw-semibold">Član koji rezervira</Form.Label>
 

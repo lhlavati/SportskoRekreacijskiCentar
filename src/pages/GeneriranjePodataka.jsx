@@ -156,6 +156,7 @@ export default function GeneriranjePodataka() {
           maxIgraca: faker.number.int({ min: 1, max: 30 }),
           uZatvorenom: faker.datatype.boolean(),
           trajanjeMin: faker.number.int({ min: 10, max: 180 }),
+          cijenaTermina: faker.number.int({ min: 5, max: 50, multipleOf: 5}),
         });
         upisanoSportova++;
       }
@@ -180,7 +181,8 @@ export default function GeneriranjePodataka() {
         SportService.get(),
         ClanService.get(),
       ]);
-      const sveSportoviIds = (sveSportoviResponse?.data ?? []).map((s) => s.id);
+      const sveSportovi = sveSportoviResponse?.data ?? [];
+      const sveSportoviIds = sveSportovi.map((s) => s.id);
       const sveClanoviIds = (sveClanoviResponse?.data ?? []).map((c) => c.id);
 
       if (Number(brojTermina) > 0 && sveClanoviIds.length === 0) {
@@ -209,16 +211,16 @@ export default function GeneriranjePodataka() {
         const brSudionika = faker.number.int({ min: 1, max: maxSudionika });
         const sudionici = faker.helpers.arrayElements(sveClanoviIds, brSudionika);
         const rezervirao = faker.helpers.arrayElement(sveClanoviIds);
-        const sport = faker.helpers.arrayElement(sveSportoviIds);
+        const odabraniSport = faker.helpers.arrayElement(sveSportovi);
+        const ukupnaCijena = odabraniSati.length * (odabraniSport?.cijenaTermina ?? 10);
 
         await TerminService.dodaj({
-          datumPocetka: `${datumStr}T${pad(pocetakSat)}:00`,
-          datumKraja: `${datumStr}T${pad(pocetakSat + trajanje)}:00`,
+          datum: datumStr,
           odabraniSati,
-          cijena: faker.number.int({ min: 5, max: 100 }),
+          ukupnaCijena,
           rezervirao,
           sudionici,
-          sport,
+          sport: odabraniSport.id,
         });
         upisanoTermina++;
       }

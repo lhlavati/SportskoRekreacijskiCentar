@@ -85,7 +85,12 @@ export default function SportPromjena() {
         alert("Trajanje mora biti broj između 1 i 500")
         return
     }
-    
+
+    if (isNaN(podaci.get('cijenaTermina')) || Number(podaci.get('cijenaTermina')) < 0) {
+        alert("Cijena termina mora biti broj veći ili jednak 0!")
+        return
+    }
+
     promjeni({
       naziv: podaci.get("naziv"),
       kategorija: parseInt(podaci.get("kategorija")),
@@ -93,6 +98,7 @@ export default function SportPromjena() {
       maxIgraca: parseInt(podaci.get("maxIgraca")),
       uZatvorenom: podaci.get("uZatvorenom"),
       trajanjeMin: parseInt(podaci.get("trajanjeMin")),
+      cijenaTermina: parseFloat(podaci.get("cijenaTermina")),
     });
   }
 
@@ -125,6 +131,11 @@ export default function SportPromjena() {
           <Form.Label>Trajanje (min)</Form.Label>
           <Form.Control type="number" name="trajanjeMin" step={1}
             defaultValue={sport.trajanjeMin} />
+        </Form.Group>
+        <Form.Group controlId="cijenaTermina">
+          <Form.Label>Cijena termina (€)</Form.Label>
+          <Form.Control type="number" name="cijenaTermina" min="0" step="0.01"
+            defaultValue={sport.cijenaTermina} />
         </Form.Group>
         <Form.Group controlId="uZatvorenom">
           <Form.Check label="U zatvorenom" name="uZatvorenom"

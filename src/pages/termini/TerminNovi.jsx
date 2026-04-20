@@ -5,7 +5,7 @@ import TerminService from "../../services/termini/TerminService"
 import { useEffect, useRef, useState } from "react"
 import SportService from "../../services/sportovi/SportService"
 import ClanService from "../../services/clanovi/ClanService"
-import { FaTimes } from "react-icons/fa"
+import { FaTimes, FaEuroSign } from "react-icons/fa"
 
 const SATI = Array.from({ length: 14 }, (_, i) => i + 8)
 
@@ -73,16 +73,8 @@ export default function TerminNovi() {
         if (!odgovor.success) return
         const sati = []
         odgovor.data
-            .filter(t => t.datumPocetka?.slice(0, 10) === odabraniDatum && t.sport === parseInt(odabraniSport))
-            .forEach(t => {
-                if (t.odabraniSati?.length > 0) {
-                    sati.push(...t.odabraniSati)
-                } else if (t.datumPocetka && t.datumKraja) {
-                    const poc = new Date(t.datumPocetka).getHours()
-                    const kraj = new Date(t.datumKraja).getHours()
-                    for (let h = poc; h < kraj; h++) sati.push(h)
-                }
-            })
+            .filter(t => t.datum === odabraniDatum && t.sport === parseInt(odabraniSport))
+            .forEach(t => { sati.push(...(t.odabraniSati ?? [])) })
         setZauzetiSati([...new Set(sati)])
     }
 
@@ -126,7 +118,6 @@ export default function TerminNovi() {
     function odradiSubmit(e) {
         e.preventDefault()
         const podaci = new FormData(e.target)
-        const cijena = podaci.get('cijena')
         const sport = podaci.get('sport')
 
         if (!odabraniDatum) {
@@ -139,11 +130,6 @@ export default function TerminNovi() {
         }
         if (odabraniSati.length === 0) {
             alert("Morate odabrati barem jedan sat!")
-            return
-        }
-        const sortirani = [...odabraniSati].sort((a, b) => a - b)
-        if (cijena === '' || isNaN(Number(cijena)) || Number(cijena) < 0) {
-            alert("Cijena mora biti broj veći ili jednak 0!")
             return
         }
         if (!odabraniClan) {
@@ -159,15 +145,14 @@ export default function TerminNovi() {
             return
         }
 
-        const pad = n => String(n).padStart(2, '0')
-        const datumPocetka = `${odabraniDatum}T${pad(sortirani[0])}:00`
-        const datumKraja = `${odabraniDatum}T${pad(sortirani[sortirani.length - 1] + 1)}:00`
+        const sortirani = [...odabraniSati].sort((a, b) => a - b)
+        const odabraniSportObj = sportovi.find(s => s.id === parseInt(sport))
+        const ukupnaCijena = sortirani.length * (odabraniSportObj?.cijenaTermina ?? 0)
 
         dodaj({
-            datumPocetka,
-            datumKraja,
+            datum: odabraniDatum,
             odabraniSati: sortirani,
-            cijena: parseFloat(cijena),
+            ukupnaCijena,
             rezervirao: odabraniClan.id,
             sudionici: odabraniSudionici.map(c => c.id),
             sport: parseInt(sport)
@@ -261,13 +246,20 @@ export default function TerminNovi() {
                             )}
                         </Form.Group>
                     </Col>
-                    <Col xs={12} md={6}>
-                        <Form.Group controlId="cijena">
-                            <Form.Label className="fw-semibold">Cijena (€)</Form.Label>
-                            <Form.Control type="number" name="cijena" min="0" step="0.01" required />
-                        </Form.Group>
-                    </Col>
-                    <Col xs={12} md={6}>
+                    {odabraniSati.length > 0 && odabraniSport && (
+                        <Col xs={12}>
+                            <div className="d-flex align-items-center gap-2 p-3 rounded-3 bg-success bg-opacity-10 border border-success border-opacity-25">
+                                <FaEuroSign color="#16a34a" />
+                                <span className="fw-semibold text-success">
+                                    Ukupna cijena: {odabraniSati.length * (sportovi.find(s => s.id === parseInt(odabraniSport))?.cijenaTermina ?? 0)} €
+                                </span>
+                                <span className="text-muted small ms-1">
+                                    ({odabraniSati.length} × {sportovi.find(s => s.id === parseInt(odabraniSport))?.cijenaTermina ?? 0} €/h)
+                                </span>
+                            </div>
+                        </Col>
+                    )}
+                    <Col xs={12}>
                         <Form.Group controlId="rezervirao">
                             <Form.Label className="fw-semibold">Član koji rezervira</Form.Label>
 
