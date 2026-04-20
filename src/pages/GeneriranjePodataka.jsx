@@ -52,10 +52,7 @@ const RASPONI = {
   termini: { min: 1, max: 200 },
 };
 
-function formatirajISO(d) {
-  const pad = (n) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:00`;
-}
+const SATI_TERMINA = Array.from({ length: 14 }, (_, i) => i + 8)
 
 function hrKontaktBroj() {
   const mreza = faker.helpers.arrayElement(["91", "92", "95", "97", "98", "99"]);
@@ -193,16 +190,20 @@ export default function GeneriranjePodataka() {
         throw new Error("Za generiranje termina mora postojati barem jedan sport.");
       }
 
+      const pad = (n) => String(n).padStart(2, "0");
+      const danasPocetak = new Date();
+      danasPocetak.setHours(0, 0, 0, 0);
+
       let upisanoTermina = 0;
       for (let i = 0; i < Number(brojTermina); i++) {
-        const pocetakMs =
-          Date.now() +
-          faker.number.int({ min: 0, max: 365 * 24 * 60 * 60 * 1000 });
-        const pocetak = new Date(pocetakMs);
-        pocetak.setMinutes(faker.helpers.arrayElement([0, 30]), 0, 0);
+        const offsetDana = faker.number.int({ min: 0, max: 365 });
+        const datum = new Date(danasPocetak.getTime() + offsetDana * 24 * 60 * 60 * 1000);
+        const datumStr = `${datum.getFullYear()}-${pad(datum.getMonth() + 1)}-${pad(datum.getDate())}`;
 
-        const trajanjeMs = faker.number.int({ min: 30, max: 120 }) * 60 * 1000;
-        const kraj = new Date(pocetak.getTime() + trajanjeMs);
+        const pocetakSat = faker.helpers.arrayElement(SATI_TERMINA.slice(0, -1));
+        const maxTrajanje = Math.min(4, 22 - pocetakSat);
+        const trajanje = faker.number.int({ min: 1, max: maxTrajanje });
+        const odabraniSati = Array.from({ length: trajanje }, (_, j) => pocetakSat + j);
 
         const maxSudionika = Math.min(8, sveClanoviIds.length);
         const brSudionika = faker.number.int({ min: 1, max: maxSudionika });
@@ -211,8 +212,9 @@ export default function GeneriranjePodataka() {
         const sport = faker.helpers.arrayElement(sveSportoviIds);
 
         await TerminService.dodaj({
-          datumPocetka: formatirajISO(pocetak),
-          datumKraja: formatirajISO(kraj),
+          datumPocetka: `${datumStr}T${pad(pocetakSat)}:00`,
+          datumKraja: `${datumStr}T${pad(pocetakSat + trajanje)}:00`,
+          odabraniSati,
           cijena: faker.number.int({ min: 5, max: 100 }),
           rezervirao,
           sudionici,

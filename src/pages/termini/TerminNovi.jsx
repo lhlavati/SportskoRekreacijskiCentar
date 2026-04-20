@@ -7,6 +7,14 @@ import SportService from "../../services/sportovi/SportService"
 import ClanService from "../../services/clanovi/ClanService"
 import { FaTimes } from "react-icons/fa"
 
+const SATI = Array.from({ length: 14 }, (_, i) => i + 8)
+
+function satGramatika(n) {
+    if (n === 1) return 'sat'
+    if (n >= 2 && n <= 4) return 'sata'
+    return 'sati'
+}
+
 export default function TerminNovi() {
 
     const [sportovi, setSportovi] = useState([])
@@ -18,6 +26,13 @@ export default function TerminNovi() {
     const [pretragaSudionika, setPretragaSudionika] = useState('')
     const [odabraniSudionici, setOdabraniSudionici] = useState([])
     const [prikaziDropdownSudionici, setPrikaziDropdownSudionici] = useState(false)
+
+    const [odabraniDatum, setOdabraniDatum] = useState('')
+    const [odabraniSport, setOdabraniSport] = useState('')
+    const [odabraniSati, setOdabraniSati] = useState([])
+    const [zauzetiSati, setZauzetiSati] = useState([])
+    const [ucitavamTermine, setUcitavamTermine] = useState(false)
+    const refDatum = useRef(null)
 
     const filtriraneClanovi = pretraga.length > 0
         ? clanovi.filter(c =>
@@ -36,15 +51,40 @@ export default function TerminNovi() {
         )
         : []
 
-    const refDatumPocetka = useRef(null)
-    const refDatumKraja = useRef(null)
-
     const navigate = useNavigate()
 
     useEffect(() => {
         ucitajSportove()
         ucitajClanove()
     }, [])
+
+    useEffect(() => {
+        if (!odabraniDatum || !odabraniSport) {
+            setZauzetiSati([])
+            return
+        }
+        ucitajZauzeteSate()
+    }, [odabraniDatum, odabraniSport])
+
+    async function ucitajZauzeteSate() {
+        setUcitavamTermine(true)
+        const odgovor = await TerminService.get()
+        setUcitavamTermine(false)
+        if (!odgovor.success) return
+        const sati = []
+        odgovor.data
+            .filter(t => t.datumPocetka?.slice(0, 10) === odabraniDatum && t.sport === parseInt(odabraniSport))
+            .forEach(t => {
+                if (t.odabraniSati?.length > 0) {
+                    sati.push(...t.odabraniSati)
+                } else if (t.datumPocetka && t.datumKraja) {
+                    const poc = new Date(t.datumPocetka).getHours()
+                    const kraj = new Date(t.datumKraja).getHours()
+                    for (let h = poc; h < kraj; h++) sati.push(h)
+                }
+            })
+        setZauzetiSati([...new Set(sati)])
+    }
 
     async function dodaj(termin) {
         await TerminService.dodaj(termin).then(() => {
@@ -75,27 +115,33 @@ export default function TerminNovi() {
         setOdabraniSudionici(prev => prev.filter(c => c.id !== id))
     }
 
+    function toggleSat(sat) {
+        setOdabraniSati(prev =>
+            prev.includes(sat)
+                ? prev.filter(s => s !== sat)
+                : [...prev, sat].sort((a, b) => a - b)
+        )
+    }
+
     function odradiSubmit(e) {
         e.preventDefault()
         const podaci = new FormData(e.target)
+        const cijena = podaci.get('cijena')
+        const sport = podaci.get('sport')
 
-        const datumPocetka = podaci.get('datumPocetka')
-        const datumKraja   = podaci.get('datumKraja')
-        const cijena       = podaci.get('cijena')
-        const sport        = podaci.get('sport')
-
-        if (!datumPocetka) {
-            alert("Datum početka je obavezan!")
+        if (!odabraniDatum) {
+            alert("Datum je obavezan!")
             return
         }
-        if (!datumKraja) {
-            alert("Datum kraja je obavezan!")
+        if (odabraniDatum < new Date().toISOString().slice(0, 10)) {
+            alert("Datum ne može biti u prošlosti!")
             return
         }
-        if (new Date(datumKraja) <= new Date(datumPocetka)) {
-            alert("Datum kraja mora biti nakon datuma početka!")
+        if (odabraniSati.length === 0) {
+            alert("Morate odabrati barem jedan sat!")
             return
         }
+        const sortirani = [...odabraniSati].sort((a, b) => a - b)
         if (cijena === '' || isNaN(Number(cijena)) || Number(cijena) < 0) {
             alert("Cijena mora biti broj veći ili jednak 0!")
             return
@@ -113,15 +159,22 @@ export default function TerminNovi() {
             return
         }
 
+        const pad = n => String(n).padStart(2, '0')
+        const datumPocetka = `${odabraniDatum}T${pad(sortirani[0])}:00`
+        const datumKraja = `${odabraniDatum}T${pad(sortirani[sortirani.length - 1] + 1)}:00`
+
         dodaj({
-            datumPocetka: datumPocetka,
-            datumKraja:   datumKraja,
-            cijena:       parseFloat(cijena),
-            rezervirao:   odabraniClan.id,
-            sudionici:    odabraniSudionici.map(c => c.id),
-            sport:        parseInt(sport)
+            datumPocetka,
+            datumKraja,
+            odabraniSati: sortirani,
+            cijena: parseFloat(cijena),
+            rezervirao: odabraniClan.id,
+            sudionici: odabraniSudionici.map(c => c.id),
+            sport: parseInt(sport)
         })
     }
+
+    const pad = n => String(n).padStart(2, '0')
 
     return (
         <>
@@ -129,27 +182,26 @@ export default function TerminNovi() {
             <Form onSubmit={odradiSubmit}>
                 <Row className="g-3">
                     <Col xs={12} md={6}>
-                        <Form.Group controlId="datumPocetka">
-                            <Form.Label className="fw-semibold">Datum i vrijeme početka</Form.Label>
-                            <Form.Control type="datetime-local" name="datumPocetka" required ref={refDatumPocetka} onFocus={() => refDatumPocetka.current?.showPicker()} />
-                        </Form.Group>
-                    </Col>
-                    <Col xs={12} md={6}>
-                        <Form.Group controlId="datumKraja">
-                            <Form.Label className="fw-semibold">Datum i vrijeme kraja</Form.Label>
-                            <Form.Control type="datetime-local" name="datumKraja" required ref={refDatumKraja} onFocus={() => refDatumKraja.current?.showPicker()} />
-                        </Form.Group>
-                    </Col>
-                    <Col xs={12} md={6}>
-                        <Form.Group controlId="cijena">
-                            <Form.Label className="fw-semibold">Cijena (€)</Form.Label>
-                            <Form.Control type="number" name="cijena" min="0" step="0.01" required />
+                        <Form.Group controlId="datum">
+                            <Form.Label className="fw-semibold">Datum</Form.Label>
+                            <Form.Control
+                                type="date"
+                                value={odabraniDatum}
+                                onChange={e => { setOdabraniDatum(e.target.value); setOdabraniSati([]) }}
+                                ref={refDatum}
+                                onClick={() => refDatum.current?.showPicker()}
+                            />
                         </Form.Group>
                     </Col>
                     <Col xs={12} md={6}>
                         <Form.Group controlId="sport" className="mb-3">
                             <Form.Label>Sport</Form.Label>
-                            <Form.Select name="sport" required>
+                            <Form.Select
+                                name="sport"
+                                required
+                                value={odabraniSport}
+                                onChange={e => { setOdabraniSport(e.target.value); setOdabraniSati([]) }}
+                            >
                                 <option value="">Odaberite sport</option>
                                 {sportovi && sportovi.map((sport) => (
                                     <option key={sport.id} value={sport.id}>
@@ -157,6 +209,62 @@ export default function TerminNovi() {
                                     </option>
                                 ))}
                             </Form.Select>
+                        </Form.Group>
+                    </Col>
+                    <Col xs={12}>
+                        <Form.Group>
+                            <Form.Label className="fw-semibold d-flex align-items-center gap-2 flex-wrap">
+                                Termini
+                                {odabraniSati.length > 0 && (
+                                    <span className="text-success fw-normal small">
+                                        {`${pad(Math.min(...odabraniSati))}:00 – ${pad(Math.max(...odabraniSati) + 1)}:00 · ${odabraniSati.length} ${satGramatika(odabraniSati.length)}`}
+                                    </span>
+                                )}
+                                {zauzetiSati.length > 0 && (
+                                    <span className="text-danger fw-normal small">· {zauzetiSati.length} zauzeto</span>
+                                )}
+                            </Form.Label>
+                            {(!odabraniDatum || !odabraniSport) ? (
+                                <p className="text-muted small mb-0">Odaberite datum i sport za prikaz termina.</p>
+                            ) : ucitavamTermine ? (
+                                <p className="text-muted small mb-0">Učitavanje termina...</p>
+                            ) : (
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '8px' }}>
+                                    {SATI.map(sat => {
+                                        const jeOdabran = odabraniSati.includes(sat)
+                                        const jeZauzet = zauzetiSati.includes(sat)
+                                        return (
+                                            <button
+                                                key={sat}
+                                                type="button"
+                                                onClick={() => !jeZauzet && toggleSat(sat)}
+                                                style={{
+                                                    padding: '8px 4px',
+                                                    borderRadius: '8px',
+                                                    border: jeZauzet ? '1.5px solid #dc3545' : jeOdabran ? '2px solid #16a34a' : '1.5px solid #dee2e6',
+                                                    background: jeZauzet ? '#fff5f5' : jeOdabran ? 'linear-gradient(135deg,#16a34a,#15803d)' : '#fff',
+                                                    color: jeZauzet ? '#dc3545' : jeOdabran ? '#fff' : '#495057',
+                                                    fontWeight: jeOdabran ? 600 : 400,
+                                                    fontSize: '0.85rem',
+                                                    cursor: jeZauzet ? 'not-allowed' : 'pointer',
+                                                    transition: 'all 0.15s ease',
+                                                    boxShadow: jeOdabran ? '0 2px 8px rgba(22,163,74,0.30)' : 'none',
+                                                    opacity: jeZauzet ? 0.8 : 1,
+                                                }}
+                                            >
+                                                <div>{`${pad(sat)}:00 – ${pad(sat + 1)}:00`}</div>
+                                                {jeZauzet && <div style={{ fontSize: '0.7rem', marginTop: '2px' }}>Zauzeto</div>}
+                                            </button>
+                                        )
+                                    })}
+                                </div>
+                            )}
+                        </Form.Group>
+                    </Col>
+                    <Col xs={12} md={6}>
+                        <Form.Group controlId="cijena">
+                            <Form.Label className="fw-semibold">Cijena (€)</Form.Label>
+                            <Form.Control type="number" name="cijena" min="0" step="0.01" required />
                         </Form.Group>
                     </Col>
                     <Col xs={12} md={6}>

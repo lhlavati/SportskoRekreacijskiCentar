@@ -40,11 +40,41 @@ const stilDodajGumb = {
     cursor: 'pointer',
 }
 
-function formatirajDatum(iso) {
+const DANI = ['nedjelja', 'ponedjeljak', 'utorak', 'srijeda', 'četvrtak', 'petak', 'subota']
+const MJESECI = ['siječnja', 'veljače', 'ožujka', 'travnja', 'svibnja', 'lipnja', 'srpnja', 'kolovoza', 'rujna', 'listopada', 'studenoga', 'prosinca']
+
+function formatirajDatumLijep(iso) {
     if (!iso) return '—'
     const d = new Date(iso)
-    const pad = n => String(n).padStart(2, '0')
-    return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()} u ${pad(d.getHours())}:${pad(d.getMinutes())}`
+    return `${DANI[d.getDay()]}, ${d.getDate()}. ${MJESECI[d.getMonth()]} ${d.getFullYear()}.`
+}
+
+function formatirajSat(iso) {
+    if (!iso) return '—'
+    const d = new Date(iso)
+    return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+}
+
+function satGramatika(n) {
+    if (n === 1) return 'sat'
+    if (n >= 2 && n <= 4) return 'sata'
+    return 'sati'
+}
+
+function grupirajSate(sati) {
+    const sortirani = [...sati].sort((a, b) => a - b)
+    const grupe = []
+    let trenutna = [sortirani[0]]
+    for (let i = 1; i < sortirani.length; i++) {
+        if (sortirani[i] === sortirani[i - 1] + 1) {
+            trenutna.push(sortirani[i])
+        } else {
+            grupe.push(trenutna)
+            trenutna = [sortirani[i]]
+        }
+    }
+    grupe.push(trenutna)
+    return grupe
 }
 
 export default function TerminPregled() {
@@ -132,15 +162,36 @@ export default function TerminPregled() {
                                     <div className="d-flex align-items-center gap-2">
                                         <FaCalendarAlt />
                                         <span className="fw-semibold small">
-                                            {formatirajDatum(termin.datumPocetka)}
+                                            {formatirajDatumLijep(termin.datumPocetka)}
                                         </span>
                                     </div>
-                                    <div className="d-flex align-items-center gap-2 mt-1" style={{ opacity: 0.8 }}>
-                                        <FaClock size={12} />
-                                        <span style={{ fontSize: '0.8rem' }}>
-                                            do {formatirajDatum(termin.datumKraja)}
-                                        </span>
-                                    </div>
+                                    {termin.odabraniSati && termin.odabraniSati.length > 0
+                                        ? grupirajSate(termin.odabraniSati).map((grupa, i) => {
+                                            const pad = n => String(n).padStart(2, '0')
+                                            const n = grupa.length
+                                            return (
+                                                <div key={i} className="d-flex align-items-center gap-2 mt-1" style={{ opacity: 0.85 }}>
+                                                    <FaClock size={12} />
+                                                    <span style={{ fontSize: '0.85rem' }}>
+                                                        {`${pad(grupa[0])}:00 – ${pad(grupa[n - 1] + 1)}:00 · ${n} ${satGramatika(n)}`}
+                                                    </span>
+                                                </div>
+                                            )
+                                        })
+                                        : (
+                                            <div className="d-flex align-items-center gap-2 mt-1" style={{ opacity: 0.85 }}>
+                                                <FaClock size={12} />
+                                                <span style={{ fontSize: '0.85rem' }}>
+                                                    {(() => {
+                                                        const ukupnoSati = termin.datumPocetka && termin.datumKraja
+                                                            ? (new Date(termin.datumKraja) - new Date(termin.datumPocetka)) / 3600000
+                                                            : 0
+                                                        return `${formatirajSat(termin.datumPocetka)} – ${formatirajSat(termin.datumKraja)}${ukupnoSati > 0 ? ` · ${ukupnoSati} ${satGramatika(ukupnoSati)}` : ''}`
+                                                    })()}
+                                                </span>
+                                            </div>
+                                        )
+                                    }
                                 </div>
 
                                 <div style={{ padding: '20px' }}>
@@ -151,7 +202,7 @@ export default function TerminPregled() {
 
                                     <div className="d-flex align-items-center gap-2 mb-3 text-muted small">
                                         <FaUser />
-                                        <span>Rezervirao: <strong>{dohvatiImeClana(termin.rezervirao)}</strong></span>
+                                        <span>Rezervirao/la: <strong>{dohvatiImeClana(termin.rezervirao)}</strong></span>
                                     </div>
 
                                     <div className="d-flex align-items-start gap-2 mb-3 flex-wrap">
