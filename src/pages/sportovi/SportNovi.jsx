@@ -111,10 +111,10 @@ export default function SportNovi() {
           <Form.Label>Cijena termina (€)</Form.Label>
           <Form.Control type="number" name="cijenaTermina" min="0" step="0.01" />
         </Form.Group>
-        <Form.Group controlId="uZatvorenom">
+        <Form.Group controlId="uZatvorenom" className="form-switch mt-2 px-4">
           <Form.Check label="U zatvorenom" name="uZatvorenom" />
         </Form.Group>
-        <Form.Group controlId="kontaktni">
+        <Form.Group controlId="kontaktni" className="form-switch mt-2 px-4">
           <Form.Check label="Kontaktni" name="kontaktni" />
         </Form.Group>
 
