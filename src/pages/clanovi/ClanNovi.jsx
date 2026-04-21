@@ -1,4 +1,4 @@
-import { Button, Col, Form, Row } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { RouteNames } from "../../constants";
 import ClanService from "../../services/clanovi/ClanService";
@@ -54,7 +54,7 @@ export default function ClanNovi() {
 
     const asYouType = new AsYouType(zemlja);
     asYouType.input(kontaktBroj);
-    const formatiraniBroj = asYouType.getNumber().formatInternational(); 
+    const formatiraniBroj = asYouType.getNumber().formatInternational();
 
     dodaj({
       ime: ime,
@@ -68,22 +68,22 @@ export default function ClanNovi() {
     <>
       <h3>Unos novog člana</h3>
       <Form onSubmit={odradiSubmit}>
-        <Form.Group controlId="ime">
+        <Form.Group controlId="ime" className="mb-3">
           <Form.Label>Ime</Form.Label>
           <Form.Control type="text" name="ime" required />
         </Form.Group>
-        
-        <Form.Group controlId="prezime">
+
+        <Form.Group controlId="prezime" className="mb-3">
           <Form.Label>Prezime</Form.Label>
           <Form.Control type="text" name="prezime" required />
         </Form.Group>
-        
-        <Form.Group controlId="email">
+
+        <Form.Group controlId="email" className="mb-3">
           <Form.Label>E-mail</Form.Label>
           <Form.Control type="email" name="email" required />
         </Form.Group>
-        
-        <Form.Group controlId="kontaktBroj">
+
+        <Form.Group controlId="kontaktBroj" className="mb-3">
           <Form.Label>Kontakt broj</Form.Label>
           <br />
           <PhoneInputWithCountrySelect
@@ -99,18 +99,14 @@ export default function ClanNovi() {
 
         <hr style={{ marginTop: "20px", border: "0" }} />
 
-        <Row>
-          <Col>
-            <Link to={RouteNames.CLANOVI} className="btn btn-danger">
-              Odustani
-            </Link>
-          </Col>
-          <Col>
-            <Button type="submit" variant="success">
-              Dodaj novog člana
-            </Button>
-          </Col>
-        </Row>
+        <div className="d-grid gap-2 d-sm-flex justify-content-sm-between mt-3">
+          <Link to={RouteNames.CLANOVI} className="btn btn-danger">
+            Odustani
+          </Link>
+          <Button type="submit" variant="success">
+            Dodaj novog člana
+          </Button>
+        </div>
       </Form>
     </>
   );

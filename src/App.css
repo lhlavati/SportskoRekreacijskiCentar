@@ -68,6 +68,21 @@ body {
   overflow: hidden;
 }
 
+@media (max-width: 575px) {
+  .src-app {
+    padding: 0 16px 24px !important;
+    border-radius: var(--r-lg) !important;
+    margin-top: 16px !important;
+    margin-bottom: 16px !important;
+  }
+  .src-navbar {
+    margin-left: -16px;
+    margin-right: -16px;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
+
 /* ── Navbar ────────────────────────────────────────────────── */
 .src-navbar {
   background: #fff !important;
@@ -455,6 +470,8 @@ a:hover { color: var(--g-700); }
   color: #fff;
 }
 .sort-pill--aktivan:hover { background: var(--g-700); border-color: var(--g-700); }
+.sort-pill--reset { border-color: #e5e7eb; color: #6b7280; }
+.sort-pill--reset:hover { background: #f3f4f6; border-color: #d1d5db; color: #374151; }
 
 /* ── Filtriranje ─────────────────────────────────────────────── */
 .filter-traka {

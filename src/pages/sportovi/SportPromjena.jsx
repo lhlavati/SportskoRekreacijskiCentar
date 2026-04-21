@@ -1,4 +1,4 @@
-import { Button, Col, Form, Row } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { RouteNames } from "../../constants";
 import SportService from "../../services/sportovi/SportService";
@@ -106,12 +106,11 @@ export default function SportPromjena() {
     <>
       <h3>Unos novog sporta</h3>
       <Form onSubmit={odradiSubmit}>
-        <Form.Group controlId="naziv">
+        <Form.Group controlId="naziv" className="mb-3">
           <Form.Label>Naziv</Form.Label>
-          <Form.Control type="text" name="naziv" required
-            defaultValue={sport.naziv} />
+          <Form.Control type="text" name="naziv" required defaultValue={sport.naziv} />
         </Form.Group>
-        <Form.Group controlId="kategorija">
+        <Form.Group controlId="kategorija" className="mb-3">
             <Form.Label>Kategorija</Form.Label>
             <Form.Select name="kategorija" required value={sport.kategorija || ''} onChange={(e) => setSport({...sport, kategorija: parseInt(e.target.value)})}>
                 <option value="">Odaberite kategoriju</option>
@@ -122,28 +121,25 @@ export default function SportPromjena() {
                 ))}
             </Form.Select>
         </Form.Group>
-        <Form.Group controlId="maxIgraca">
+        <Form.Group controlId="maxIgraca" className="mb-3">
           <Form.Label>Max Igrača</Form.Label>
-          <Form.Control type="number" name="maxIgraca" step={1}
-            defaultValue={sport.maxIgraca} />
+          <Form.Control type="number" name="maxIgraca" step={1} defaultValue={sport.maxIgraca} />
         </Form.Group>
-        <Form.Group controlId="trajanjeMin">
+        <Form.Group controlId="trajanjeMin" className="mb-3">
           <Form.Label>Trajanje (min)</Form.Label>
-          <Form.Control type="number" name="trajanjeMin" step={1}
-            defaultValue={sport.trajanjeMin} />
+          <Form.Control type="number" name="trajanjeMin" step={1} defaultValue={sport.trajanjeMin} />
         </Form.Group>
-        <Form.Group controlId="cijenaTermina">
+        <Form.Group controlId="cijenaTermina" className="mb-3">
           <Form.Label>Cijena termina (€)</Form.Label>
-          <Form.Control type="number" name="cijenaTermina" min="0" step="0.01"
-            defaultValue={sport.cijenaTermina} />
+          <Form.Control type="number" name="cijenaTermina" min="0" step="0.01" defaultValue={sport.cijenaTermina} />
         </Form.Group>
-        <Form.Group controlId="uZatvorenom">
+        <Form.Group controlId="uZatvorenom" className="mb-2">
           <Form.Check label="U zatvorenom" name="uZatvorenom"
             checked={uZatvorenom}
             onChange={(e) => { setuZatvorenom(e.target.checked) }}
           />
         </Form.Group>
-        <Form.Group controlId="kontaktni">
+        <Form.Group controlId="kontaktni" className="mb-3">
           <Form.Check label="Kontaktni" name="kontaktni"
             checked={kontaktni}
             onChange={(e) => { setKontaktni(e.target.checked) }}
@@ -152,18 +148,14 @@ export default function SportPromjena() {
 
         <hr style={{ marginTop: "20px", border: "0" }} />
 
-        <Row>
-          <Col>
-            <Link to={RouteNames.SPORTOVI} className="btn btn-danger">
-              Odustani
-            </Link>
-          </Col>
-          <Col>
-            <Button type="sumbit" variant="success">
-              Promjeni sport
-            </Button>
-          </Col>
-        </Row>
+        <div className="d-grid gap-2 d-sm-flex justify-content-sm-between mt-3">
+          <Link to={RouteNames.SPORTOVI} className="btn btn-danger">
+            Odustani
+          </Link>
+          <Button type="sumbit" variant="success">
+            Promjeni sport
+          </Button>
+        </div>
       </Form>
     </>
   );

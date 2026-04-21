@@ -104,6 +104,16 @@ export default function SportPregled() {
                 Dodavanje novog sporta
             </Link>
 
+            {/* ── Reset sortiranja (desktop) ── */}
+            {sortPolje && (
+                <div className="d-none d-md-flex align-items-center gap-2 mb-2">
+                    <span className="text-muted small">
+                        Sortirano po: <strong>{SORT_OPCIJE.find(o => o.polje === sortPolje)?.tekst}</strong> {sortSmjer === 'asc' ? '▲' : '▼'}
+                    </span>
+                    <button className="sort-pill sort-pill--reset" onClick={() => setSortPolje('')}>× Poništi</button>
+                </div>
+            )}
+
             {/* ── Tablica (md i veće) ── */}
             <div className="d-none d-md-block">
                 <Table striped bordered hover>
@@ -152,6 +162,9 @@ export default function SportPregled() {
                             {tekst}{sortPolje === polje ? (sortSmjer === 'asc' ? ' ▲' : ' ▼') : ''}
                         </button>
                     ))}
+                    {sortPolje && (
+                        <button className="sort-pill sort-pill--reset" onClick={() => setSortPolje('')}>× Poništi</button>
+                    )}
                 </div>
 
                 <Row xs={1} sm={2} className="g-3">

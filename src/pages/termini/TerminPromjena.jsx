@@ -244,7 +244,7 @@ export default function TerminPromjena() {
                             ) : ucitavamTermine ? (
                                 <p className="text-muted small mb-0">Učitavanje termina...</p>
                             ) : (
-                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '8px' }}>
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: '8px' }}>
                                     {SATI.map(sat => {
                                         const jeOdabran = odabraniSati.includes(sat)
                                         const jeZauzet = zauzetiSati.includes(sat)
@@ -278,7 +278,7 @@ export default function TerminPromjena() {
                     </Col>
                     {odabraniSati.length > 0 && odabraniSport && (
                         <Col xs={12}>
-                            <div className="d-flex align-items-center gap-2 p-3 rounded-3 bg-success bg-opacity-10 border border-success border-opacity-25">
+                            <div className="d-flex align-items-center flex-wrap gap-2 p-3 rounded-3 bg-success bg-opacity-10 border border-success border-opacity-25">
                                 <FaEuroSign color="#16a34a" />
                                 <span className="fw-semibold text-success">
                                     Ukupna cijena: {odabraniSati.length * (sportovi.find(s => s.id === parseInt(odabraniSport))?.cijenaTermina ?? 0)} €
@@ -393,18 +393,14 @@ export default function TerminPromjena() {
 
                 <hr style={{ marginTop: '20px', border: '0' }} />
 
-                <Row>
-                    <Col>
-                        <Link to={RouteNames.TERMINI} className="btn btn-danger">
-                            Odustani
-                        </Link>
-                    </Col>
-                    <Col className="text-end">
-                        <Button type="submit" variant="success">
-                            Spremi promjene
-                        </Button>
-                    </Col>
-                </Row>
+                <div className="d-grid gap-2 d-sm-flex justify-content-sm-between mt-3">
+                    <Link to={RouteNames.TERMINI} className="btn btn-danger">
+                        Odustani
+                    </Link>
+                    <Button type="submit" variant="success">
+                        Spremi promjene
+                    </Button>
+                </div>
             </Form>
         </>
     )

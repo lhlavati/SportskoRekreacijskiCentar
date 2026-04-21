@@ -204,6 +204,9 @@ export default function TerminPregled() {
                         {tekst}{sortPolje === polje ? (sortSmjer === 'asc' ? ' ▲' : ' ▼') : ''}
                     </button>
                 ))}
+                {sortPolje && (
+                    <button className="sort-pill sort-pill--reset" onClick={() => setSortPolje('')}>× Poništi</button>
+                )}
             </div>
 
             {/* ── Filter ── */}

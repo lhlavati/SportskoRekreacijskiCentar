@@ -60,6 +60,14 @@ export default function KategorijaPregled() {
                 Dodavanje nove kategorije
             </Link>
 
+            {/* ── Reset sortiranja (desktop) ── */}
+            {sortPolje && (
+                <div className="d-none d-md-flex align-items-center gap-2 mb-2">
+                    <span className="text-muted small">Sortirano po: <strong>Nazivu</strong> {sortSmjer === 'asc' ? '▲' : '▼'}</span>
+                    <button className="sort-pill sort-pill--reset" onClick={() => setSortPolje('')}>× Poništi</button>
+                </div>
+            )}
+
             {/* ── Tablica (md i veće) ── */}
             <div className="d-none d-md-block">
                 <Table striped bordered hover>
@@ -93,6 +101,9 @@ export default function KategorijaPregled() {
                     >
                         Naziv{sortPolje === 'naziv' ? (sortSmjer === 'asc' ? ' ▲' : ' ▼') : ''}
                     </button>
+                    {sortPolje && (
+                        <button className="sort-pill sort-pill--reset" onClick={() => setSortPolje('')}>× Poništi</button>
+                    )}
                 </div>
 
                 <Row xs={1} sm={2} className="g-3">

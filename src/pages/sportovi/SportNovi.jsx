@@ -1,4 +1,4 @@
-import { Button, Col, Form, Row } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { RouteNames } from "../../constants";
 import SportService from "../../services/sportovi/SportService";
@@ -8,7 +8,7 @@ import KategorijaService from "../../services/kategorije/KategorijaService";
 export default function SportNovi() {
   const navigate = useNavigate();
   const [kategorija, setKategorija] = useState([])
-  
+
   useEffect(() => {
     ucitajKategorije()
   })
@@ -71,7 +71,7 @@ export default function SportNovi() {
 
     dodaj({
       naziv: podaci.get("naziv"),
-      kategorija: odabranaKategorija,      
+      kategorija: odabranaKategorija,
       kontaktni: podaci.get("kontaktni"),
       maxIgraca: parseInt(podaci.get("maxIgraca")),
       uZatvorenom: podaci.get("uZatvorenom"),
@@ -84,7 +84,7 @@ export default function SportNovi() {
     <>
       <h3>Unos novog sporta</h3>
       <Form onSubmit={odradiSubmit}>
-        <Form.Group controlId="naziv">
+        <Form.Group controlId="naziv" className="mb-3">
           <Form.Label>Naziv</Form.Label>
           <Form.Control type="text" name="naziv" required />
         </Form.Group>
@@ -99,39 +99,35 @@ export default function SportNovi() {
                 ))}
             </Form.Select>
         </Form.Group>
-        <Form.Group controlId="maxIgraca">
+        <Form.Group controlId="maxIgraca" className="mb-3">
           <Form.Label>Max Igrača</Form.Label>
           <Form.Control type="number" name="maxIgraca" step={1} />
         </Form.Group>
-        <Form.Group controlId="trajanjeMin">
+        <Form.Group controlId="trajanjeMin" className="mb-3">
           <Form.Label>Trajanje (min)</Form.Label>
           <Form.Control type="number" name="trajanjeMin" step={1} />
         </Form.Group>
-        <Form.Group controlId="cijenaTermina">
+        <Form.Group controlId="cijenaTermina" className="mb-3">
           <Form.Label>Cijena termina (€)</Form.Label>
           <Form.Control type="number" name="cijenaTermina" min="0" step="0.01" />
         </Form.Group>
-        <Form.Group controlId="uZatvorenom" className="form-switch mt-2 px-4">
+        <Form.Group controlId="uZatvorenom" className="form-switch mt-2 px-4 mb-2">
           <Form.Check label="U zatvorenom" name="uZatvorenom" />
         </Form.Group>
-        <Form.Group controlId="kontaktni" className="form-switch mt-2 px-4">
+        <Form.Group controlId="kontaktni" className="form-switch mt-2 px-4 mb-3">
           <Form.Check label="Kontaktni" name="kontaktni" />
         </Form.Group>
 
         <hr style={{ marginTop: "20px", border: "0" }} />
 
-        <Row>
-          <Col>
-            <Link to={RouteNames.SPORTOVI} className="btn btn-danger">
-              Odustani
-            </Link>
-          </Col>
-          <Col>
-            <Button type="sumbit" variant="success">
-              Dodaj novi sport
-            </Button>
-          </Col>
-        </Row>
+        <div className="d-grid gap-2 d-sm-flex justify-content-sm-between mt-3">
+          <Link to={RouteNames.SPORTOVI} className="btn btn-danger">
+            Odustani
+          </Link>
+          <Button type="sumbit" variant="success">
+            Dodaj novi sport
+          </Button>
+        </div>
       </Form>
     </>
   );
