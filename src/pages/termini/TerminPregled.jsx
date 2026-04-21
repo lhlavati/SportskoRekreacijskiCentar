@@ -43,6 +43,12 @@ const stilDodajGumb = {
 const DANI = ['nedjelja', 'ponedjeljak', 'utorak', 'srijeda', 'četvrtak', 'petak', 'subota']
 const MJESECI = ['siječnja', 'veljače', 'ožujka', 'travnja', 'svibnja', 'lipnja', 'srpnja', 'kolovoza', 'rujna', 'listopada', 'studenoga', 'prosinca']
 
+const SORT_OPCIJE = [
+    { polje: 'datum', tekst: 'Datum' },
+    { polje: 'ukupnaCijena', tekst: 'Cijena' },
+    { polje: 'sport', tekst: 'Sport' },
+]
+
 function formatirajDatumLijep(datum) {
     if (!datum) return '—'
     const [god, mjes, dan] = datum.split('-').map(Number)
@@ -79,6 +85,11 @@ export default function TerminPregled() {
     const [sportovi, setSportovi] = useState([])
     const [clanovi, setClanovi] = useState([])
     const [hoverIds, setHoverIds] = useState([])
+    const [sortPolje, setSortPolje] = useState('')
+    const [sortSmjer, setSortSmjer] = useState('asc')
+    const [filterSport, setFilterSport] = useState('')
+    const [filterDatumOd, setFilterDatumOd] = useState('')
+    const [filterDatumDo, setFilterDatumDo] = useState('')
 
     useEffect(() => {
         ucitajTermine()
@@ -88,10 +99,7 @@ export default function TerminPregled() {
 
     async function ucitajTermine() {
         await TerminService.get().then((odgovor) => {
-            if (!odgovor.success) {
-                alert('Nije implementiran servis')
-                return
-            }
+            if (!odgovor.success) { alert('Nije implementiran servis'); return }
             setTermini(odgovor.data)
         })
     }
@@ -119,9 +127,7 @@ export default function TerminPregled() {
     }
 
     async function obrisi(id) {
-        if (!confirm('Sigurno obrisati?')) {
-            return
-        }
+        if (!confirm('Sigurno obrisati?')) return
         await TerminService.obrisi(id)
         ucitajTermine()
     }
@@ -131,9 +137,53 @@ export default function TerminPregled() {
         return sport ? sport.naziv : 'Nepoznat sport'
     }
 
+    function filtriraj(data) {
+        return data.filter(t => {
+            if (filterSport && t.sport !== parseInt(filterSport)) return false
+            if (filterDatumOd && t.datum < filterDatumOd) return false
+            if (filterDatumDo && t.datum > filterDatumDo) return false
+            return true
+        })
+    }
+
+    function sortKljuc(termin, polje) {
+        if (polje === 'sport') return dohvatiNazivSporta(termin.sport)
+        if (polje === 'datum') return termin.datum ?? ''
+        return termin[polje] ?? 0
+    }
+
+    function sortiraj(data) {
+        if (!sortPolje) return data
+        return [...data].sort((a, b) => {
+            const av = sortKljuc(a, sortPolje)
+            const bv = sortKljuc(b, sortPolje)
+            if (typeof av === 'string') {
+                const cmp = av.localeCompare(bv, 'hr', { sensitivity: 'base' })
+                return sortSmjer === 'asc' ? cmp : -cmp
+            }
+            if (av < bv) return sortSmjer === 'asc' ? -1 : 1
+            if (av > bv) return sortSmjer === 'asc' ? 1 : -1
+            return 0
+        })
+    }
+
+    function klikniSort(polje) {
+        if (sortPolje === polje) setSortSmjer(s => s === 'asc' ? 'desc' : 'asc')
+        else { setSortPolje(polje); setSortSmjer('asc') }
+    }
+
+    function ocistiFilter() {
+        setFilterSport('')
+        setFilterDatumOd('')
+        setFilterDatumDo('')
+    }
+
+    const imaFilter = filterSport || filterDatumOd || filterDatumDo
+    const prikaz = sortiraj(filtriraj(termini))
+
     return (
         <>
-            <div className="d-flex justify-content-between align-items-center mt-4 mb-4">
+            <div className="d-flex justify-content-between align-items-center mt-4 mb-3">
                 <h2 className="fw-bold mb-0">Termini</h2>
                 <Link to={RouteNames.TERMINI_NOVI}>
                     <button style={stilDodajGumb}>
@@ -143,8 +193,60 @@ export default function TerminPregled() {
                 </Link>
             </div>
 
+            {/* ── Sort ── */}
+            <div className="sort-traka mb-3">
+                {SORT_OPCIJE.map(({ polje, tekst }) => (
+                    <button
+                        key={polje}
+                        className={`sort-pill${sortPolje === polje ? ' sort-pill--aktivan' : ''}`}
+                        onClick={() => klikniSort(polje)}
+                    >
+                        {tekst}{sortPolje === polje ? (sortSmjer === 'asc' ? ' ▲' : ' ▼') : ''}
+                    </button>
+                ))}
+            </div>
+
+            {/* ── Filter ── */}
+            <div className="filter-traka mb-4">
+                <select
+                    className="filter-polje"
+                    value={filterSport}
+                    onChange={e => setFilterSport(e.target.value)}
+                >
+                    <option value="">Svi sportovi</option>
+                    {sportovi.map(s => (
+                        <option key={s.id} value={s.id}>{s.naziv}</option>
+                    ))}
+                </select>
+                {/* <div className="filter-datum-grupa">
+                    <span className="filter-datum-label">Od</span>
+                    <input
+                        type="date"
+                        className="filter-polje"
+                        style={{ minWidth: 0, flex: 'unset', width: 150 }}
+                        value={filterDatumOd}
+                        onChange={e => setFilterDatumOd(e.target.value)}
+                    />
+                </div>
+                <div className="filter-datum-grupa">
+                    <span className="filter-datum-label">Do</span>
+                    <input
+                        type="date"
+                        className="filter-polje"
+                        style={{ minWidth: 0, flex: 'unset', width: 150 }}
+                        value={filterDatumDo}
+                        onChange={e => setFilterDatumDo(e.target.value)}
+                    />
+                </div> */}
+                {imaFilter && (
+                    <button className="filter-reset" onClick={ocistiFilter}>
+                        ✕ Očisti
+                    </button>
+                )}
+            </div>
+
             <Row xs={1} sm={2} lg={3}>
-                {termini.map((termin) => {
+                {prikaz.map((termin) => {
                     const jeHover = hoverIds.includes(termin.id)
                     return (
                         <Col key={termin.id}>
@@ -237,10 +339,12 @@ export default function TerminPregled() {
                 })}
             </Row>
 
-            {termini.length === 0 && (
+            {prikaz.length === 0 && (
                 <div className="text-center text-muted py-5">
                     <FaCalendarAlt size={48} style={{ opacity: 0.2 }} />
-                    <p className="mt-3">Nema termina. Dodajte prvi!</p>
+                    <p className="mt-3">
+                        {imaFilter ? 'Nema termina koji odgovaraju filteru.' : 'Nema termina. Dodajte prvi!'}
+                    </p>
                 </div>
             )}
         </>

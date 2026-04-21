@@ -5,9 +5,17 @@ import { FaEdit, FaTrash, FaEnvelope, FaPhone } from "react-icons/fa"
 import { Link, useNavigate } from "react-router-dom"
 import { RouteNames } from "../../constants"
 
+const SORT_OPCIJE = [
+    { polje: 'ime', tekst: 'Ime' },
+    { polje: 'prezime', tekst: 'Prezime' },
+    { polje: 'email', tekst: 'E-mail' },
+]
+
 export default function ClanPregled() {
     const navigate = useNavigate()
     const [clanovi, setClanovi] = useState([])
+    const [sortPolje, setSortPolje] = useState('')
+    const [sortSmjer, setSortSmjer] = useState('asc')
 
     useEffect(() => {
         ucitajClanove()
@@ -30,6 +38,32 @@ export default function ClanPregled() {
         return `${(clan.ime?.[0] ?? '?')}${(clan.prezime?.[0] ?? '')}`.toUpperCase()
     }
 
+    function sortiraj(data) {
+        if (!sortPolje) return data
+        return [...data].sort((a, b) => {
+            const av = (a[sortPolje] ?? '').toString()
+            const bv = (b[sortPolje] ?? '').toString()
+            const cmp = av.localeCompare(bv, 'hr', { sensitivity: 'base' })
+            return sortSmjer === 'asc' ? cmp : -cmp
+        })
+    }
+
+    function klikniSort(polje) {
+        if (sortPolje === polje) setSortSmjer(s => s === 'asc' ? 'desc' : 'asc')
+        else { setSortPolje(polje); setSortSmjer('asc') }
+    }
+
+    function SortTh({ polje, tekst }) {
+        const aktivan = sortPolje === polje
+        return (
+            <th className={`sort-th${aktivan ? ' sort-th--aktivan' : ''}`} onClick={() => klikniSort(polje)}>
+                {tekst}<span className="sort-ikona">{aktivan ? (sortSmjer === 'asc' ? '▲' : '▼') : '⇅'}</span>
+            </th>
+        )
+    }
+
+    const sortirani = sortiraj(clanovi)
+
     return (
         <>
             <Link to={RouteNames.CLANOVI_NOVI} className="btn btn-success w-100 mb-3 mt-3">
@@ -41,15 +75,15 @@ export default function ClanPregled() {
                 <Table striped bordered hover>
                     <thead>
                         <tr className="text-center">
-                            <th>Ime</th>
-                            <th>Prezime</th>
-                            <th>E-mail</th>
+                            <SortTh polje="ime" tekst="Ime" />
+                            <SortTh polje="prezime" tekst="Prezime" />
+                            <SortTh polje="email" tekst="E-mail" />
                             <th>Kontakt broj</th>
                             <th>Akcija</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {clanovi && clanovi.map((clan) => (
+                        {sortirani.map((clan) => (
                             <tr className="text-center" key={clan.id}>
                                 <td>{clan.ime}</td>
                                 <td>{clan.prezime}</td>
@@ -68,8 +102,20 @@ export default function ClanPregled() {
 
             {/* ── Grid kartice (ispod md) ── */}
             <div className="d-md-none">
+                <div className="sort-traka mb-3">
+                    {SORT_OPCIJE.map(({ polje, tekst }) => (
+                        <button
+                            key={polje}
+                            className={`sort-pill${sortPolje === polje ? ' sort-pill--aktivan' : ''}`}
+                            onClick={() => klikniSort(polje)}
+                        >
+                            {tekst}{sortPolje === polje ? (sortSmjer === 'asc' ? ' ▲' : ' ▼') : ''}
+                        </button>
+                    ))}
+                </div>
+
                 <Row xs={1} sm={2} className="g-3">
-                    {clanovi && clanovi.map((clan) => (
+                    {sortirani.map((clan) => (
                         <Col key={clan.id}>
                             <div className="pregled-kartica">
                                 <div className="pregled-kartica-header">

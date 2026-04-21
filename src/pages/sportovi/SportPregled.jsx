@@ -6,10 +6,20 @@ import { Link, useNavigate } from "react-router-dom"
 import { RouteNames } from "../../constants"
 import KategorijaService from "../../services/kategorije/KategorijaService"
 
+const SORT_OPCIJE = [
+    { polje: 'naziv', tekst: 'Naziv' },
+    { polje: 'kategorija', tekst: 'Kategorija' },
+    { polje: 'maxIgraca', tekst: 'Max igrača' },
+    { polje: 'trajanjeMin', tekst: 'Trajanje' },
+    { polje: 'cijenaTermina', tekst: 'Cijena' },
+]
+
 export default function SportPregled() {
     const navigate = useNavigate()
     const [sportovi, setSportovi] = useState([])
     const [kategorije, setKategorije] = useState([])
+    const [sortPolje, setSortPolje] = useState('')
+    const [sortSmjer, setSortSmjer] = useState('asc')
 
     useEffect(() => {
         ucitajKategorije()
@@ -51,6 +61,43 @@ export default function SportPregled() {
         return k ? k.naziv : 'Nepoznata'
     }
 
+    function sortKljuc(sport, polje) {
+        if (polje === 'kategorija') return dohvatiNazivKategorije(sport.kategorija)
+        const v = sport[polje]
+        return typeof v === 'string' ? v : (v ?? 0)
+    }
+
+    function sortiraj(data) {
+        if (!sortPolje) return data
+        return [...data].sort((a, b) => {
+            const av = sortKljuc(a, sortPolje)
+            const bv = sortKljuc(b, sortPolje)
+            if (typeof av === 'string') {
+                const cmp = av.localeCompare(bv, 'hr', { sensitivity: 'base' })
+                return sortSmjer === 'asc' ? cmp : -cmp
+            }
+            if (av < bv) return sortSmjer === 'asc' ? -1 : 1
+            if (av > bv) return sortSmjer === 'asc' ? 1 : -1
+            return 0
+        })
+    }
+
+    function klikniSort(polje) {
+        if (sortPolje === polje) setSortSmjer(s => s === 'asc' ? 'desc' : 'asc')
+        else { setSortPolje(polje); setSortSmjer('asc') }
+    }
+
+    function SortTh({ polje, tekst }) {
+        const aktivan = sortPolje === polje
+        return (
+            <th className={`sort-th${aktivan ? ' sort-th--aktivan' : ''}`} onClick={() => klikniSort(polje)}>
+                {tekst}<span className="sort-ikona">{aktivan ? (sortSmjer === 'asc' ? '▲' : '▼') : '⇅'}</span>
+            </th>
+        )
+    }
+
+    const sortirani = sortiraj(sportovi)
+
     return (
         <>
             <Link to={RouteNames.SPORTOVI_NOVI} className="btn btn-success w-100 mb-3 mt-3">
@@ -62,18 +109,18 @@ export default function SportPregled() {
                 <Table striped bordered hover>
                     <thead>
                         <tr className="text-center">
-                            <th>Naziv</th>
-                            <th>Kategorija</th>
+                            <SortTh polje="naziv" tekst="Naziv" />
+                            <SortTh polje="kategorija" tekst="Kategorija" />
                             <th>Kontaktni</th>
-                            <th>Max igrača</th>
+                            <SortTh polje="maxIgraca" tekst="Max igrača" />
                             <th>U zatvorenom</th>
-                            <th>Trajanje (min)</th>
-                            <th>Cijena (€)</th>
+                            <SortTh polje="trajanjeMin" tekst="Trajanje (min)" />
+                            <SortTh polje="cijenaTermina" tekst="Cijena (€)" />
                             <th>Akcija</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {sportovi && sportovi.map((sport) => (
+                        {sortirani.map((sport) => (
                             <tr className="text-center" key={sport.id}>
                                 <td>{sport.naziv}</td>
                                 <td>{dohvatiNazivKategorije(sport.kategorija)}</td>
@@ -95,8 +142,20 @@ export default function SportPregled() {
 
             {/* ── Grid kartice (ispod md) ── */}
             <div className="d-md-none">
+                <div className="sort-traka mb-3">
+                    {SORT_OPCIJE.map(({ polje, tekst }) => (
+                        <button
+                            key={polje}
+                            className={`sort-pill${sortPolje === polje ? ' sort-pill--aktivan' : ''}`}
+                            onClick={() => klikniSort(polje)}
+                        >
+                            {tekst}{sortPolje === polje ? (sortSmjer === 'asc' ? ' ▲' : ' ▼') : ''}
+                        </button>
+                    ))}
+                </div>
+
                 <Row xs={1} sm={2} className="g-3">
-                    {sportovi && sportovi.map((sport) => (
+                    {sortirani.map((sport) => (
                         <Col key={sport.id}>
                             <div className="pregled-kartica">
                                 <div className="pregled-kartica-header">
