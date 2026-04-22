@@ -195,51 +195,51 @@ export default function TerminPregled() {
                 </Link>
             </div>
 
-            {/* ── Sort ── */}
-            <div className="sort-traka mb-3">
-                {SORT_OPCIJE.map(({ polje, tekst }) => (
-                    <button
-                        key={polje}
-                        className={`sort-pill${sortPolje === polje ? ' sort-pill--aktivan' : ''}`}
-                        onClick={() => klikniSort(polje)}
-                    >
-                        {tekst}{sortPolje === polje ? (sortSmjer === 'asc' ? ' ▲' : ' ▼') : ''}
-                    </button>
-                ))}
-                {sortPolje && (
-                    <button className="sort-pill sort-pill--reset" onClick={() => setSortPolje('')}>× Poništi</button>
-                )}
-            </div>
+            <div className="d-flex mb-4 gap-3 align-items-start">
+                {/* ── Sort ── */}
+                <div className="sort-traka flex-shrink-0">
+                    {SORT_OPCIJE.map(({ polje, tekst }) => (
+                        <button
+                            key={polje}
+                            className={`sort-pill${sortPolje === polje ? ' sort-pill--aktivan' : ''}`}
+                            onClick={() => klikniSort(polje)}
+                        >
+                            {tekst}{sortPolje === polje ? (sortSmjer === 'asc' ? ' ▲' : ' ▼') : ''}
+                        </button>
+                    ))}
+                    {sortPolje && (
+                        <button className="sort-pill sort-pill--reset" onClick={() => setSortPolje('')}>× Poništi</button>
+                    )}
+                </div>
 
-            {/* ── Filter ── */}
-            <div className="mb-4">
-                <div className="d-flex align-items-center gap-2 flex-wrap">
+                {/* ── Filter ── */}
+                <div className="d-flex align-items-center gap-3">
                     <button
                         className={`sport-filter-toggle${prikaziSportove ? ' sport-filter-toggle--aktivan' : ''}`}
                         onClick={() => setPrikaziSportove(p => !p)}
                     >
-                        Prikaži sve sportove za filtriranje
-                        <span className="sport-filter-toggle__strelica">{prikaziSportove ? '▲' : '▼'}</span>
+                        Filter
+                        <span className="sport-filter-toggle__strelica">{prikaziSportove ? '▶' : ''}</span>
                     </button>
+                    {prikaziSportove && (
+                        <div className="d-flex flex-wrap gap-2">
+                            {sportovi.map(s => (
+                                <button
+                                    key={s.id}
+                                    className={`sport-pill${filterSportovi.includes(s.id) ? ' sport-pill--aktivan' : ''}`}
+                                    onClick={() => togglajSport(s.id)}
+                                >
+                                    {s.naziv}
+                                </button>
+                            ))}
+                        </div>
+                    )}
                     {imaFilter && (
                         <button className="filter-reset" onClick={ocistiFilter}>
                             ✕ Očisti filtere
                         </button>
                     )}
                 </div>
-                {prikaziSportove && (
-                    <div className="sport-filter-traka">
-                        {sportovi.map(s => (
-                            <button
-                                key={s.id}
-                                className={`sport-pill${filterSportovi.includes(s.id) ? ' sport-pill--aktivan' : ''}`}
-                                onClick={() => togglajSport(s.id)}
-                            >
-                                {s.naziv}
-                            </button>
-                        ))}
-                    </div>
-                )}
             </div>
 
             <Row xs={1} sm={2} lg={3}>
