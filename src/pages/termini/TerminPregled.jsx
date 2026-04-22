@@ -312,7 +312,6 @@ export default function TerminPregled() {
 
                                     <div className="mb-3">
                                         <span className="d-inline-flex align-items-center gap-2 bg-success bg-opacity-25 text-success rounded-pill px-3 py-1 fw-bold small border border-success border-opacity-25">
-                                            <FaDumbbell size={12} />
                                             {dohvatiNazivSporta(termin.sport)}
                                         </span>
                                     </div>
