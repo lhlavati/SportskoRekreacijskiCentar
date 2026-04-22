@@ -131,7 +131,7 @@ export default function GeneriranjePodataka() {
       for (let i = 0; i < Number(brojKategorija); i++) {
         const naziv =
           koristeneKategorije[i] ??
-          `${faker.helpers.arrayElement(SPORTSKE_KATEGORIJE)} ${i + 1}`;
+          faker.helpers.arrayElement(SPORTSKE_KATEGORIJE);
         const odgovor = await KategorijaService.dodaj({ naziv });
         if (odgovor?.data?.id) {
           novaKategorijeIds.push(odgovor.data.id);

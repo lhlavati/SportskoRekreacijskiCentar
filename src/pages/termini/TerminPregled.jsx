@@ -87,9 +87,8 @@ export default function TerminPregled() {
     const [hoverIds, setHoverIds] = useState([])
     const [sortPolje, setSortPolje] = useState('')
     const [sortSmjer, setSortSmjer] = useState('asc')
-    const [filterSport, setFilterSport] = useState('')
-    const [filterDatumOd, setFilterDatumOd] = useState('')
-    const [filterDatumDo, setFilterDatumDo] = useState('')
+    const [filterSportovi, setFilterSportovi] = useState([])
+    const [prikaziSportove, setPrikaziSportove] = useState(false)
 
     useEffect(() => {
         ucitajTermine()
@@ -139,11 +138,16 @@ export default function TerminPregled() {
 
     function filtriraj(data) {
         return data.filter(t => {
-            if (filterSport && t.sport !== parseInt(filterSport)) return false
-            if (filterDatumOd && t.datum < filterDatumOd) return false
-            if (filterDatumDo && t.datum > filterDatumDo) return false
+            if (filterSportovi.length > 0 && !filterSportovi.includes(parseInt(t.sport))) return false
             return true
         })
+    }
+
+    function togglajSport(id) {
+        const idBroj = parseInt(id)
+        setFilterSportovi(prev =>
+            prev.includes(idBroj) ? prev.filter(i => i !== idBroj) : [...prev, idBroj]
+        )
     }
 
     function sortKljuc(termin, polje) {
@@ -173,12 +177,10 @@ export default function TerminPregled() {
     }
 
     function ocistiFilter() {
-        setFilterSport('')
-        setFilterDatumOd('')
-        setFilterDatumDo('')
+        setFilterSportovi([])
     }
 
-    const imaFilter = filterSport || filterDatumOd || filterDatumDo
+    const imaFilter = filterSportovi.length > 0
     const prikaz = sortiraj(filtriraj(termini))
 
     return (
@@ -210,41 +212,33 @@ export default function TerminPregled() {
             </div>
 
             {/* ── Filter ── */}
-            <div className="filter-traka mb-4">
-                <select
-                    className="filter-polje"
-                    value={filterSport}
-                    onChange={e => setFilterSport(e.target.value)}
-                >
-                    <option value="">Svi sportovi</option>
-                    {sportovi.map(s => (
-                        <option key={s.id} value={s.id}>{s.naziv}</option>
-                    ))}
-                </select>
-                {/* <div className="filter-datum-grupa">
-                    <span className="filter-datum-label">Od</span>
-                    <input
-                        type="date"
-                        className="filter-polje"
-                        style={{ minWidth: 0, flex: 'unset', width: 150 }}
-                        value={filterDatumOd}
-                        onChange={e => setFilterDatumOd(e.target.value)}
-                    />
-                </div>
-                <div className="filter-datum-grupa">
-                    <span className="filter-datum-label">Do</span>
-                    <input
-                        type="date"
-                        className="filter-polje"
-                        style={{ minWidth: 0, flex: 'unset', width: 150 }}
-                        value={filterDatumDo}
-                        onChange={e => setFilterDatumDo(e.target.value)}
-                    />
-                </div> */}
-                {imaFilter && (
-                    <button className="filter-reset" onClick={ocistiFilter}>
-                        ✕ Očisti
+            <div className="mb-4">
+                <div className="d-flex align-items-center gap-2 flex-wrap">
+                    <button
+                        className={`sport-filter-toggle${prikaziSportove ? ' sport-filter-toggle--aktivan' : ''}`}
+                        onClick={() => setPrikaziSportove(p => !p)}
+                    >
+                        Prikaži sve sportove za filtriranje
+                        <span className="sport-filter-toggle__strelica">{prikaziSportove ? '▲' : '▼'}</span>
                     </button>
+                    {imaFilter && (
+                        <button className="filter-reset" onClick={ocistiFilter}>
+                            ✕ Očisti filtere
+                        </button>
+                    )}
+                </div>
+                {prikaziSportove && (
+                    <div className="sport-filter-traka">
+                        {sportovi.map(s => (
+                            <button
+                                key={s.id}
+                                className={`sport-pill${filterSportovi.includes(s.id) ? ' sport-pill--aktivan' : ''}`}
+                                onClick={() => togglajSport(s.id)}
+                            >
+                                {s.naziv}
+                            </button>
+                        ))}
+                    </div>
                 )}
             </div>
 
