@@ -89,6 +89,7 @@ export default function TerminPregled() {
     const [sortSmjer, setSortSmjer] = useState('asc')
     const [filterSportovi, setFilterSportovi] = useState([])
     const [prikaziSportove, setPrikaziSportove] = useState(false)
+    const [prikaziSort, setPrikaziSort] = useState(false)
 
     useEffect(() => {
         ucitajTermine()
@@ -195,20 +196,31 @@ export default function TerminPregled() {
                 </Link>
             </div>
 
-            <div className="d-flex mb-4 gap-3 align-items-start">
+            <div className="d-flex mb-4 gap-3 align-items-center flex-wrap">
                 {/* ── Sort ── */}
-                <div className="sort-traka flex-shrink-0">
-                    {SORT_OPCIJE.map(({ polje, tekst }) => (
-                        <button
-                            key={polje}
-                            className={`sort-pill${sortPolje === polje ? ' sort-pill--aktivan' : ''}`}
-                            onClick={() => klikniSort(polje)}
-                        >
-                            {tekst}{sortPolje === polje ? (sortSmjer === 'asc' ? ' ▲' : ' ▼') : ''}
-                        </button>
-                    ))}
+                <div className="d-flex align-items-center gap-4">
+                    <button
+                        className={`sport-filter-toggle${prikaziSort ? ' sport-filter-toggle--aktivan' : ''}`}
+                        onClick={() => setPrikaziSort(p => !p)}
+                    >
+                        Sort
+                        <span className="sport-filter-toggle__strelica">{prikaziSort ? '▶' : ''}</span>
+                    </button>
+                    {prikaziSort && (
+                        <div className="d-flex gap-2">
+                            {SORT_OPCIJE.map(({ polje, tekst }) => (
+                                <button
+                                    key={polje}
+                                    className={`sport-pill${sortPolje === polje ? ' sport-pill--aktivan' : ''}`}
+                                    onClick={() => klikniSort(polje)}
+                                >
+                                    {tekst}{sortPolje === polje ? (sortSmjer === 'asc' ? ' ▲' : ' ▼') : ''}
+                                </button>
+                            ))}
+                        </div>
+                    )}
                     {sortPolje && (
-                        <button className="sort-pill sort-pill--reset" onClick={() => setSortPolje('')}>× Poništi</button>
+                        <button className="filter-reset" onClick={() => setSortPolje('')}>× Poništi</button>
                     )}
                 </div>
 
