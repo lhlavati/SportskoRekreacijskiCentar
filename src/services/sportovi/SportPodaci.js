@@ -7,7 +7,8 @@ export const sportovi = [
         maxIgraca: 22,
         uZatvorenom: false,
         trajanjeMin: 90,
-        cijenaTermina: 10
+        cijenaTermina: 10,
+        pdf: 'nogomet.jsx'
     },
     {
         id: 2,
@@ -27,7 +28,8 @@ export const sportovi = [
         maxIgraca: 4,
         uZatvorenom: false,
         trajanjeMin: 120,
-        cijenaTermina: 10
+        cijenaTermina: 10,
+        pdf: 'tenis.jsx'
     },
     {
         id: 4,
