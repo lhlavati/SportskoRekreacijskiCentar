@@ -12,6 +12,8 @@
   "dependencies": {
     "@lottiefiles/dotlottie-react": "^0.18.10",
     "bootstrap": "^5.3.8",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.7",
     "libphonenumber-js": "^1.12.41",
     "react": "^19.2.4",
     "react-bootstrap": "^2.10.10",
