@@ -4,151 +4,174 @@ import { RouteNames } from "../../constants";
 import SportService from "../../services/sportovi/SportService";
 import { useEffect, useState } from "react";
 import KategorijaService from "../../services/kategorije/KategorijaService";
+import { useForm } from "react-hook-form";
 
 export default function SportPromjena() {
-
-  const navigate = useNavigate()
-  const params = useParams()
-  const [sport, setSport] = useState({})
-  const [kontaktni, setKontaktni] = useState(false)
-  const [uZatvorenom, setuZatvorenom] = useState(false)
-  const [kategorije, setKategorije] = useState([])
+  const navigate = useNavigate();
+  const params = useParams();
+  const [kategorije, setKategorije] = useState([]);
+  const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
   useEffect(() => {
-    ucitajKategorije(),
-    ucitajSport()
-  }, [])
+    ucitajKategorije();
+    ucitajSport();
+  }, []);
 
   async function ucitajKategorije() {
     await KategorijaService.get().then((odgovor) => {
       if (!odgovor.success) {
-        alert('Nije implementiran servis')
-        return
+        alert('Nije implementiran servis');
+        return;
       }
-      setKategorije(odgovor.data)
-    })
+      setKategorije(odgovor.data);
+    });
   }
 
   async function ucitajSport() {
     await SportService.getById(params.id).then((odgovor) => {
-
       if (!odgovor.success) {
-        alert('Nije implementiran servis')
-        return
+        alert('Nije implementiran servis');
+        return;
       }
-
-      const s = odgovor.data
-
-      setSport(s)
-      setKontaktni(s.kontaktni)
-      setuZatvorenom(s.uZatvorenom)
-    })
+      const s = odgovor.data;
+      reset({
+        naziv: s.naziv,
+        kategorija: String(s.kategorija),
+        maxIgraca: s.maxIgraca,
+        trajanjeMin: s.trajanjeMin,
+        cijenaTermina: s.cijenaTermina,
+        uZatvorenom: Boolean(s.uZatvorenom),
+        kontaktni: Boolean(s.kontaktni),
+        pdf: s.pdf || '',
+      });
+    });
   }
 
   async function promjeni(sport) {
     await SportService.promjeni(params.id, sport).then(() => {
-      navigate(RouteNames.SPORTOVI)
-    })
+      navigate(RouteNames.SPORTOVI);
+    });
   }
 
-  function odradiSubmit(e) {
-    e.preventDefault();
-    const podaci = new FormData(e.target);
-
-    if (!podaci.get('naziv') || podaci.get('naziv').trim().length === 0) {
-        alert("Naziv je obavezan i ne smije sadržavati samo razmake!")
-        return
-    }
-
-    if (podaci.get('naziv').trim().length < 3) {
-        alert("Naziv sporta mora imati najmanje 3 znaka!")
-        return
-    }
-
-    if (!podaci.get('kategorija') || podaci.get('kategorija') === "") {
-        alert("Morate odabrati kategoriju!");
-        return;
-    }
-
-    const odabranaKategorija = parseInt(podaci.get('kategorija'));
-    if (isNaN(odabranaKategorija) || odabranaKategorija <= 0) {
-        alert("Odabrana kategorija nije valjanja!");
-        return;
-    }
-
-    if (isNaN(podaci.get('maxIgraca')) || podaci.get('maxIgraca') < 1 || podaci.get('maxIgraca') > 30) {
-        alert("Broj igrača ne može biti manji od 1 i veći od 30!")
-        return
-    }
-
-    if (isNaN(podaci.get('trajanjeMin')) || podaci.get('trajanjeMin') < 1 || podaci.get('trajanjeMin') > 500) {
-        alert("Trajanje mora biti broj između 1 i 500")
-        return
-    }
-
-    if (isNaN(podaci.get('cijenaTermina')) || Number(podaci.get('cijenaTermina')) < 0) {
-        alert("Cijena termina mora biti broj veći ili jednak 0!")
-        return
-    }
-
+  function odradiSubmit(data) {
     promjeni({
-      naziv: podaci.get("naziv"),
-      kategorija: parseInt(podaci.get("kategorija")),
-      kontaktni: podaci.get("kontaktni"),
-      maxIgraca: parseInt(podaci.get("maxIgraca")),
-      uZatvorenom: podaci.get("uZatvorenom"),
-      trajanjeMin: parseInt(podaci.get("trajanjeMin")),
-      cijenaTermina: parseFloat(podaci.get("cijenaTermina")),
-      pdf: podaci.get("pdf") || undefined,
+      naziv: data.naziv.trim(),
+      kategorija: parseInt(data.kategorija),
+      kontaktni: data.kontaktni,
+      maxIgraca: data.maxIgraca,
+      uZatvorenom: data.uZatvorenom,
+      trajanjeMin: data.trajanjeMin,
+      cijenaTermina: data.cijenaTermina,
+      pdf: data.pdf || undefined,
     });
   }
 
   return (
     <>
-      <h3>Unos novog sporta</h3>
-      <Form onSubmit={odradiSubmit}>
+      <h3>Promjena sporta</h3>
+      <Form onSubmit={handleSubmit(odradiSubmit)}>
         <Form.Group controlId="naziv" className="mb-3">
           <Form.Label>Naziv</Form.Label>
-          <Form.Control type="text" name="naziv" required defaultValue={sport.naziv} />
+          <Form.Control
+            type="text"
+            isInvalid={!!errors.naziv}
+            {...register('naziv', {
+              required: 'Naziv je obavezan!',
+              validate: v => v.trim().length >= 3 || 'Naziv sporta mora imati najmanje 3 znaka!'
+            })}
+          />
+          <Form.Control.Feedback type="invalid">
+            {errors.naziv?.message}
+          </Form.Control.Feedback>
         </Form.Group>
+
         <Form.Group controlId="kategorija" className="mb-3">
-            <Form.Label>Kategorija</Form.Label>
-            <Form.Select name="kategorija" required value={sport.kategorija || ''} onChange={(e) => setSport({...sport, kategorija: parseInt(e.target.value)})}>
-                <option value="">Odaberite kategoriju</option>
-                {kategorije && kategorije.map((kategorija) => (
-                    <option key={kategorija.id} value={kategorija.id}>
-                        {kategorija.naziv}
-                    </option>
-                ))}
-            </Form.Select>
+          <Form.Label>Kategorija</Form.Label>
+          <Form.Select
+            isInvalid={!!errors.kategorija}
+            {...register('kategorija', {
+              required: 'Morate odabrati kategoriju!',
+              validate: v => (v && parseInt(v) > 0) || 'Odabrana kategorija nije valjana!'
+            })}
+          >
+            <option value="">Odaberite kategoriju</option>
+            {kategorije.map((kat) => (
+              <option key={kat.id} value={kat.id}>{kat.naziv}</option>
+            ))}
+          </Form.Select>
+          <Form.Control.Feedback type="invalid">
+            {errors.kategorija?.message}
+          </Form.Control.Feedback>
         </Form.Group>
+
         <Form.Group controlId="maxIgraca" className="mb-3">
           <Form.Label>Max Igrača</Form.Label>
-          <Form.Control type="number" name="maxIgraca" step={1} defaultValue={sport.maxIgraca} />
+          <Form.Control
+            type="number"
+            step={1}
+            isInvalid={!!errors.maxIgraca}
+            {...register('maxIgraca', {
+              required: 'Broj igrača je obavezan!',
+              valueAsNumber: true,
+              min: { value: 1, message: 'Broj igrača ne može biti manji od 1!' },
+              max: { value: 30, message: 'Broj igrača ne može biti veći od 30!' }
+            })}
+          />
+          <Form.Control.Feedback type="invalid">
+            {errors.maxIgraca?.message}
+          </Form.Control.Feedback>
         </Form.Group>
+
         <Form.Group controlId="trajanjeMin" className="mb-3">
           <Form.Label>Trajanje (min)</Form.Label>
-          <Form.Control type="number" name="trajanjeMin" step={1} defaultValue={sport.trajanjeMin} />
+          <Form.Control
+            type="number"
+            step={1}
+            isInvalid={!!errors.trajanjeMin}
+            {...register('trajanjeMin', {
+              required: 'Trajanje je obavezno!',
+              valueAsNumber: true,
+              min: { value: 1, message: 'Trajanje mora biti najmanje 1 minuta!' },
+              max: { value: 500, message: 'Trajanje ne može biti veće od 500 minuta!' }
+            })}
+          />
+          <Form.Control.Feedback type="invalid">
+            {errors.trajanjeMin?.message}
+          </Form.Control.Feedback>
         </Form.Group>
+
         <Form.Group controlId="cijenaTermina" className="mb-3">
           <Form.Label>Cijena termina (€)</Form.Label>
-          <Form.Control type="number" name="cijenaTermina" min="0" step="0.01" defaultValue={sport.cijenaTermina} />
+          <Form.Control
+            type="number"
+            step="0.01"
+            isInvalid={!!errors.cijenaTermina}
+            {...register('cijenaTermina', {
+              required: 'Cijena je obavezna!',
+              valueAsNumber: true,
+              min: { value: 0, message: 'Cijena mora biti broj veći ili jednak 0!' }
+            })}
+          />
+          <Form.Control.Feedback type="invalid">
+            {errors.cijenaTermina?.message}
+          </Form.Control.Feedback>
         </Form.Group>
+
         <Form.Group controlId="uZatvorenom" className="mb-2">
-          <Form.Check label="U zatvorenom" name="uZatvorenom"
-            checked={uZatvorenom}
-            onChange={(e) => { setuZatvorenom(e.target.checked) }}
-          />
+          <Form.Check label="U zatvorenom" {...register('uZatvorenom')} />
         </Form.Group>
+
         <Form.Group controlId="kontaktni" className="mb-3">
-          <Form.Check label="Kontaktni" name="kontaktni"
-            checked={kontaktni}
-            onChange={(e) => { setKontaktni(e.target.checked) }}
-          />
+          <Form.Check label="Kontaktni" {...register('kontaktni')} />
         </Form.Group>
+
         <Form.Group controlId="pdf" className="mb-3">
           <Form.Label>PDF Generator (npr. nogomet.jsx)</Form.Label>
-          <Form.Control type="text" name="pdf" placeholder="ime-datoteke.jsx" defaultValue={sport.pdf || ''} />
+          <Form.Control
+            type="text"
+            placeholder="ime-datoteke.jsx"
+            {...register('pdf')}
+          />
         </Form.Group>
 
         <hr style={{ marginTop: "20px", border: "0" }} />
@@ -157,7 +180,7 @@ export default function SportPromjena() {
           <Link to={RouteNames.SPORTOVI} className="btn btn-danger">
             Odustani
           </Link>
-          <Button type="sumbit" variant="success">
+          <Button type="submit" variant="success">
             Promjeni sport
           </Button>
         </div>

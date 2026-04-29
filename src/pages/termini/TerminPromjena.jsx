@@ -6,6 +6,7 @@ import TerminService from "../../services/termini/TerminService"
 import ClanService from "../../services/clanovi/ClanService"
 import SportService from "../../services/sportovi/SportService"
 import { FaTimes, FaEuroSign } from "react-icons/fa"
+import { useForm, Controller } from "react-hook-form"
 
 const SATI = Array.from({ length: 14 }, (_, i) => i + 8)
 
@@ -37,6 +38,10 @@ export default function TerminPromjena() {
     const [zauzetiSati, setZauzetiSati] = useState([])
     const [ucitavamTermine, setUcitavamTermine] = useState(false)
     const refDatum = useRef(null)
+
+    const { control, handleSubmit, setValue, setError, clearErrors, formState: { errors } } = useForm({
+        defaultValues: { sport: '' }
+    })
 
     const filtriraneClanovi = pretraga.length > 0
         ? clanovi.filter(c =>
@@ -70,7 +75,11 @@ export default function TerminPromjena() {
     }, [termin.id, clanovi.length])
 
     useEffect(() => {
-        if (termin.sport) setOdabraniSport(String(termin.sport))
+        if (termin.sport) {
+            const sportStr = String(termin.sport)
+            setOdabraniSport(sportStr)
+            setValue('sport', sportStr)
+        }
     }, [termin.sport])
 
     useEffect(() => {
@@ -131,6 +140,7 @@ export default function TerminPromjena() {
         setOdabraniSudionici(prev => [...prev, clan])
         setPretragaSudionika('')
         setPrikaziDropdownSudionici(false)
+        clearErrors('sudionici')
     }
 
     function ukloniSudionika(id) {
@@ -138,43 +148,44 @@ export default function TerminPromjena() {
     }
 
     function toggleSat(sat) {
-        setOdabraniSati(prev =>
-            prev.includes(sat)
+        setOdabraniSati(prev => {
+            const noviSati = prev.includes(sat)
                 ? prev.filter(s => s !== sat)
                 : [...prev, sat].sort((a, b) => a - b)
-        )
+            if (noviSati.length > 0) clearErrors('sati')
+            return noviSati
+        })
     }
 
-    function odradiSubmit(e) {
-        e.preventDefault()
-        const podaci = new FormData(e.target)
-        const sport = podaci.get('sport')
+    function odradiSubmit(data) {
+        let imaGresku = false
 
         if (!odabraniDatum) {
-            alert("Datum je obavezan!")
-            return
-        }
-        if (odabraniDatum < new Date().toISOString().slice(0, 10)) {
-            alert("Datum ne može biti u prošlosti!")
-            return
-        }
-        if (odabraniSati.length === 0) {
-            alert("Morate odabrati barem jedan sat!")
-            return
-        }
-        if (!odabraniClan) {
-            alert("Morate odabrati člana koji rezervira!")
-            return
-        }
-        if (odabraniSudionici.length === 0) {
-            alert("Morate odabrati barem jednog sudionika!")
-            return
-        }
-        if (!sport) {
-            alert("Niste odabrali važeći sport!")
-            return
+            setError('datum', { message: 'Datum je obavezan!' })
+            imaGresku = true
+        } else if (odabraniDatum < new Date().toISOString().slice(0, 10)) {
+            setError('datum', { message: 'Datum ne može biti u prošlosti!' })
+            imaGresku = true
         }
 
+        if (odabraniSati.length === 0) {
+            setError('sati', { message: 'Morate odabrati barem jedan sat!' })
+            imaGresku = true
+        }
+
+        if (!odabraniClan) {
+            setError('rezervirao', { message: 'Morate odabrati člana koji rezervira!' })
+            imaGresku = true
+        }
+
+        if (odabraniSudionici.length === 0) {
+            setError('sudionici', { message: 'Morate odabrati barem jednog sudionika!' })
+            imaGresku = true
+        }
+
+        if (imaGresku) return
+
+        const sport = data.sport
         const sortirani = [...odabraniSati].sort((a, b) => a - b)
         const odabraniSportObj = sportovi.find(s => s.id === parseInt(sport))
         const ukupnaCijena = sortirani.length * (odabraniSportObj?.cijenaTermina ?? 0)
@@ -194,7 +205,7 @@ export default function TerminPromjena() {
     return (
         <>
             <h3 className="fw-bold mt-4 mb-4">Promjena termina</h3>
-            <Form onSubmit={odradiSubmit}>
+            <Form onSubmit={handleSubmit(odradiSubmit)}>
                 <Row className="g-3">
                     <Col xs={12} md={6}>
                         <Form.Group controlId="datum">
@@ -202,28 +213,49 @@ export default function TerminPromjena() {
                             <Form.Control
                                 type="date"
                                 value={odabraniDatum}
-                                onChange={e => { setOdabraniDatum(e.target.value); setOdabraniSati([]) }}
+                                isInvalid={!!errors.datum}
+                                onChange={e => {
+                                    setOdabraniDatum(e.target.value)
+                                    setOdabraniSati([])
+                                    clearErrors('datum')
+                                }}
                                 ref={refDatum}
                                 onClick={() => refDatum.current?.showPicker()}
                             />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.datum?.message}
+                            </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
                     <Col xs={12} md={6}>
                         <Form.Group controlId="sport" className="mb-3">
                             <Form.Label>Sport</Form.Label>
-                            <Form.Select
+                            <Controller
                                 name="sport"
-                                required
-                                value={odabraniSport}
-                                onChange={e => { setOdabraniSport(e.target.value); setOdabraniSati([]) }}
-                            >
-                                <option value="">Odaberite sport</option>
-                                {sportovi && sportovi.map((sport) => (
-                                    <option key={sport.id} value={sport.id}>
-                                        {sport.naziv}
-                                    </option>
-                                ))}
-                            </Form.Select>
+                                control={control}
+                                rules={{ required: 'Niste odabrali važeći sport!' }}
+                                render={({ field }) => (
+                                    <Form.Select
+                                        value={odabraniSport}
+                                        isInvalid={!!errors.sport}
+                                        onChange={e => {
+                                            field.onChange(e.target.value)
+                                            setOdabraniSport(e.target.value)
+                                            setOdabraniSati([])
+                                        }}
+                                    >
+                                        <option value="">Odaberite sport</option>
+                                        {sportovi && sportovi.map((sport) => (
+                                            <option key={sport.id} value={sport.id}>
+                                                {sport.naziv}
+                                            </option>
+                                        ))}
+                                    </Form.Select>
+                                )}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.sport?.message}
+                            </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
                     <Col xs={12}>
@@ -274,6 +306,9 @@ export default function TerminPromjena() {
                                     })}
                                 </div>
                             )}
+                            {errors.sati && (
+                                <div className="text-danger small mt-2">{errors.sati.message}</div>
+                            )}
                         </Form.Group>
                     </Col>
                     {odabraniSati.length > 0 && odabraniSport && (
@@ -312,11 +347,15 @@ export default function TerminPromjena() {
                                         type="text"
                                         placeholder="Pretraži po imenu ili prezimenu..."
                                         value={pretraga}
+                                        isInvalid={!!errors.rezervirao}
                                         onChange={e => { setPretraga(e.target.value); setPrikaziDropdown(true) }}
                                         onFocus={() => setPrikaziDropdown(true)}
                                         onBlur={() => setTimeout(() => setPrikaziDropdown(false), 150)}
                                         autoComplete="off"
                                     />
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.rezervirao?.message}
+                                    </Form.Control.Feedback>
                                     {prikaziDropdown && pretraga.length > 0 && (
                                         <ListGroup className="position-absolute w-100 shadow z-3 mt-1">
                                             {filtriraneClanovi.length > 0
@@ -328,6 +367,7 @@ export default function TerminPromjena() {
                                                             setOdabraniClan(c)
                                                             setPretraga('')
                                                             setPrikaziDropdown(false)
+                                                            clearErrors('rezervirao')
                                                         }}
                                                     >
                                                         <span className="fw-semibold">{c.ime} {c.prezime}</span>
@@ -365,11 +405,15 @@ export default function TerminPromjena() {
                                     type="text"
                                     placeholder="Pretraži po imenu ili prezimenu..."
                                     value={pretragaSudionika}
+                                    isInvalid={!!errors.sudionici}
                                     onChange={e => { setPretragaSudionika(e.target.value); setPrikaziDropdownSudionici(true) }}
                                     onFocus={() => setPrikaziDropdownSudionici(true)}
                                     onBlur={() => setTimeout(() => setPrikaziDropdownSudionici(false), 150)}
                                     autoComplete="off"
                                 />
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.sudionici?.message}
+                                </Form.Control.Feedback>
                                 {prikaziDropdownSudionici && pretragaSudionika.length > 0 && (
                                     <ListGroup className="position-absolute w-100 shadow z-3 mt-1">
                                         {filtriraneSudionici.length > 0
