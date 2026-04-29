@@ -77,6 +77,7 @@ export default function SportNovi() {
       uZatvorenom: podaci.get("uZatvorenom"),
       trajanjeMin: parseInt(podaci.get("trajanjeMin")),
       cijenaTermina: parseFloat(podaci.get("cijenaTermina")),
+      pdf: podaci.get("pdf") || undefined,
     });
   }
 
@@ -116,6 +117,10 @@ export default function SportNovi() {
         </Form.Group>
         <Form.Group controlId="kontaktni" className="form-switch mt-2 px-4 mb-3">
           <Form.Check label="Kontaktni" name="kontaktni" />
+        </Form.Group>
+        <Form.Group controlId="pdf" className="mb-3">
+          <Form.Label>PDF Generator (npr. nogomet.jsx)</Form.Label>
+          <Form.Control type="text" name="pdf" placeholder="ime-datoteke.jsx" />
         </Form.Group>
 
         <hr style={{ marginTop: "20px", border: "0" }} />

@@ -36,6 +36,21 @@ const SPORTSKE_KATEGORIJE = [
   "Motorni sportovi",
 ];
 
+const dostupniPdfModuli = import.meta.glob('../pdfs/*.jsx');
+const dostupniPdfFilenames = new Set(
+  Object.keys(dostupniPdfModuli).map((k) => k.replace('../pdfs/', ''))
+);
+
+function pdfZaSport(naziv) {
+  const normalized = naziv
+    .toLowerCase()
+    .replace(/\s+/g, '')
+    .replace(/č/g, 'c').replace(/ć/g, 'c')
+    .replace(/š/g, 's').replace(/đ/g, 'd').replace(/ž/g, 'z');
+  const filename = `${normalized}.jsx`;
+  return dostupniPdfFilenames.has(filename) ? filename : undefined;
+}
+
 const NAZIVI_SPORTOVA = [
   "Nogomet", "Košarka", "Rukomet", "Odbojka", "Tenis", "Stolni tenis",
   "Badminton", "Boks", "Judo", "Karate", "Taekwondo", "Hrvanje",
@@ -157,6 +172,7 @@ export default function GeneriranjePodataka() {
           uZatvorenom: faker.datatype.boolean(),
           trajanjeMin: faker.number.int({ min: 10, max: 180 }),
           cijenaTermina: faker.number.int({ min: 5, max: 50, multipleOf: 5}),
+          pdf: pdfZaSport(naziv),
         });
         upisanoSportova++;
       }

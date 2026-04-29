@@ -99,6 +99,7 @@ export default function SportPromjena() {
       uZatvorenom: podaci.get("uZatvorenom"),
       trajanjeMin: parseInt(podaci.get("trajanjeMin")),
       cijenaTermina: parseFloat(podaci.get("cijenaTermina")),
+      pdf: podaci.get("pdf") || undefined,
     });
   }
 
@@ -144,6 +145,10 @@ export default function SportPromjena() {
             checked={kontaktni}
             onChange={(e) => { setKontaktni(e.target.checked) }}
           />
+        </Form.Group>
+        <Form.Group controlId="pdf" className="mb-3">
+          <Form.Label>PDF Generator (npr. nogomet.jsx)</Form.Label>
+          <Form.Control type="text" name="pdf" placeholder="ime-datoteke.jsx" defaultValue={sport.pdf || ''} />
         </Form.Group>
 
         <hr style={{ marginTop: "20px", border: "0" }} />

@@ -61,6 +61,17 @@ export default function SportPregled() {
         return k ? k.naziv : 'Nepoznata'
     }
 
+    async function generirajPDF(sport, pdfFilename) {
+        if (!pdfFilename) { alert('Nije postavljen PDF generator za ovaj sport.'); return }
+        try {
+            const { ucitajPdfGenerator } = await import('../../utils/PdfLoader');
+            const generiraj = await ucitajPdfGenerator(pdfFilename);
+            await generiraj({ ...sport, kategorijaText: dohvatiNazivKategorije(sport.kategorija) });
+        } catch {
+            alert(`PDF generator "${pdfFilename}" nije pronađen u src/pdfs/.`);
+        }
+    }
+
     function sortKljuc(sport, polje) {
         if (polje === 'kategorija') return dohvatiNazivKategorije(sport.kategorija)
         const v = sport[polje]
@@ -143,6 +154,12 @@ export default function SportPregled() {
                                     <Button size="sm" onClick={() => navigate(`/sportovi/${sport.id}`)}>Promjena</Button>
                                     &nbsp;&nbsp;
                                     <Button size="sm" variant="danger" onClick={() => obrisi(sport.id)}>Obriši</Button>
+                                    {sport.pdf && (
+                                        <>
+                                            &nbsp;&nbsp;
+                                            <Button size="sm" variant="outline-primary" onClick={() => generirajPDF(sport, sport.pdf)}>PDF</Button>
+                                        </>
+                                    )}
                                 </td>
                             </tr>
                         ))}
@@ -211,6 +228,11 @@ export default function SportPregled() {
                                     <Button size="sm" variant="danger" className="flex-fill" onClick={() => obrisi(sport.id)}>
                                         <FaTrash className="me-1" />Obriši
                                     </Button>
+                                    {sport.pdf && (
+                                        <Button size="sm" variant="outline-primary" className="flex-fill" onClick={() => generirajPDF(sport, sport.pdf)}>
+                                            PDF
+                                        </Button>
+                                    )}
                                 </div>
                             </div>
                         </Col>
