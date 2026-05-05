@@ -27,3 +27,7 @@ export const termini = [
         ukupnaCijena: 20
     },
 ];
+
+export default {
+    termini
+}

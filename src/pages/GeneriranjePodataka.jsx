@@ -15,11 +15,16 @@ import { BsTags, BsPeople, BsDatabaseFillAdd, BsInfoCircle, BsCalendar3 } from "
 import { GiSoccerBall } from "react-icons/gi";
 import { fakerHR as faker } from "@faker-js/faker";
 
-import { RouteNames } from "../constants";
+import { DATA_SOURCE, PrefixStorage, RouteNames } from "../constants";
 import SportService from "../services/sportovi/SportService";
 import KategorijaService from "../services/kategorije/KategorijaService";
 import ClanService from "../services/clanovi/ClanService";
 import TerminService from "../services/termini/TerminService";
+import clanoviMemorija from '../services/clanovi/ClanPodaci';
+import kategorijeMemorija from '../services/kategorije/KategorijaPodaci';
+import { sportovi as sportoviMemorija } from '../services/sportovi/SportPodaci';
+import terminiMemorija from '../services/termini/TerminPodaci';
+import operateriMemorija from '../services/operateri/OperaterPodaci';
 
 const SPORTSKE_KATEGORIJE = [
   "Momčadski sportovi",
@@ -81,10 +86,13 @@ export default function GeneriranjePodataka() {
   const [brojSportova, setBrojSportova] = useState(15);
   const [brojClanova, setBrojClanova] = useState(30);
   const [brojTermina, setBrojTermina] = useState(10);
+  const [brojOperatera, setBrojOperatera] = useState(5);
   const [obrisiPostojece, setObrisiPostojece] = useState(false);
   const [generira, setGeneria] = useState(false);
   const [rezultat, setRezultat] = useState(null);
   const [greska, setGreska] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [poruka, setPoruka] = useState(null);
 
   function validirajBroj(vrijednost, naziv, { min, max }) {
     const broj = Number(vrijednost);
@@ -253,6 +261,41 @@ export default function GeneriranjePodataka() {
       setGeneria(false);
     }
   }
+
+  const handleMemorijaULocalStorage = async () => {
+        if (!window.confirm('Jeste li sigurni da želite pretočiti iz memorije u localStorage?')) {
+            return;
+        }
+
+        setLoading(true);
+        setPoruka(null);
+
+        try {
+
+            localStorage.setItem(PrefixStorage.CLANOVI, JSON.stringify(clanoviMemorija.clanovi));
+            localStorage.setItem(PrefixStorage.KATEGORIJE, JSON.stringify(kategorijeMemorija.kategorije));
+            localStorage.setItem(PrefixStorage.SPORTOVI, JSON.stringify(sportoviMemorija));
+            localStorage.setItem(PrefixStorage.TERMINI, JSON.stringify(terminiMemorija.termini));
+            localStorage.setItem(PrefixStorage.OPERATERI, JSON.stringify(operateriMemorija.operateri));
+
+            setPoruka({
+                tip: 'success',
+                tekst: `Uspješno presipano`
+            });
+        } catch (error) {
+            setPoruka({
+                tip: 'danger',
+                tekst: 'Greška pri presipavanju memorija - localStorage: ' + error.message
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
+    const handleMemorijaUFirebase = async () => {
+        // kasnije
+    };
 
   return (
     <Container className="mt-4 mb-5" style={{ maxWidth: "860px" }}>
@@ -437,6 +480,42 @@ export default function GeneriranjePodataka() {
           </Form>
         </Card.Body>
       </Card>
+
+      {(DATA_SOURCE === 'memorija' || DATA_SOURCE === 'localStorage') && (
+                <>
+                    <hr />
+                    <h3>Pretakanje podataka iz jednog izvora u drugi</h3>
+                    {poruka && (
+                        <Alert variant={poruka.tip} dismissible onClose={() => setPoruka(null)} className="mt-3">
+                            {poruka.tekst}
+                        </Alert>
+                    )}
+                    <Row className="mt-3">
+                        <Col md={6}>
+                            <Button
+                                variant="success"
+                                onClick={handleMemorijaULocalStorage}
+                                disabled={loading}
+                                className="w-100 mb-2"
+                            >
+                                {loading ? 'Pretakanje...' : 'Iz memorije u localStorage'}
+                            </Button>
+                        </Col>
+                        <Col md={6}>
+                            <Button
+                                variant="success"
+                                onClick={handleMemorijaUFirebase}
+                                disabled={loading}
+                                className="w-100 mb-2"
+                            >
+                                {loading ? 'Pretakanje...' : 'Iz memorije u firebase'}
+                            </Button>
+                        </Col>
+
+                    </Row>
+                </>
+
+            )}
     </Container>
   );
 }

@@ -18,7 +18,8 @@ export const sportovi = [
         maxIgraca: 10,
         uZatvorenom: true,
         trajanjeMin: 40,
-        cijenaTermina: 10
+        cijenaTermina: 10,
+        pdf: ''
     },
     {
         id: 3,
@@ -39,6 +40,11 @@ export const sportovi = [
         maxIgraca: 12,
         uZatvorenom: true,
         trajanjeMin: 90,
-        cijenaTermina: 10
+        cijenaTermina: 10,
+        pdf: ''
     },
 ];
+
+export default {
+    sportovi
+}

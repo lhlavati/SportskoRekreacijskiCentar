@@ -78,7 +78,7 @@ export default function Home() {
       </div>
 
       <div className="mt-4 mb-5">
-        <div className="d-flex align-items-center justify-content-between mb-3">
+        <div className="d-flex align-items-center justify-content-center mb-3">
           <h3 className="mb-0 fw-bold">Pregled statistike</h3>
           {ucitavanje && <Spinner animation="border" size="sm" />}
         </div>
@@ -88,7 +88,7 @@ export default function Home() {
             const Ikona = k.ikona;
             const broj = statistika[k.kljuc];
             return (
-              <Col xs={12} md={4} key={k.kljuc}>
+              <Col xs={12} md={3} key={k.kljuc}>
                 <Card
                   as={Link}
                   to={k.ruta}

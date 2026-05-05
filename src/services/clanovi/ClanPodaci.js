@@ -56,3 +56,7 @@ export const clanovi = [
         kontaktBroj: '0918901234',
     },
 ];
+
+export default {
+    clanovi
+}

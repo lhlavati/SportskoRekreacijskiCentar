@@ -9,3 +9,7 @@ export const kategorije = [
     },
 
 ]
+
+export default {
+    kategorije
+}
