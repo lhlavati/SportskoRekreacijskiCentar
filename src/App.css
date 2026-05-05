@@ -444,6 +444,7 @@ a:hover { color: var(--g-700); }
   color: #fff;
   flex-shrink: 0;
   letter-spacing: 0.02em;
+  overflow: hidden;
 }
 
 /* ── Alerts ─────────────────────────────────────────────────── */

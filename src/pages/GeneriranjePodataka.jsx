@@ -196,6 +196,7 @@ export default function GeneriranjePodataka() {
             .email({ firstName: ime, lastName: prezime })
             .toLowerCase(),
           kontaktBroj: hrKontaktBroj(),
+          slika: faker.image.avatar(),
         });
         upisanoClanova++;
       }

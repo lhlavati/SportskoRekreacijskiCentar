@@ -7,11 +7,13 @@ import PhoneInputWithCountrySelect from "react-phone-number-input";
 import 'react-phone-number-input/style.css';
 import { isValidPhoneNumber, AsYouType } from "libphonenumber-js";
 import { useForm, Controller } from "react-hook-form";
+import AvatarPicker from "../../components/AvatarPicker";
 
 export default function ClanPromjena() {
   const navigate = useNavigate();
   const params = useParams();
   const [zemlja, setZemlja] = useState('HR');
+  const [slika, setSlika] = useState(null);
 
   const { register, handleSubmit, control, reset, formState: { errors } } = useForm();
 
@@ -30,8 +32,9 @@ export default function ClanPromjena() {
         ime: s.ime,
         prezime: s.prezime,
         email: s.email,
-        kontaktBroj: s.kontaktBroj
+        kontaktBroj: s.kontaktBroj,
       });
+      setSlika(s.slika || null);
     });
   }
 
@@ -50,7 +53,8 @@ export default function ClanPromjena() {
       ime: data.ime.trim(),
       prezime: data.prezime.trim(),
       email: data.email.trim(),
-      kontaktBroj: formatiraniBroj
+      kontaktBroj: formatiraniBroj,
+      slika: slika || undefined,
     });
   }
 
@@ -129,6 +133,11 @@ export default function ClanPromjena() {
           {errors.kontaktBroj && (
             <div className="text-danger small mt-1">{errors.kontaktBroj.message}</div>
           )}
+        </Form.Group>
+
+        <Form.Group className="mb-3">
+          <Form.Label className="fw-semibold">Slika / Avatar</Form.Label>
+          <AvatarPicker vrijednost={slika} onChange={setSlika} />
         </Form.Group>
 
         <hr style={{ marginTop: "20px", border: "0" }} />

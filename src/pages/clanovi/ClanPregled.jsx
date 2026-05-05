@@ -107,7 +107,10 @@ export default function ClanPregled() {
                     <Col key={clan.id}>
                         <div className="pregled-kartica">
                             <div className="pregled-kartica-header">
-                                <div className="clan-avatar">{inicijali(clan)}</div>
+                                {clan.slika
+                                    ? <img src={clan.slika} alt={`${clan.ime} ${clan.prezime}`} className="clan-avatar" style={{ objectFit: 'cover' }} />
+                                    : <div className="clan-avatar">{inicijali(clan)}</div>
+                                }
                                 <span>{clan.ime} {clan.prezime}</span>
                             </div>
                             <div className="pregled-kartica-body">
