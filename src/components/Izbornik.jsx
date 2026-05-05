@@ -46,6 +46,9 @@ export default function Izbornik() {
                                             onClick={() => navigate(RouteNames.OPERATERI)}
                                         >Operateri</Nav.Link>
                                         <Nav.Link
+                                            onClick={() => navigate(RouteNames.NADZORNA_PLOCA)}
+                                        >Nadzorna ploča</Nav.Link>
+                                        <Nav.Link
                                             className="nav-generiraj"
                                             onClick={() => navigate(RouteNames.GENERIRAJ_PODATKE)}
                                         >Generiraj podatke</Nav.Link>
@@ -60,6 +63,7 @@ export default function Izbornik() {
                             <Button
                                 variant="outline-danger"
                                 size="sm"
+                                className=""
                                 onClick={() => logout()}
                             >
                                 Odjava ({authUser.email})
