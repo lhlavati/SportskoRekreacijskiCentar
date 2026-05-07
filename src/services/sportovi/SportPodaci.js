@@ -1,8 +1,8 @@
 export const sportovi = [
     {
-        id: 1,
+        id: '1',
         naziv: 'Nogomet',
-        kategorija: 2,
+        kategorija: '2',
         kontaktni: true,
         maxIgraca: 22,
         uZatvorenom: false,
@@ -11,9 +11,9 @@ export const sportovi = [
         pdf: 'nogomet.jsx'
     },
     {
-        id: 2,
+        id: '2',
         naziv: 'Košarka',
-        kategorija: 2,
+        kategorija: '2',
         kontaktni: true,
         maxIgraca: 10,
         uZatvorenom: true,
@@ -22,9 +22,9 @@ export const sportovi = [
         pdf: ''
     },
     {
-        id: 3,
+        id: '3',
         naziv: 'Tenis',
-        kategorija: 2,
+        kategorija: '2',
         kontaktni: false,
         maxIgraca: 4,
         uZatvorenom: false,
@@ -33,9 +33,9 @@ export const sportovi = [
         pdf: 'tenis.jsx'
     },
     {
-        id: 4,
+        id: '4',
         naziv: 'Odbojka',
-        kategorija: 2,
+        kategorija: '2',
         kontaktni: false,
         maxIgraca: 12,
         uZatvorenom: true,

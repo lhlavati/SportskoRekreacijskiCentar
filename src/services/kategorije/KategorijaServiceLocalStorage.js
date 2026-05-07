@@ -16,18 +16,17 @@ async function get() {
 
 async function getById(id) {
     const kategorije = dohvatiSveIzStorage();
-    const kategorija = kategorije.find(g => g.id === parseInt(id));
+    const kategorija = kategorije.find(g => g.id === id);
     return {success: true,  data: kategorija };
 }
 
 async function dodaj(kategorija) {
     const kategorije = dohvatiSveIzStorage();
-    
+
     if (kategorije.length === 0) {
-        kategorija.id = 1;
+        kategorija.id = '1';
     } else {
-        const maxId = Math.max(...kategorije.map(g => g.id));
-        kategorija.id = maxId + 1;
+        kategorija.id = String(parseInt(kategorije[kategorije.length - 1].id) + 1);
     }
     
     kategorije.push(kategorija);
@@ -37,10 +36,10 @@ async function dodaj(kategorija) {
 
 async function promjeni(id, kategorija) {
     const kategorije = dohvatiSveIzStorage();
-    const index = kategorije.findIndex(g => g.id === parseInt(id));
-    
+    const index = kategorije.findIndex(g => g.id === id);
+
     if (index !== -1) {
-        kategorije[index] = { ...kategorije[index], ...kategorija, id: parseInt(id) };
+        kategorije[index] = { ...kategorije[index], ...kategorija, id: id };
         spremiUStorage(kategorije);
     }
     return { data: kategorije[index] };
@@ -48,7 +47,7 @@ async function promjeni(id, kategorija) {
 
 async function obrisi(id) {
     let kategorije = dohvatiSveIzStorage();
-    kategorije = kategorije.filter(g => g.id !== parseInt(id));
+    kategorije = kategorije.filter(g => g.id !== id);
     spremiUStorage(kategorije);
     return { message: 'Obrisano' };
 }

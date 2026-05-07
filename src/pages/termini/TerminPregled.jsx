@@ -117,12 +117,12 @@ export default function TerminPregled() {
     }
 
     function dohvatiImeClana(id) {
-        const clan = clanovi.find(c => c.id === parseInt(id))
+        const clan = clanovi.find(c => c.id === id)
         return clan ? `${clan.ime} ${clan.prezime}` : `#${id}`
     }
 
     function dohvatiInicijale(id) {
-        const clan = clanovi.find(c => c.id === parseInt(id))
+        const clan = clanovi.find(c => c.id === id)
         return clan ? `${clan.ime[0]}${clan.prezime[0]}` : `#${id}`
     }
 
@@ -133,21 +133,20 @@ export default function TerminPregled() {
     }
 
     function dohvatiNazivSporta(idSporta) {
-        const sport = sportovi.find((s) => s.id === parseInt(idSporta))
+        const sport = sportovi.find((s) => s.id === idSporta)
         return sport ? sport.naziv : 'Nepoznat sport'
     }
 
     function filtriraj(data) {
         return data.filter(t => {
-            if (filterSportovi.length > 0 && !filterSportovi.includes(parseInt(t.sport))) return false
+            if (filterSportovi.length > 0 && !filterSportovi.includes(t.sport)) return false
             return true
         })
     }
 
     function togglajSport(id) {
-        const idBroj = parseInt(id)
         setFilterSportovi(prev =>
-            prev.includes(idBroj) ? prev.filter(i => i !== idBroj) : [...prev, idBroj]
+            prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
         )
     }
 

@@ -5,12 +5,12 @@ async function get() {
 }
 
 async function getById(id) {
-   return {data: sportovi.find(s => s.id === parseInt(id))} 
+   return {data: sportovi.find(s => s.id === id)}
 }
 
 async function dodaj(sport) {
 
-    sport.id = sportovi.length > 0 ? sportovi[sportovi.length - 1].id + 1 : 1;
+    sport.id = sportovi.length > 0 ? String(parseInt(sportovi[sportovi.length - 1].id) + 1) : '1';
     sportovi.push(sport)
 
 }
@@ -21,7 +21,7 @@ async function promjeni(id,sport) {
 }
 
 function nadiIndex(id){
-    return sportovi.findIndex(s => s.id === parseInt(id))
+    return sportovi.findIndex(s => s.id === id)
 }
 
 async function obrisi(id){

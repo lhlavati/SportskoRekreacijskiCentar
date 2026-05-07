@@ -57,7 +57,7 @@ export default function SportPregled() {
     }
 
     function dohvatiNazivKategorije(idKategorije) {
-        const k = kategorije.find((k) => k.id === parseInt(idKategorije))
+        const k = kategorije.find((k) => k.id === idKategorije)
         return k ? k.naziv : 'Nepoznata'
     }
 

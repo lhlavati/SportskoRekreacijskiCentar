@@ -56,7 +56,7 @@ export default function SportPromjena() {
   function odradiSubmit(data) {
     promjeni({
       naziv: data.naziv.trim(),
-      kategorija: parseInt(data.kategorija),
+      kategorija: data.kategorija,
       kontaktni: data.kontaktni,
       maxIgraca: data.maxIgraca,
       uZatvorenom: data.uZatvorenom,

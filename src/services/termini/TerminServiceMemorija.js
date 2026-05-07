@@ -5,12 +5,12 @@ async function get() {
 }
 
 async function getById(id) {
-   return {data: termini.find(s => s.id === parseInt(id))} 
+   return {data: termini.find(s => s.id === id)}
 }
 
 async function dodaj(termin) {
 
-    termin.id = termini.length > 0 ? termini[termini.length - 1].id + 1 : 1;
+    termin.id = termini.length > 0 ? String(parseInt(termini[termini.length - 1].id) + 1) : '1';
     termini.push(termin)
 
 }
@@ -21,7 +21,7 @@ async function promjeni(id,termin) {
 }
 
 function nadiIndex(id){
-    return termini.findIndex(s => s.id === parseInt(id))
+    return termini.findIndex(s => s.id === id)
 }
 
 async function obrisi(id){

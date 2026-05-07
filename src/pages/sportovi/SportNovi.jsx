@@ -34,7 +34,7 @@ export default function SportNovi() {
   function odradiSubmit(data) {
     dodaj({
       naziv: data.naziv.trim(),
-      kategorija: parseInt(data.kategorija),
+      kategorija: data.kategorija,
       kontaktni: data.kontaktni ?? false,
       maxIgraca: data.maxIgraca,
       uZatvorenom: data.uZatvorenom ?? false,

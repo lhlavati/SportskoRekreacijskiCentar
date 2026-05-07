@@ -16,18 +16,17 @@ async function get() {
 
 async function getById(id) {
     const clanovi = dohvatiSveIzStorage();
-    const clan = clanovi.find(s => s.id === parseInt(id));
+    const clan = clanovi.find(s => s.id === id);
     return {success: true,  data: clan };
 }
 
 async function dodaj(clan) {
     const clanovi = dohvatiSveIzStorage();
-    
+
     if (clanovi.length === 0) {
-        clan.id = 1;
+        clan.id = '1';
     } else {
-        const maxId = Math.max(...clanovi.map(s => s.id));
-        clan.id = maxId + 1;
+        clan.id = String(parseInt(clanovi[clanovi.length - 1].id) + 1);
     }
     
     clanovi.push(clan);
@@ -37,7 +36,7 @@ async function dodaj(clan) {
 
 async function promjeni(id, clan) {
     const clanovi = dohvatiSveIzStorage();
-    const index = clanovi.findIndex(s => s.id === parseInt(id));
+    const index = clanovi.findIndex(s => s.id === id);
     
     if (index !== -1) {
         clanovi[index] = { ...clanovi[index], ...clan};
@@ -48,7 +47,7 @@ async function promjeni(id, clan) {
 
 async function obrisi(id) {
     let clanovi = dohvatiSveIzStorage();
-    clanovi = clanovi.filter(s => s.id !== parseInt(id));
+    clanovi = clanovi.filter(s => s.id !== id);
     spremiUStorage(clanovi);
     return { message: 'Obrisano' };
 }

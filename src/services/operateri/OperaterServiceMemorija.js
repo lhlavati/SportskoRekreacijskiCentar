@@ -11,7 +11,7 @@ async function get() {
 }
 
 async function getBySifra(sifra) {
-    const operater = operateri.find(o => o.sifra === parseInt(sifra))
+    const operater = operateri.find(o => o.sifra === sifra)
     if (!operater) {
         return { success: false, data: null }
     }
@@ -26,9 +26,9 @@ async function getBySifra(sifra) {
 
 async function dodaj(operater) {
     if (operateri.length === 0) {
-        operater.sifra = 1
+        operater.sifra = '1'
     } else {
-        operater.sifra = operateri[operateri.length - 1].sifra + 1
+        operater.sifra = String(parseInt(operateri[operateri.length - 1].sifra) + 1)
     }
     operater.lozinka = bcrypt.hashSync(operater.lozinka, 10)
     operateri.push(operater)
@@ -44,7 +44,7 @@ async function promjeni(sifra, operater) {
         ...operateri[index],
         email: operater.email,
         uloga: operater.uloga,
-        sifra: parseInt(sifra)
+        sifra: sifra
     }
     return { success: true, data: { sifra: operateri[index].sifra, email: operateri[index].email, uloga: operateri[index].uloga } }
 }
@@ -59,7 +59,7 @@ async function promjeniLozinku(sifra, novaLozinka) {
 }
 
 function nadiIndex(sifra) {
-    return operateri.findIndex(o => o.sifra === parseInt(sifra))
+    return operateri.findIndex(o => o.sifra === sifra)
 }
 
 async function obrisi(sifra) {

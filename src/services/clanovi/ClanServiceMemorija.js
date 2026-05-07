@@ -5,12 +5,12 @@ async function get() {
 }
 
 async function getById(id) {
-   return {data: clanovi.find(s => s.id === parseInt(id))} 
+   return {data: clanovi.find(s => s.id === id)}
 }
 
 async function dodaj(clan) {
 
-    clan.id = clanovi.length > 0 ? clanovi[clanovi.length - 1].id + 1 : 1;
+    clan.id = clanovi.length > 0 ? String(parseInt(clanovi[clanovi.length - 1].id) + 1) : '1';
     clanovi.push(clan)
 
 }
@@ -21,7 +21,7 @@ async function promjeni(id,clan) {
 }
 
 function nadiIndex(id){
-    return clanovi.findIndex(s => s.id === parseInt(id))
+    return clanovi.findIndex(s => s.id === id)
 }
 
 async function obrisi(id){

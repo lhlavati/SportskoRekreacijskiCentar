@@ -16,18 +16,17 @@ async function get() {
 
 async function getById(id) {
     const termini = dohvatiSveIzStorage();
-    const termin = termini.find(s => s.id === parseInt(id));
+    const termin = termini.find(s => s.id === id);
     return {success: true,  data: termin };
 }
 
 async function dodaj(termin) {
     const termini = dohvatiSveIzStorage();
-    
+
     if (termini.length === 0) {
-        termin.id = 1;
+        termin.id = '1';
     } else {
-        const maxId = Math.max(...termini.map(s => s.id));
-        termin.id = maxId + 1;
+        termin.id = String(parseInt(termini[termini.length - 1].id) + 1);
     }
     
     termini.push(termin);
@@ -37,7 +36,7 @@ async function dodaj(termin) {
 
 async function promjeni(id, termin) {
     const termini = dohvatiSveIzStorage();
-    const index = termini.findIndex(s => s.id === parseInt(id));
+    const index = termini.findIndex(s => s.id === id);
     
     if (index !== -1) {
         termini[index] = { ...termini[index], ...termin};
@@ -48,7 +47,7 @@ async function promjeni(id, termin) {
 
 async function obrisi(id) {
     let termini = dohvatiSveIzStorage();
-    termini = termini.filter(s => s.id !== parseInt(id));
+    termini = termini.filter(s => s.id !== id);
     spremiUStorage(termini);
     return { message: 'Obrisano' };
 }

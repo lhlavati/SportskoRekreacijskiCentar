@@ -28,7 +28,7 @@ async function get() {
 
 async function getBySifra(sifra) {
     const operateri = dohvatiSveIzStorage()
-    const operater = operateri.find(o => o.sifra === parseInt(sifra))
+    const operater = operateri.find(o => o.sifra === sifra)
     if (!operater) {
         return { success: false, data: null }
     }
@@ -44,10 +44,9 @@ async function getBySifra(sifra) {
 async function dodaj(operater) {
     const operateri = dohvatiSveIzStorage()
     if (operateri.length === 0) {
-        operater.sifra = 1
+        operater.sifra = '1'
     } else {
-        const maxSifra = Math.max(...operateri.map(o => o.sifra))
-        operater.sifra = maxSifra + 1
+        operater.sifra = String(parseInt(operateri[operateri.length - 1].sifra) + 1)
     }
     operater.lozinka = bcrypt.hashSync(operater.lozinka, 10)
     operateri.push(operater)
@@ -57,7 +56,7 @@ async function dodaj(operater) {
 
 async function promjeni(sifra, operater) {
     const operateri = dohvatiSveIzStorage()
-    const index = operateri.findIndex(o => o.sifra === parseInt(sifra))
+    const index = operateri.findIndex(o => o.sifra === sifra)
     if (index === -1) {
         return { success: false, message: "Operater nije pronađen" }
     }
@@ -65,7 +64,7 @@ async function promjeni(sifra, operater) {
         ...operateri[index],
         email: operater.email,
         uloga: operater.uloga,
-        sifra: parseInt(sifra)
+        sifra: sifra
     }
     spremiUStorage(operateri)
     return { success: true, data: { sifra: operateri[index].sifra, email: operateri[index].email, uloga: operateri[index].uloga } }
@@ -73,7 +72,7 @@ async function promjeni(sifra, operater) {
 
 async function promjeniLozinku(sifra, novaLozinka) {
     const operateri = dohvatiSveIzStorage()
-    const index = operateri.findIndex(o => o.sifra === parseInt(sifra))
+    const index = operateri.findIndex(o => o.sifra === sifra)
     if (index === -1) {
         return { success: false, message: "Operater nije pronađen" }
     }
@@ -85,7 +84,7 @@ async function promjeniLozinku(sifra, novaLozinka) {
 async function obrisi(sifra) {
     let operateri = dohvatiSveIzStorage()
     const initialLength = operateri.length
-    operateri = operateri.filter(o => o.sifra !== parseInt(sifra))
+    operateri = operateri.filter(o => o.sifra !== sifra)
     if (operateri.length === initialLength) {
         return { success: false, message: "Operater nije pronađen" }
     }

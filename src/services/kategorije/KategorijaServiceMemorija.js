@@ -5,14 +5,14 @@ async function get(){
 }
 
 async function getById(id) {
-    return {success: true, data: kategorije.find(g => g.id === parseInt(id))}
+    return {success: true, data: kategorije.find(g => g.id === id)}
 }
 
 async function dodaj(kategorija){
     if(kategorije.length===0){
-        kategorija.id=1
+        kategorija.id='1'
     }else{
-        kategorija.id = kategorije[kategorije.length - 1].id + 1
+        kategorija.id = String(parseInt(kategorije[kategorije.length - 1].id) + 1)
     }
     
     kategorije.push(kategorija)
@@ -24,7 +24,7 @@ async function promjeni(id,kategorija) {
 }
 
 function nadiIndex(id){
-    return kategorije.findIndex(g=>g.id === parseInt(id))
+    return kategorije.findIndex(g=>g.id === id)
 }
 
 async function obrisi(id) {

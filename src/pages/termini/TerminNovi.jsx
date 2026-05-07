@@ -78,7 +78,7 @@ export default function TerminNovi() {
         if (!odgovor.success) return
         const sati = []
         odgovor.data
-            .filter(t => t.datum === odabraniDatum && t.sport === parseInt(odabraniSport))
+            .filter(t => t.datum === odabraniDatum && t.sport === odabraniSport)
             .forEach(t => { sati.push(...(t.odabraniSati ?? [])) })
         setZauzetiSati([...new Set(sati)])
     }
@@ -153,7 +153,7 @@ export default function TerminNovi() {
 
         const sport = data.sport
         const sortirani = [...odabraniSati].sort((a, b) => a - b)
-        const odabraniSportObj = sportovi.find(s => s.id === parseInt(sport))
+        const odabraniSportObj = sportovi.find(s => s.id === sport)
         const ukupnaCijena = sortirani.length * (odabraniSportObj?.cijenaTermina ?? 0)
 
         dodaj({
@@ -162,7 +162,7 @@ export default function TerminNovi() {
             ukupnaCijena,
             rezervirao: odabraniClan.id,
             sudionici: odabraniSudionici.map(c => c.id),
-            sport: parseInt(sport)
+            sport: sport
         })
     }
 
@@ -282,10 +282,10 @@ export default function TerminNovi() {
                             <div className="d-flex align-items-center flex-wrap gap-2 p-3 rounded-3 bg-success bg-opacity-10 border border-success border-opacity-25">
                                 <FaEuroSign color="#16a34a" />
                                 <span className="fw-semibold text-success">
-                                    Ukupna cijena: {odabraniSati.length * (sportovi.find(s => s.id === parseInt(odabraniSport))?.cijenaTermina ?? 0)} €
+                                    Ukupna cijena: {odabraniSati.length * (sportovi.find(s => s.id === odabraniSport)?.cijenaTermina ?? 0)} €
                                 </span>
                                 <span className="text-muted small ms-1">
-                                    ({odabraniSati.length} × {sportovi.find(s => s.id === parseInt(odabraniSport))?.cijenaTermina ?? 0} €/h)
+                                    ({odabraniSati.length} × {sportovi.find(s => s.id === odabraniSport)?.cijenaTermina ?? 0} €/h)
                                 </span>
                             </div>
                         </Col>

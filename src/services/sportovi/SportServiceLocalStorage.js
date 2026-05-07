@@ -16,18 +16,17 @@ async function get() {
 
 async function getById(id) {
     const sportovi = dohvatiSveIzStorage();
-    const sport = sportovi.find(s => s.id === parseInt(id));
+    const sport = sportovi.find(s => s.id === id);
     return {success: true,  data: sport };
 }
 
 async function dodaj(sport) {
     const sportovi = dohvatiSveIzStorage();
-    
+
     if (sportovi.length === 0) {
-        sport.id = 1;
+        sport.id = '1';
     } else {
-        const maxId = Math.max(...sportovi.map(s => s.id));
-        sport.id = maxId + 1;
+        sport.id = String(parseInt(sportovi[sportovi.length - 1].id) + 1);
     }
     
     sportovi.push(sport);
@@ -37,7 +36,7 @@ async function dodaj(sport) {
 
 async function promjeni(id, sport) {
     const sportovi = dohvatiSveIzStorage();
-    const index = sportovi.findIndex(s => s.id === parseInt(id));
+    const index = sportovi.findIndex(s => s.id === id);
     
     if (index !== -1) {
         sportovi[index] = { ...sportovi[index], ...sport};
@@ -48,7 +47,7 @@ async function promjeni(id, sport) {
 
 async function obrisi(id) {
     let sportovi = dohvatiSveIzStorage();
-    sportovi = sportovi.filter(s => s.id !== parseInt(id));
+    sportovi = sportovi.filter(s => s.id !== id);
     spremiUStorage(sportovi);
     return { message: 'Obrisano' };
 }
