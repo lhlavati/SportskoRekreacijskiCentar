@@ -201,7 +201,6 @@ export default function GeneriranjePodataka() {
         upisanoClanova++;
       }
 
-      // Dohvati sve ID-ove sportova i članova (postojeći + novogenerirani)
       const [sveSportoviResponse, sveClanoviResponse] = await Promise.all([
         SportService.get(),
         ClanService.get(),

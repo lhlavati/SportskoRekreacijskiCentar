@@ -25,7 +25,6 @@ const DANI_KRATKI = ['ned', 'pon', 'uto', 'sri', 'čet', 'pet', 'sub']
 const DANI_PUNI = ['Nedjelja', 'Ponedjeljak', 'Utorak', 'Srijeda', 'Četvrtak', 'Petak', 'Subota']
 const MJESECI_KRATKI = ['sij', 'velj', 'ožu', 'tra', 'svi', 'lip', 'srp', 'kol', 'ruj', 'lis', 'stu', 'pro']
 
-// Normalizira datume s mogućim nedostajućim leading zerosom (npr. '2026-4-4' → '2026-04-04')
 function normalizirajDatum(datum) {
     const dijelovi = datum.split('-').map(Number)
     return `${dijelovi[0]}-${String(dijelovi[1]).padStart(2, '0')}-${String(dijelovi[2]).padStart(2, '0')}`
@@ -35,11 +34,39 @@ function datumUString(d) {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
 
+function formatirajRaspon(prvi, zadnji) {
+    const p = `${prvi.getDate()}. ${MJESECI_KRATKI[prvi.getMonth()]}.`
+    const z = `${zadnji.getDate()}. ${MJESECI_KRATKI[zadnji.getMonth()]}. ${zadnji.getFullYear()}.`
+    return `${p} – ${z}`
+}
+
+const stilStrelice = (hover) => ({
+    background: hover ? 'rgba(21,128,61,0.10)' : 'transparent',
+    border: 'none',
+    borderRadius: '50%',
+    width: 36,
+    height: 36,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    color: '#15803d',
+    fontSize: 22,
+    fontWeight: 700,
+    transition: 'background 0.22s cubic-bezier(0.4,0,0.2,1)',
+    flexShrink: 0,
+    userSelect: 'none',
+})
+
 export default function NadzornaPloca() {
     const { authUser } = useAuth()
     const [termini, setTermini] = useState([])
     const [sportovi, setSportovi] = useState([])
     const [chartOptions, setChartOptions] = useState(null)
+    const [tjedanOffset, setTjedanOffset] = useState(0)
+    const [rasponLabel, setRasponLabel] = useState('')
+    const [hoverLijevo, setHoverLijevo] = useState(false)
+    const [hoverDesno, setHoverDesno] = useState(false)
 
     useEffect(() => {
         async function ucitaj() {
@@ -59,32 +86,30 @@ export default function NadzornaPloca() {
         const danas = new Date()
         danas.setHours(0, 0, 0, 0)
 
-        // 7 dana počevši od danas
+        
         const dani = Array.from({ length: 7 }, (_, i) => {
             const d = new Date(danas)
-            d.setDate(danas.getDate() + i)
+            d.setDate(danas.getDate() + i + tjedanOffset * 7)
             return d
         })
 
-        // Kratke oznake za x-os
+        setRasponLabel(formatirajRaspon(dani[0], dani[6]))
+
         const kategorijeXOsa = dani.map((d, i) => {
-            if (i === 0) return 'Danas'
+            if (tjedanOffset === 0 && i === 0) return 'Danas'
             return `${DANI_KRATKI[d.getDay()]} ${d.getDate()}. ${MJESECI_KRATKI[d.getMonth()]}.`
         })
 
-        // Pune oznake za tooltip
         const tooltipLabels = dani.map((d, i) => {
-            const imeDana = i === 0 ? 'Danas' : DANI_PUNI[d.getDay()]
+            const imeDana = tjedanOffset === 0 && i === 0 ? 'Danas' : DANI_PUNI[d.getDay()]
             return `${imeDana}, ${d.getDate()}. ${MJESECI_KRATKI[d.getMonth()]}.`
         })
 
-        // Inicijalizacija brojača po sportu i danu: { sportId: [0,0,0,0,0,0,0] }
         const zauzetiPoSportu = {}
         sportovi.forEach(s => {
             zauzetiPoSportu[s.id] = Array(7).fill(0)
         })
 
-        // Prolaz kroz svih 7 dana i akumulacija zauzetih termina po sportu
         dani.forEach((dan, i) => {
             const danStr = datumUString(dan)
             const terminiDana = termini.filter(t => normalizirajDatum(t.datum) === danStr)
@@ -97,24 +122,22 @@ export default function NadzornaPloca() {
             })
         })
 
-        // Slobodni termini = ukupno - zauzeto (za svaki dan)
         const slobodniPoOdani = dani.map((_, i) => {
             const ukupnoZauzetih = sportovi.reduce((sum, s) => sum + zauzetiPoSportu[s.id][i], 0)
             return Math.max(0, UKUPNO_TERMINA - ukupnoZauzetih)
         })
 
-        // Series: slobodni na dnu (zeleni), zatim svaki sport zasebno iznad
         const series = [
+            ...sportovi.map((sport, idx) => ({
+                name: sport.naziv,
+                data: zauzetiPoSportu[sport.id],
+                color: BOJE_SPORTOVA[idx % BOJE_SPORTOVA.length],
+            })),
             {
                 name: 'Slobodni termini',
                 data: slobodniPoOdani,
                 color: BOJA_SLOBODNI,
             },
-            ...sportovi.map((sport, idx) => ({
-                name: sport.naziv,
-                data: zauzetiPoSportu[sport.id],
-                color: BOJE_SPORTOVA[idx % BOJE_SPORTOVA.length],
-            }))
         ]
 
         setChartOptions({
@@ -122,7 +145,7 @@ export default function NadzornaPloca() {
                 type: 'column',
             },
             title: {
-                text: 'Slobodni i rezervirani termini (sljedećih 7 dana)',
+                text: 'Slobodni i rezervirani termini',
             },
             xAxis: {
                 categories: kategorijeXOsa,
@@ -158,7 +181,7 @@ export default function NadzornaPloca() {
             },
             series,
         })
-    }, [termini, sportovi])
+    }, [termini, sportovi, tjedanOffset])
 
     return (
         <Container className="mt-4">
@@ -173,11 +196,37 @@ export default function NadzornaPloca() {
                         </span>
                     </p>
                 </Card.Body>
+
                 {chartOptions && (
-                    <HighchartsReact
-                        highcharts={Highcharts}
-                        options={chartOptions}
-                    />
+                    <>
+                        <div className="d-flex align-items-center justify-content-center gap-3 pb-1">
+                            <button
+                                style={stilStrelice(hoverLijevo)}
+                                onMouseEnter={() => setHoverLijevo(true)}
+                                onMouseLeave={() => setHoverLijevo(false)}
+                                onClick={() => setTjedanOffset(o => o - 1)}
+                                title="Prethodni tjedan"
+                            >
+                                ‹
+                            </button>
+                            <span style={{ fontWeight: 600, color: '#15803d', minWidth: 200, textAlign: 'center' }}>
+                                {rasponLabel}
+                            </span>
+                            <button
+                                style={stilStrelice(hoverDesno)}
+                                onMouseEnter={() => setHoverDesno(true)}
+                                onMouseLeave={() => setHoverDesno(false)}
+                                onClick={() => setTjedanOffset(o => o + 1)}
+                                title="Sljedeći tjedan"
+                            >
+                                ›
+                            </button>
+                        </div>
+                        <HighchartsReact
+                            highcharts={Highcharts}
+                            options={chartOptions}
+                        />
+                    </>
                 )}
             </Card>
         </Container>

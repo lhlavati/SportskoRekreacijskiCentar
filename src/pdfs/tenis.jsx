@@ -7,7 +7,6 @@ export default async function generirajTenisPDF(sport) {
     const doc = noviDok();
     await ucitajFontove(doc);
 
-    // Header
     doc.setFontSize(20);
     doc.setTextColor(...BOJA);
     doc.setFont('Roboto', 'bold');
@@ -18,7 +17,6 @@ export default async function generirajTenisPDF(sport) {
     doc.setFont('Roboto', 'normal');
     doc.text('Pregled sporta', 20, 27);
 
-    // Naslov sporta
     doc.setFontSize(18);
     doc.setFont('Roboto', 'bold');
     doc.setTextColor(0, 0, 0);
@@ -29,7 +27,6 @@ export default async function generirajTenisPDF(sport) {
     doc.setTextColor(...BOJA);
     doc.text('Reketa ski sport na otvorenom', 20, 53);
 
-    // Razdjela linija
     doc.setDrawColor(...BOJA);
     doc.setLineWidth(0.7);
     doc.line(20, 57, 190, 57);

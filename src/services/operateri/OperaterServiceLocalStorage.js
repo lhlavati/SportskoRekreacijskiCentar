@@ -7,7 +7,6 @@ function dohvatiSveIzStorage() {
     if (podaci) {
         return JSON.parse(podaci)
     }
-    // Inicijalizacija s default podacima pri prvom pokretanju
     localStorage.setItem(PrefixStorage.OPERATERI, JSON.stringify(defaultniOperateri))
     return [...defaultniOperateri]
 }

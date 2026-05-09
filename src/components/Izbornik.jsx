@@ -79,6 +79,7 @@ export default function Izbornik() {
                                 <Button
                                     variant="success"
                                     size="sm"
+                                    className="me-2"
                                     onClick={() => navigate(RouteNames.LOGIN)}
                                 >Login</Button>
                             </>
