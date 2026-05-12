@@ -15,6 +15,8 @@ import { BsTags, BsPeople, BsDatabaseFillAdd, BsInfoCircle, BsCalendar3 } from "
 import { GiSoccerBall } from "react-icons/gi";
 import { fakerHR as faker } from "@faker-js/faker";
 
+import { doc, setDoc } from "firebase/firestore";
+import getFirebaseDB from "../services/Firebase";
 import { DATA_SOURCE, PrefixStorage, RouteNames } from "../constants";
 import SportService from "../services/sportovi/SportService";
 import KategorijaService from "../services/kategorije/KategorijaService";
@@ -294,7 +296,53 @@ export default function GeneriranjePodataka() {
 
 
     const handleMemorijaUFirebase = async () => {
-        // kasnije
+        if (!window.confirm('Jeste li sigurni da želite pretočiti iz memorije u Firebase?')) {
+            return;
+        }
+
+        setLoading(true);
+        setPoruka(null);
+
+        try {
+            const db = getFirebaseDB();
+
+            for (const kat of kategorijeMemorija.kategorije) {
+                const { id, ...data } = kat;
+                await setDoc(doc(db, PrefixStorage.KATEGORIJE, id), data);
+            }
+
+            for (const sport of sportoviMemorija) {
+                const { id, ...data } = sport;
+                await setDoc(doc(db, PrefixStorage.SPORTOVI, id), data);
+            }
+
+            for (const clan of clanoviMemorija.clanovi) {
+                const { id, ...data } = clan;
+                await setDoc(doc(db, PrefixStorage.CLANOVI, id), data);
+            }
+
+            for (const termin of terminiMemorija.termini) {
+                const { id, ...data } = termin;
+                await setDoc(doc(db, PrefixStorage.TERMINI, id), data);
+            }
+
+            for (const operater of operateriMemorija.operateri) {
+                const { sifra, ...data } = operater;
+                await setDoc(doc(db, PrefixStorage.OPERATERI, sifra), data);
+            }
+
+            setPoruka({
+                tip: 'success',
+                tekst: 'Uspješno presipano u Firebase'
+            });
+        } catch (error) {
+            setPoruka({
+                tip: 'danger',
+                tekst: 'Greška pri presipavanju memorija - Firebase: ' + error.message
+            });
+        } finally {
+            setLoading(false);
+        }
     };
 
   return (

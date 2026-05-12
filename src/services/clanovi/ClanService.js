@@ -1,5 +1,6 @@
 import ClanServiceLocalStorage from "./ClanServiceLocalStorage";
 import ClanServiceMemorija from "./ClanServiceMemorija";
+import ClanServiceFireBase from "./ClanServiceFireBase";
 import { DATA_SOURCE } from "../../constants";
 
 let Servis = null;
@@ -11,6 +12,9 @@ switch (DATA_SOURCE) {
         break;
     case 'localStorage':
         Servis = ClanServiceLocalStorage;
+        break;
+    case 'firebase':
+        Servis = ClanServiceFireBase;
         break;
     default:
         Servis = null;

@@ -13,6 +13,7 @@
     "@lottiefiles/dotlottie-react": "^0.18.10",
     "bcryptjs": "^3.0.3",
     "bootstrap": "^5.3.8",
+    "firebase": "^12.13.0",
     "highcharts": "^12.6.0",
     "highcharts-react-official": "^3.2.3",
     "jspdf": "^4.2.1",

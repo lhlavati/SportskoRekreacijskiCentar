@@ -5,11 +5,14 @@ import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { GiSoccerBall } from "react-icons/gi";
 import { BsTags, BsPeople, BsCalendar } from "react-icons/bs";
 
-import { RouteNames } from "../constants";
+import { RouteNames, DATA_SOURCE } from "../constants";
 import SportService from "../services/sportovi/SportService";
 import KategorijaService from "../services/kategorije/KategorijaService";
 import ClanService from "../services/clanovi/ClanService";
 import TerminService from "../services/termini/TerminService";
+import OperaterServiceLocalStorage from "../services/operateri/OperaterServiceLocalStorage";
+import OperaterServiceFirebase from "../services/operateri/OperaterServiceFirebase";
+import useAuth from "../hooks/useAuth"
 
 const kartice = [
   {
@@ -45,6 +48,31 @@ const kartice = [
 export default function Home() {
   const [statistika, setStatistika] = useState({ sportovi: 0, kategorije: 0, clanovi: 0, termini: 0 });
   const [ucitavanje, setUcitavanje] = useState(true);
+
+  const { isLoggedIn, logout } = useAuth()
+
+  const promijeniIzvor = async (noviIzvor) => {
+
+      let izvor = 'memorija';
+      
+      if (noviIzvor === 'localStorage') {
+          const servis = await OperaterServiceLocalStorage.get();
+          if (servis.data.length > 0){
+              izvor = noviIzvor;
+          } 
+          
+      }
+      if (noviIzvor === 'firebase') {
+          const servis = await OperaterServiceFirebase.get();
+          if (servis.data.length > 0){
+              izvor = noviIzvor;
+          } 
+      }
+
+      localStorage.setItem('dataSource', izvor);
+      logout()
+      window.location.reload();
+  };
 
   useEffect(() => {
     ucitajStatistiku();

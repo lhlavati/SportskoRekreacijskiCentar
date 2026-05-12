@@ -32,12 +32,12 @@ export const RouteNames = {
 }
 
 // memorija, localStorage, firebase
-export const DATA_SOURCE = 'localStorage';
+export const DATA_SOURCE = localStorage.getItem('dataSource') || 'firebase';
 
 export const PrefixStorage = {
-    CLANOVI: 'clanovi',
-    KATEGORIJE: 'kategorije',
-    SPORTOVI: 'sportovi',
-    TERMINI: 'termini',
-    OPERATERI: 'operateri'
+    CLANOVI: 'e3.clanovi',
+    KATEGORIJE: 'e3.kategorije',
+    SPORTOVI: 'e3.sportovi',
+    TERMINI: 'e3.termini',
+    OPERATERI: 'e3.operateri'
 }

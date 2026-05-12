@@ -1,5 +1,6 @@
 import SportServiceLocalStorage from "./SportServiceLocalStorage";
 import SportServiceMemorija from "./SportServiceMemorija";
+import SportServiceFireBase from "./SportServiceFireBase";
 import { DATA_SOURCE } from "../../constants";
 
 let Servis = null;
@@ -11,6 +12,9 @@ switch (DATA_SOURCE) {
         break;
     case 'localStorage':
         Servis = SportServiceLocalStorage;
+        break;
+    case 'firebase':
+        Servis = SportServiceFireBase;
         break;
     default:
         Servis = null;

@@ -1,6 +1,7 @@
 import { DATA_SOURCE } from "../../constants";
 import TerminServiceMemorija from "./TerminServiceMemorija";
 import TerminServiceLocalStorage from "./TerminServiceLocalStorage";
+import TerminServiceFireBase from "./TerminServiceFireBase";
 
 let Servis = null;
 
@@ -11,6 +12,9 @@ switch (DATA_SOURCE) {
         break;
     case 'localStorage':
         Servis = TerminServiceLocalStorage;
+        break;
+    case 'firebase':
+        Servis = TerminServiceFireBase;
         break;
     default:
         Servis = null;
