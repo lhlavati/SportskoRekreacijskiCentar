@@ -55,7 +55,7 @@ function pdfZaSport(naziv) {
     .replace(/č/g, 'c').replace(/ć/g, 'c')
     .replace(/š/g, 's').replace(/đ/g, 'd').replace(/ž/g, 'z');
   const filename = `${normalized}.jsx`;
-  return dostupniPdfFilenames.has(filename) ? filename : undefined;
+  return dostupniPdfFilenames.has(filename) ? filename : '';
 }
 
 const NAZIVI_SPORTOVA = [

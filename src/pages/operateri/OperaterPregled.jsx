@@ -10,7 +10,7 @@ export default function OperaterPregled() {
     const navigate = useNavigate()
     const [operateri, setOperateri] = useState([])
 
-    useEffect(() => { document.title = 'Operateri, ' + IME_APLIKACIJE })
+    useEffect(() => { document.title = IME_APLIKACIJE })
 
     useEffect(() => {
         ucitajOperatere()
