@@ -11,7 +11,7 @@ export default function Izbornik() {
     const { isLoggedIn, logout, authUser } = useAuth()
 
     return (
-        <Navbar expand="lg" className="src-navbar">
+        <Navbar expand="lg" className="src-navbar" role="navigation" aria-label="Glavni izbornik">
             <Container>
                 <Navbar.Brand>
                     <Nav.Link

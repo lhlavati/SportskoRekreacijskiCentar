@@ -66,6 +66,7 @@ export default function Login() {
                                             placeholder="vas@email.hr"
                                             isInvalid={!!errors.email}
                                             onFocus={() => ocistiGresku('email')}
+                                            autoComplete="email"
                                         />
                                         <Form.Control.Feedback type="invalid">
                                             {errors.email}
@@ -84,6 +85,7 @@ export default function Login() {
                                             placeholder="Unesite lozinku"
                                             isInvalid={!!errors.lozinka}
                                             onFocus={() => ocistiGresku('lozinka')}
+                                            autoComplete="current-password"
                                         />
                                         <Form.Control.Feedback type="invalid">
                                             {errors.lozinka}

@@ -32,7 +32,7 @@ function App() {
   const { isLoggedIn, authUser } = useAuth()
 
   return (
-    <Container className="src-app">
+    <Container className="src-app" role="main">
       <Izbornik />
       <Routes>
         <Route path={RouteNames.HOME} element={<Home />} />
@@ -72,7 +72,7 @@ function App() {
         )}
       </Routes>
       <hr />
-      <p className="src-footer">&copy; {IME_APLIKACIJE}</p>
+      <p className="src-footer" role="contentinfo">&copy; {IME_APLIKACIJE}</p>
     </Container>
   )
 }

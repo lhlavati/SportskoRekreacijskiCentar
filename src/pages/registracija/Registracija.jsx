@@ -79,6 +79,7 @@ export default function Registracija() {
                                             placeholder="vas@email.hr"
                                             isInvalid={!!errors.email}
                                             onFocus={() => ocistiGresku('email')}
+                                            autoComplete="email"
                                         />
                                         <Form.Control.Feedback type="invalid">
                                             {errors.email}
@@ -97,6 +98,7 @@ export default function Registracija() {
                                             placeholder="Unesite lozinku"
                                             isInvalid={!!errors.lozinka}
                                             onFocus={() => ocistiGresku('lozinka')}
+                                            autoComplete="new-password"
                                         />
                                         <Form.Control.Feedback type="invalid">
                                             {errors.lozinka}
@@ -112,6 +114,7 @@ export default function Registracija() {
                                             placeholder="Ponovite lozinku"
                                             isInvalid={!!errors.potvrdaLozinke}
                                             onFocus={() => ocistiGresku('potvrdaLozinke')}
+                                            autoComplete="new-password"
                                         />
                                         <Form.Control.Feedback type="invalid">
                                             {errors.potvrdaLozinke}
