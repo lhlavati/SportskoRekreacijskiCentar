@@ -118,12 +118,12 @@ export default function TerminPregled() {
 
     function dohvatiImeClana(id) {
         const clan = clanovi.find(c => c.id === id)
-        return clan ? `${clan.ime} ${clan.prezime}` : `#${id}`
+        return clan ? `${clan.ime} ${clan.prezime}` : 'Nepoznat član'
     }
 
     function dohvatiInicijale(id) {
         const clan = clanovi.find(c => c.id === id)
-        return clan ? `${clan.ime[0]}${clan.prezime[0]}` : `#${id}`
+        return clan ? `${clan.ime[0]}${clan.prezime[0]}` : 'NP'
     }
 
     async function obrisi(id) {

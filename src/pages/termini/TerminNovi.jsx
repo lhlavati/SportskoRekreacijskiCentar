@@ -1,4 +1,4 @@
-import { Badge, Button, Col, Form, ListGroup, Row } from "react-bootstrap"
+import { Alert, Badge, Button, Col, Form, ListGroup, Row } from "react-bootstrap"
 import { Link, useNavigate } from "react-router-dom"
 import { RouteNames } from "../../constants"
 import TerminService from "../../services/termini/TerminService"
@@ -33,6 +33,7 @@ export default function TerminNovi() {
     const [odabraniSati, setOdabraniSati] = useState([])
     const [zauzetiSati, setZauzetiSati] = useState([])
     const [ucitavamTermine, setUcitavamTermine] = useState(false)
+    const [greška, setGreška] = useState(null)
     const refDatum = useRef(null)
 
     const { control, handleSubmit, setError, clearErrors, formState: { errors } } = useForm({
@@ -84,9 +85,12 @@ export default function TerminNovi() {
     }
 
     async function dodaj(termin) {
-        await TerminService.dodaj(termin).then(() => {
+        const result = await TerminService.dodaj(termin);
+        if (result.success) {
             navigate(RouteNames.TERMINI)
-        })
+        } else {
+            setGreška(result.message || 'Greška pri dodavanju termina. Pokušaj ponovo.')
+        }
     }
 
     async function ucitajSportove() {
@@ -171,6 +175,7 @@ export default function TerminNovi() {
     return (
         <>
             <h3 className="fw-bold mt-4 mb-4">Novi termin</h3>
+            {greška && <Alert variant="danger" dismissible onClose={() => setGreška(null)}>{greška}</Alert>}
             <Form onSubmit={handleSubmit(odradiSubmit)}>
                 <Row className="g-3">
                     <Col xs={12} md={6}>

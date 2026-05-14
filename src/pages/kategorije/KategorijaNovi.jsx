@@ -1,17 +1,22 @@
-import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
+import { Alert, Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { RouteNames } from "../../constants";
 import KategorijaService from "../../services/kategorije/KategorijaService";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 export default function KategorijaNovi() {
   const navigate = useNavigate();
+  const [greška, setGreška] = useState(null);
   const { register, handleSubmit, formState: { errors } } = useForm();
 
   async function dodaj(kategorija) {
-    await KategorijaService.dodaj(kategorija).then(() => {
+    const result = await KategorijaService.dodaj(kategorija);
+    if (result.success) {
       navigate(RouteNames.KATEGORIJE);
-    });
+    } else {
+      setGreška(result.message || 'Greška pri dodavanju kategorije. Pokušaj ponovo.');
+    }
   }
 
   function odradiSubmit(data) {
@@ -21,6 +26,7 @@ export default function KategorijaNovi() {
   return (
     <>
       <h3>Unos nove kategorije</h3>
+      {greška && <Alert variant="danger" dismissible onClose={() => setGreška(null)}>{greška}</Alert>}
       <Form onSubmit={handleSubmit(odradiSubmit)}>
         <Container className="mt-4">
           <Card className="shadow-sm">

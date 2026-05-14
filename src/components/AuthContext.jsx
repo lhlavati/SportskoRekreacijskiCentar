@@ -28,7 +28,7 @@ export function AuthProvider({ children }) {
       localStorage.setItem('operater', JSON.stringify(odgovor.data));
       setAuthUser(odgovor.data);
       setIsLoggedIn(true);
-      navigate(RouteNames.NADZORNA_PLOCA);
+      navigate(odgovor.data.uloga === 'admin' ? RouteNames.NADZORNA_PLOCA : RouteNames.HOME);
     } else {
       alert(odgovor.message);
       localStorage.setItem('operater', '');

@@ -1,13 +1,14 @@
-import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
+import { Alert, Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { RouteNames } from "../../constants";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import KategorijaService from "../../services/kategorije/KategorijaService";
 import { useForm } from "react-hook-form";
 
 export default function KategorijaPromjena() {
   const navigate = useNavigate();
   const params = useParams();
+  const [greška, setGreška] = useState(null);
   const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
   useEffect(() => {
@@ -25,9 +26,12 @@ export default function KategorijaPromjena() {
   }
 
   async function promjeni(kategorija) {
-    await KategorijaService.promjeni(params.id, kategorija).then(() => {
+    const result = await KategorijaService.promjeni(params.id, kategorija);
+    if (result.success) {
       navigate(RouteNames.KATEGORIJE);
-    });
+    } else {
+      setGreška(result.message || 'Greška pri promjeni kategorije. Pokušaj ponovo.');
+    }
   }
 
   function odradiSubmit(data) {
@@ -37,6 +41,7 @@ export default function KategorijaPromjena() {
   return (
     <>
       <h3>Promjena kategorije</h3>
+      {greška && <Alert variant="danger" dismissible onClose={() => setGreška(null)}>{greška}</Alert>}
       <Form onSubmit={handleSubmit(odradiSubmit)}>
         <Container className="mt-4">
           <Card className="shadow-sm">

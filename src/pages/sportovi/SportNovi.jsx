@@ -1,4 +1,4 @@
-import { Button, Form } from "react-bootstrap";
+import { Alert, Button, Form } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { RouteNames } from "../../constants";
 import SportService from "../../services/sportovi/SportService";
@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 export default function SportNovi() {
   const navigate = useNavigate();
   const [kategorije, setKategorije] = useState([]);
+  const [greška, setGreška] = useState(null);
   const { register, handleSubmit, formState: { errors } } = useForm();
 
   useEffect(() => {
@@ -26,9 +27,12 @@ export default function SportNovi() {
   }
 
   async function dodaj(sport) {
-    await SportService.dodaj(sport).then(() => {
+    const result = await SportService.dodaj(sport);
+    if (result.success) {
       navigate(RouteNames.SPORTOVI);
-    });
+    } else {
+      setGreška(result.message || 'Greška pri dodavanju sporta. Pokušaj ponovo.');
+    }
   }
 
   function odradiSubmit(data) {
@@ -47,6 +51,7 @@ export default function SportNovi() {
   return (
     <>
       <h3>Unos novog sporta</h3>
+      {greška && <Alert variant="danger" dismissible onClose={() => setGreška(null)}>{greška}</Alert>}
       <Form onSubmit={handleSubmit(odradiSubmit)}>
         <Form.Group controlId="naziv" className="mb-3">
           <Form.Label>Naziv</Form.Label>

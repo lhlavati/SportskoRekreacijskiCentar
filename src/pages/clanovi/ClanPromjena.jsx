@@ -40,9 +40,12 @@ export default function ClanPromjena() {
   }
 
   async function promjeni(clan) {
-    await ClanService.promjeni(params.id, clan).then(() => {
+    const result = await ClanService.promjeni(params.id, clan);
+    if (result.success) {
       navigate(RouteNames.CLANOVI);
-    });
+    } else {
+      setGreška(result.message || 'Greška pri promjeni člana. Pokušaj ponovo.');
+    }
   }
 
   function odradiSubmit(data) {
@@ -62,6 +65,7 @@ export default function ClanPromjena() {
   return (
     <>
       <h3>Promjena člana</h3>
+      {greška && <Alert variant="danger" dismissible onClose={() => setGreška(null)}>{greška}</Alert>}
       <Form onSubmit={handleSubmit(odradiSubmit)}>
         <Form.Group controlId="ime" className="mb-3">
           <Form.Label>Ime</Form.Label>

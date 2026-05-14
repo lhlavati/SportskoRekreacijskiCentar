@@ -1,4 +1,4 @@
-import { Button, Form } from "react-bootstrap";
+import { Alert, Button, Form } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { RouteNames } from "../../constants";
 import SportService from "../../services/sportovi/SportService";
@@ -10,6 +10,7 @@ export default function SportPromjena() {
   const navigate = useNavigate();
   const params = useParams();
   const [kategorije, setKategorije] = useState([]);
+  const [greška, setGreška] = useState(null);
   const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
   useEffect(() => {
@@ -51,9 +52,12 @@ export default function SportPromjena() {
   }
 
   async function promjeni(sport) {
-    await SportService.promjeni(params.id, sport).then(() => {
+    const result = await SportService.promjeni(params.id, sport);
+    if (result.success) {
       navigate(RouteNames.SPORTOVI);
-    });
+    } else {
+      setGreška(result.message || 'Greška pri promjeni sporta. Pokušaj ponovo.');
+    }
   }
 
   function odradiSubmit(data) {
@@ -72,6 +76,7 @@ export default function SportPromjena() {
   return (
     <>
       <h3>Promjena sporta</h3>
+      {greška && <Alert variant="danger" dismissible onClose={() => setGreška(null)}>{greška}</Alert>}
       <Form onSubmit={handleSubmit(odradiSubmit)}>
         <Form.Group controlId="naziv" className="mb-3">
           <Form.Label>Naziv</Form.Label>

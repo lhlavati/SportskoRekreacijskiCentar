@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { Badge, Button, Col, Form, ListGroup, Row } from "react-bootstrap"
+import { Alert, Badge, Button, Col, Form, ListGroup, Row } from "react-bootstrap"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { RouteNames } from "../../constants"
 import TerminService from "../../services/termini/TerminService"
@@ -37,6 +37,7 @@ export default function TerminPromjena() {
     const [odabraniSati, setOdabraniSati] = useState([])
     const [zauzetiSati, setZauzetiSati] = useState([])
     const [ucitavamTermine, setUcitavamTermine] = useState(false)
+    const [greška, setGreška] = useState(null)
     const refDatum = useRef(null)
 
     const { control, handleSubmit, setValue, setError, clearErrors, formState: { errors } } = useForm({
@@ -131,9 +132,12 @@ export default function TerminPromjena() {
     }
 
     async function promjeni(noviTermin) {
-        await TerminService.promjeni(params.id, noviTermin).then(() => {
+        const result = await TerminService.promjeni(params.id, noviTermin);
+        if (result.success) {
             navigate(RouteNames.TERMINI)
-        })
+        } else {
+            setGreška(result.message || 'Greška pri promjeni termina. Pokušaj ponovo.')
+        }
     }
 
     function dodajSudionika(clan) {
@@ -205,6 +209,7 @@ export default function TerminPromjena() {
     return (
         <>
             <h3 className="fw-bold mt-4 mb-4">Promjena termina</h3>
+            {greška && <Alert variant="danger" dismissible onClose={() => setGreška(null)}>{greška}</Alert>}
             <Form onSubmit={handleSubmit(odradiSubmit)}>
                 <Row className="g-3">
                     <Col xs={12} md={6}>
