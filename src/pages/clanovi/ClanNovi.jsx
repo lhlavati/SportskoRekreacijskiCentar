@@ -1,4 +1,4 @@
-import { Button, Form } from "react-bootstrap";
+import { Alert, Button, Form } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { RouteNames } from "../../constants";
 import ClanService from "../../services/clanovi/ClanService";
@@ -13,32 +13,42 @@ export default function ClanNovi() {
   const navigate = useNavigate();
   const [zemlja, setZemlja] = useState('HR');
   const [slika, setSlika] = useState(null);
+  const [greška, setGreška] = useState(null);
 
   const { register, handleSubmit, control, formState: { errors } } = useForm();
 
   async function dodaj(clan) {
-    await ClanService.dodaj(clan).then(() => {
+    const result = await ClanService.dodaj(clan);
+    if (result.success) {
       navigate(RouteNames.CLANOVI);
-    });
+    } else {
+      setGreška(result.message || 'Greška pri dodavanju člana. Pokušaj ponovo.');
+    }
   }
 
   function odradiSubmit(data) {
     const asYouType = new AsYouType(zemlja);
     asYouType.input(data.kontaktBroj);
-    const formatiraniBroj = asYouType.getNumber().formatInternational();
+    const parsedNumber = asYouType.getNumber();
+    const formatiraniBroj = parsedNumber ? parsedNumber.formatInternational() : data.kontaktBroj;
 
     dodaj({
       ime: data.ime.trim(),
       prezime: data.prezime.trim(),
       email: data.email.trim(),
       kontaktBroj: formatiraniBroj,
-      slika: slika || undefined,
+      slika: slika || null,
     });
   }
 
   return (
     <>
       <h3>Unos novog člana</h3>
+      {greška && (
+        <Alert variant="danger" dismissible onClose={() => setGreška(null)}>
+          {greška}
+        </Alert>
+      )}
       <Form onSubmit={handleSubmit(odradiSubmit)}>
         <Form.Group controlId="ime" className="mb-3">
           <Form.Label>Ime</Form.Label>

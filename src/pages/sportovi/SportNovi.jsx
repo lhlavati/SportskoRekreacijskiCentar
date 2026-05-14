@@ -40,7 +40,7 @@ export default function SportNovi() {
       uZatvorenom: data.uZatvorenom ?? false,
       trajanjeMin: data.trajanjeMin,
       cijenaTermina: data.cijenaTermina,
-      pdf: data.pdf || undefined,
+      pdf: data.pdf || null,
     });
   }
 
@@ -69,7 +69,7 @@ export default function SportNovi() {
             isInvalid={!!errors.kategorija}
             {...register('kategorija', {
               required: 'Morate odabrati kategoriju!',
-              validate: v => (v && parseInt(v) > 0) || 'Odabrana kategorija nije valjana!'
+              validate: v => !!v || 'Odabrana kategorija nije valjana!'
             })}
           >
             <option value="">Odaberite kategoriju</option>

@@ -1,4 +1,4 @@
-import { Button, Form } from "react-bootstrap";
+import { Alert, Button, Form } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { RouteNames } from "../../constants";
 import ClanService from "../../services/clanovi/ClanService";
@@ -14,6 +14,7 @@ export default function ClanPromjena() {
   const params = useParams();
   const [zemlja, setZemlja] = useState('HR');
   const [slika, setSlika] = useState(null);
+  const [greška, setGreška] = useState(null);
 
   const { register, handleSubmit, control, reset, formState: { errors } } = useForm();
 
@@ -54,7 +55,7 @@ export default function ClanPromjena() {
       prezime: data.prezime.trim(),
       email: data.email.trim(),
       kontaktBroj: formatiraniBroj,
-      slika: slika || undefined,
+      slika: slika || null,
     });
   }
 

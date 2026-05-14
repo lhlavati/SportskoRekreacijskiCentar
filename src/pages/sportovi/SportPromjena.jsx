@@ -13,8 +13,11 @@ export default function SportPromjena() {
   const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
   useEffect(() => {
-    ucitajKategorije();
-    ucitajSport();
+    async function ucitaj() {
+      await ucitajKategorije();
+      await ucitajSport();
+    }
+    ucitaj();
   }, []);
 
   async function ucitajKategorije() {
@@ -62,7 +65,7 @@ export default function SportPromjena() {
       uZatvorenom: data.uZatvorenom,
       trajanjeMin: data.trajanjeMin,
       cijenaTermina: data.cijenaTermina,
-      pdf: data.pdf || undefined,
+      pdf: data.pdf || null,
     });
   }
 
@@ -91,7 +94,7 @@ export default function SportPromjena() {
             isInvalid={!!errors.kategorija}
             {...register('kategorija', {
               required: 'Morate odabrati kategoriju!',
-              validate: v => (v && parseInt(v) > 0) || 'Odabrana kategorija nije valjana!'
+              validate: v => !!v || 'Odabrana kategorija nije valjana!'
             })}
           >
             <option value="">Odaberite kategoriju</option>
