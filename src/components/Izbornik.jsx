@@ -1,7 +1,7 @@
 import { Container, Image, Nav, Navbar, NavDropdown, Button } from "react-bootstrap";
 import { RouteNames } from "../constants";
 import { useNavigate } from "react-router-dom";
-import logo from '../assets/logogemini.png'
+import logo from '../assets/logo.png'
 import useAuth from "../hooks/useAuth";
 
 
