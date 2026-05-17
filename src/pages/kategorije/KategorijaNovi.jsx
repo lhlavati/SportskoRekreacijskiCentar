@@ -54,7 +54,7 @@ export default function KategorijaNovi() {
               </Row>
 
               <div className="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                <Link to={RouteNames.GRUPE} className="btn btn-danger px-4">
+                <Link to={RouteNames.KATEGORIJE} className="btn btn-danger px-4">
                   Odustani
                 </Link>
                 <Button type="submit" variant="success">
